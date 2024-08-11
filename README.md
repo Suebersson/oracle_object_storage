@@ -1,5 +1,7 @@
-# ![Oracle](https://raw.githubusercontent.com/Suebersson/oracle_object_storage/main/oracle.svg) Oracle Cloud Object Storage
+# [![Oracle](https://raw.githubusercontent.com/Suebersson/oracle_object_storage/main/oracle.svg)](https://www.oracle.com/br/cloud/) Oracle Cloud Object Storage
 
+[![sdk dart](https://img.shields.io/badge/SDK-Dart-blue.svg)](https://dart.dev/get-dart)
+[![sdk flutter](https://img.shields.io/badge/SDK-Flutter-blue.svg)](https://docs.flutter.dev/get-started/install)
 [![pub package](https://img.shields.io/pub/v/oracle_object_storage.svg?color=blue)](https://pub.dev/packages/oracle_object_storage)
 [![popularity](https://img.shields.io/pub/popularity/oracle_object_storage?logo=dart)](https://pub.dev/packages/oracle_object_storage/score)
 [![pub points](https://img.shields.io/pub/points/oracle_object_storage?logo=dart)](https://pub.dev/packages/oracle_object_storage/score)
