@@ -1,12 +1,17 @@
 # ![Oracle](https://raw.githubusercontent.com/Suebersson/oracle_object_storage/main/oracle.svg) Oracle Cloud Object Storage
 
+[![pub package](https://img.shields.io/pub/v/oracle_object_storage.svg?color=blue)](https://pub.dev/packages/oracle_object_storage)
+[![popularity](https://img.shields.io/pub/popularity/oracle_object_storage?logo=dart)](https://pub.dev/packages/oracle_object_storage/score)
+[![pub points](https://img.shields.io/pub/points/oracle_object_storage?logo=dart)](https://pub.dev/packages/oracle_object_storage/score)
+[![License: BSD](https://img.shields.io/badge/license-BSD-blue.svg)](https://pub.dev/packages/oracle_object_storage/license)
+
 Package para construir os headers necessários para [requisições](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/signingrequests.htm#Request_Signatures) REST API através dos métodos de solicitações com base na [documentação](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/) para usar o serviço da Oracle Object Storage.
 
 Como criar sua [chave de API](https://docs.oracle.com/en/learn/manage-oci-restapi/index.html#task-1-set-up-oracle-cloud-infrastructure-api-keys) para acesso ao bucker
 
 ## Formas de instânciar o objeto [OracleObjectStorage](https://docs.oracle.com/pt-br/iaas/Content/Object/Concepts/objectstorageoverview.htm) para requisições [REST API](https://docs.oracle.com/en/learn/manage-oci-restapi/index.html#introduction)
 
-```
+```dart
   final OracleObjectStorage objectStorage = OracleObjectStorage(
     buckerNameSpace: '...', 
     buckerName: '...', 
@@ -25,7 +30,7 @@ Como criar sua [chave de API](https://docs.oracle.com/en/learn/manage-oci-restap
   );
 ```
 
-```
+```dart
   final OracleObjectStorage objectStorage = OracleObjectStorage(
     buckerNameSpace: '...', 
     buckerName: '...', 
@@ -39,15 +44,15 @@ Como criar sua [chave de API](https://docs.oracle.com/en/learn/manage-oci-restap
   );
 ```
 
-```
+```dart
 .../.oci/config.json
 {
-    "buckerNameSpace": "...",
-    "buckerName": "...",
-    "buckerRegion": "...",
-    "userOcid": "ocid1.user.oc1..aaaaaa...",
-    "fingerprint": "od:b5:h6:44:1b:...",
-    "tenancyOcid": "ocid1.tenancy.oc1..aaaaa..."
+  "buckerNameSpace": "...",
+  "buckerName": "...",
+  "buckerRegion": "...",
+  "userOcid": "ocid1.user.oc1..aaaaaa...",
+  "fingerprint": "od:b5:h6:44:1b:...",
+  "tenancyOcid": "ocid1.tenancy.oc1..aaaaa..."
 }
 
 final OracleObjectStorage objectStorage = OracleObjectStorage.fromConfig(
@@ -59,7 +64,7 @@ final OracleObjectStorage objectStorage = OracleObjectStorage.fromConfig(
 
 ## [PutObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/PutObject)
 
-```
+```dart
 File file = File(".../fileNAme.jpg");
 
 final Uint8List bytes = await file.readAsBytes();
@@ -88,7 +93,7 @@ print(response.statusCode); // esperado 200
 
 ## [GetObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/GetObject)
 
-```
+```dart
 final GetObject get = objectStorage
   .getObject(pathAndFileName: '/users/profilePictures/fileName.jpg');
 
@@ -102,7 +107,7 @@ print(response.statusCode); // esperado 200
 
 ## [HeadObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/HeadObject)
 
-```
+```dart
 final HeadObject head = objectStorage
   .headObject(pathAndFileName: '/users/profilePictures/fileName.jpg');
 
@@ -117,7 +122,7 @@ print(response.headers);
 
 ## [ListObjects](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/ListObjects)
 
-```
+```dart
 final ListObjects list = objectStorage.listObjects();
 
 final http.Response response = await http.get(
@@ -131,7 +136,7 @@ print(response.body);// json
 
 ## [DeleteObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/DeleteObject)
 
-```
+```dart
 final DeleteObject delete = objectStorage
   .deleteObject(pathAndFileName: '/users/profilePictures/fileName.jpg');
 
@@ -146,7 +151,7 @@ print(response.statusCode);
 
 ## [RenameObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/RenameObject)
 
-```
+```dart
 final RenameObject rename = objectStorage.renameObject(
   sourceObject: RenameSourceObject(
     sourceName: 'users/profilePictures/fileName.jpg', 
@@ -167,7 +172,7 @@ print(response.statusCode); // esperado 200
 
 ## [UpdateObjectStorageTier](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/UpdateObjectStorageTier)
 
-```
+```dart
 final UpdateObjectStorageTier updateObjectStorageTier = objectStorage.updateObjectStorageTier(
   objectStorageTier: ObjectStorageTier(
     objectName: 'image.jpg', 
@@ -186,7 +191,7 @@ print(response.statusCode); // esperado 200
 
 ## [RestoreObjects](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/RestoreObjects)
 
-```
+```dart
 final RestoreObjects restore = objectStorage.restore(
   restoreObjectsSource: RestoreObjectsSource(
     objectName: 'image.jpg', 
@@ -205,7 +210,7 @@ print(response.statusCode); // esperado 200 ou 202
 
 ## [CopyObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/CopyObject)
 
-```
+```dart
 final CopyObject copy = objectStorage.copyObject(
     sourceObject: CopySourceObject(
       sourceObjectName: 'users/profilePictures/image.jpg', // arquivo a ser copiado
