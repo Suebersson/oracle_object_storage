@@ -5,8 +5,8 @@ final CopyObject copy = objectStorage.copyObject(
     sourceObject: CopySourceObject(
       sourceObjectName: 'users/profilePictures/image.jpg', // arquivo a ser copiado
       destinationRegion: 'sa-saopaulo-1', // região do bucker para onde o arquivo será copiado
-      destinationNamespace: 'ut6ucxt5v16z', // nameSpace do bucker para onde o arquivo será copiado
-      destinationBucket: 'Bucker-Backup', // nome do bucker para onde o arquivo será copiado
+      destinationNamespace: '...', // nameSpace do bucker para onde o arquivo será copiado
+      destinationBucket: 'BuckerName', // nome do bucker para onde o arquivo será copiado
       destinationObjectName: 'users/profilePictures/image.jpg', // para onde o arquivo será copiado
     ),
   );

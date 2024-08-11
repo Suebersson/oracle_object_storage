@@ -3,3 +3,6 @@
 *.bat
 *.sh
 *.ps1
+
+/request_testing
+/request_testing/*

@@ -38,7 +38,7 @@ final class ApiPrivateKey {
   final Uint8List keyBytes;
   final RequestSigningService signingService;
 
-  static final RegExp regExpForClearKey = RegExp('(\\n|\\s|-----.*-----|OCI_API_KEY)');
+  static RegExp get regExpForClearKey => RegExp('(\\n|\\s|-----.*-----|OCI_API_KEY)');
 
   /// [key] ==> valor da chave
   factory ApiPrivateKey.fromValue({required String key, required String fingerprint}) {
@@ -56,7 +56,8 @@ final class ApiPrivateKey {
     try {
       
       if (fullPath.isEmpty) {
-        return throw const OracleObjectStorageExeception('O endereço do arquivo no dispositivo não pode ser vazio');      
+        return throw const OracleObjectStorageExeception('O endereço do arquivo no dispositivo '
+          'não pode ser vazio');      
       }
       
       final File file = File(fullPath);

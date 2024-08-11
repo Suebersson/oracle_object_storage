@@ -7,7 +7,7 @@ part of '../../oracle_object_storage.dart';
 
   final PutObject put = objectStorage.putObject(
     pathAndFileName: '/users/profilePictures/userId.jpg',
-    xContentSha256: bytes.contentSha256,
+    xContentSha256: bytes.toSha256Base64,
     contentLength: bytes.length.toString(),
     contentType: 'image/jpeg',
     addHeaders: <String, String>{
