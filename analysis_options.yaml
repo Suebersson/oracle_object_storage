@@ -1,0 +1,63 @@
+# This file configures the static analysis results for your project (errors,
+# warnings, and lints).
+#
+# This enables the 'recommended' set of lints from `package:lints`.
+# This set helps identify many issues that may lead to problems when running
+# or consuming Dart code, and enforces writing Dart using a single, idiomatic
+# style and format.
+#
+# If you want a smaller set of lints you can change this to specify
+# 'package:lints/core.yaml'. These are just the most critical lints
+# (the recommended set includes the core lints).
+# The core lints are also what is used by pub.dev for scoring packages.
+
+include: package:lints/recommended.yaml
+
+analyzer:
+  
+  # excessões para o dart analyzer não verificar
+  # exclude: 
+  #   - lib/**/file_name.dart
+
+  # personalizar como as regras aplicadas na [linter > rures:] 
+  # serão tratadas(error, warning, ignore, info)
+  errors: 
+    unnecessary_await_in_return: warning
+    avoid_print: warning
+    always_declare_return_types: error
+
+linter:
+  rules:
+
+    # preferência para importação de arquivos(.dart) do projeto será relativa 
+    prefer_relative_imports: true 
+    
+    camel_case_types: true
+    
+    # quando a função retornar uma Future, é desnecessario usar o await
+    unnecessary_await_in_return: true 
+    
+    # Alertar quando uma variável não estiver sendo usando dentro das classe ou funções
+    avoid_unused_constructor_parameters: true 
+    
+    # Dar um alert para criar funções que retornem algum tipo de valor, mesmo que seja uma void
+    always_declare_return_types: true 
+    
+    # alertar para não usar método prin() do dart
+    avoid_print: true
+    
+    # dar um alerta para definir as variáveis como constante caso elas não serão multavéis
+    prefer_final_locals: true
+    prefer_final_fields: true
+
+    # inserir uma vígula em cada atributo dos objetos
+    require_trailing_commas: true
+    
+    # preferir que use aspas simples nas strings
+    # prefer_single_quotes: true 
+
+# For more information about the core and recommended set of lints, see
+# https://dart.dev/go/core-lints
+
+# For additional information about configuring this file, see
+# https://dart.dev/guides/language/analysis-options
