@@ -1,9 +1,14 @@
+# https://dart.dev/tools/pub/pubspec
+
 name: oracle_object_storage
 description: Package para construir os headers de requisições REST API para usar o serviço da Oracle Cloud Object Storage.
 version: 1.0.0
+homepage: https://github.com/Suebersson/oracle_object_storage.git
 repository: https://github.com/Suebersson/oracle_object_storage
-
-# https://dart.dev/tools/pub/pubspec
+issue_tracker: https://github.com/Suebersson/oracle_object_storage/issues
+funding:
+ - https://capoerus.com/
+documentation: https://pub.dev/documentation/oracle_object_storage/latest/
 
 # Comandos para atulizar o repositório no github
 # git init
@@ -16,6 +21,19 @@ repository: https://github.com/Suebersson/oracle_object_storage
 environment:
   sdk: '>=3.0.0'
   # sdk: ^3.4.3
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  windows:
+
+topics:
+  - oracle
+  - oracle-cloud
+  - oracle-object-storage
+  - cloud-storage
 
 dependencies:
   intl: ^0.19.0

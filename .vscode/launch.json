@@ -5,10 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "oracle_object_storage",
+            "name": "Testar função Object Storage",
             "request": "launch",
             "type": "dart",
-            "program": "request_testing/main.dart",
-        }
+            "program": "${workspaceFolder}\\request_testing\\main.dart",
+        },
+        {
+            "name": "Update git repository",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\update_git_repository.ps1",
+        },
     ]
 }

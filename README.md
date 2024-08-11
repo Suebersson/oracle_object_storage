@@ -181,7 +181,7 @@ print(response.statusCode); // esperado 200
 ## [RestoreObjects](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/RestoreObjects)
 
 ```
-final RestoreObjects restoreObjects = objectStorage.restoreObjects(
+final RestoreObjects restore = objectStorage.restore(
   restoreObjectsSource: RestoreObjectsSource(
     objectName: 'image.jpg', 
     hours: 120
@@ -189,9 +189,9 @@ final RestoreObjects restoreObjects = objectStorage.restoreObjects(
 );
 
 final http.Response response = await http.post(
-  Uri.parse(restoreObjects.uri),
-  body: restoreObjects.jsonBytes,
-  headers: restoreObjects.header,
+  Uri.parse(restore.uri),
+  body: restore.jsonBytes,
+  headers: restore.header,
 );
 
 print(response.statusCode); // esperado 200 ou 202
