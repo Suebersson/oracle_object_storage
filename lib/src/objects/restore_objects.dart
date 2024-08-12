@@ -11,7 +11,7 @@ part of '../../oracle_object_storage.dart';
   final http.Response response = await http.post(
     Uri.parse(restoreObjects.uri),
     body: restoreObjects.jsonBytes,
-    headers: restoreObjects.header,
+    headers: restoreObjects.headers,
   );
 
   print(response.statusCode); // esperado 200 ou 202
@@ -48,7 +48,7 @@ final class RestoreObjects implements ObjectAttributes {
   final Map<String, String>? addHeaders;
   
   @override
-  Map<String, String> get header {
+  Map<String, String> get headers {
     if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
 
       addHeaders!

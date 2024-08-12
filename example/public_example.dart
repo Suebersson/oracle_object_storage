@@ -38,7 +38,7 @@ void main() async{
   final http.Response response = await http.put(
     Uri.parse(put.uri),
     body: bytes,
-    headers: put.header,
+    headers: put.headers,
   );
 
   log(

@@ -6,7 +6,7 @@ part of '../../oracle_object_storage.dart';
 
   final http.Response response = await http.delete(
     Uri.parse(delete.uri),
-    headers: delete.header,
+    headers: delete.headers,
   );
 
   // Status code esperado == 204 == objeto excluído com sucesso
@@ -31,7 +31,7 @@ final class DeleteObject implements ObjectAttributes {
   final Map<String, String>? addHeaders;
   
   @override
-  Map<String, String> get header {
+  Map<String, String> get headers {
     if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
 
       addHeaders!

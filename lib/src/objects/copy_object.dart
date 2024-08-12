@@ -14,7 +14,7 @@ final CopyObject copy = objectStorage.copyObject(
   final http.Response response = await http.post(
     Uri.parse(copy.uri),
     body: copy.jsonBytes,
-    headers: copy.header,
+    headers: copy.headers,
   );
 
   print('\npublicUrlOfCopiedFile: ${copy.publicUrlOfCopiedFile}\n');
@@ -55,7 +55,7 @@ final class CopyObject implements ObjectAttributes{
   final Map<String, String>? addHeaders;
   
   @override
-  Map<String, String> get header {
+  Map<String, String> get headers {
     if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
 
       addHeaders!

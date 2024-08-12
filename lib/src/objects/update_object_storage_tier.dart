@@ -13,7 +13,7 @@ part of '../../oracle_object_storage.dart';
   final http.Response response = await http.post(
     Uri.parse(updateObjectStorageTier.uri),
     body: updateObjectStorageTier.jsonBytes,
-    headers: updateObjectStorageTier.header,
+    headers: updateObjectStorageTier.headers,
   );
 
   print(response.statusCode); // esperado 200
@@ -50,7 +50,7 @@ final class UpdateObjectStorageTier implements ObjectAttributes {
   final Map<String, String>? addHeaders;
   
   @override
-  Map<String, String> get header {
+  Map<String, String> get headers {
     if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
 
       addHeaders!

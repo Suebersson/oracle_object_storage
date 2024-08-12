@@ -11,7 +11,7 @@ part of '../../oracle_object_storage.dart';
   final http.Response response = await http.post(
     Uri.parse(rename.uri),
     body: rename.jsonBytes,
-    headers: rename.header,
+    headers: rename.headers,
   );
 
   print('\noldPublicUrlFile: ${rename.oldPublicUrlFile}\n\n');
@@ -54,7 +54,7 @@ final class RenameObject implements ObjectAttributes {
   final Map<String, String>? addHeaders;
   
   @override
-  Map<String, String> get header {
+  Map<String, String> get headers {
     if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
 
       addHeaders!

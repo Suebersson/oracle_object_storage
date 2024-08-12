@@ -14,36 +14,36 @@ Como criar sua [chave de API](https://docs.oracle.com/en/learn/manage-oci-restap
 ## Formas de instânciar o objeto [OracleObjectStorage](https://docs.oracle.com/pt-br/iaas/Content/Object/Concepts/objectstorageoverview.htm) para requisições [REST API](https://docs.oracle.com/en/learn/manage-oci-restapi/index.html#introduction)
 
 ```dart
-  final OracleObjectStorage objectStorage = OracleObjectStorage(
-    buckerNameSpace: '...', 
-    buckerName: '...', 
-    buckerRegion: '...', 
-    tenancyOcid: 'ocid1.tenancy.oc1..aaaaa...', 
-    userOcid: 'ocid1.user.oc1..aaaaaa...', 
-    apiPrivateKey: ApiPrivateKey.fromValue(
-      key: '''
-    -----BEGIN PRIVATE KEY-----
-      MIIEvAIBAD......JkvgJg4YINu72u7MQ==
-    -----END PRIVATE KEY-----
-        OCI_API_KEY
-      ''', 
-      fingerprint: 'od:b5:h6:44:1b:...'
-    ),
-  );
+final OracleObjectStorage objectStorage = OracleObjectStorage(
+  buckerNameSpace: '...', 
+  buckerName: '...', 
+  buckerRegion: '...', 
+  tenancyOcid: 'ocid1.tenancy.oc1..aaaaa...', 
+  userOcid: 'ocid1.user.oc1..aaaaaa...', 
+  apiPrivateKey: ApiPrivateKey.fromValue(
+    key: '''
+  -----BEGIN PRIVATE KEY-----
+    MIIEvAIBAD......JkvgJg4YINu72u7MQ==
+  -----END PRIVATE KEY-----
+      OCI_API_KEY
+    ''', 
+    fingerprint: 'od:b5:h6:44:1b:...'
+  ),
+);
 ```
 
 ```dart
-  final OracleObjectStorage objectStorage = OracleObjectStorage(
-    buckerNameSpace: '...', 
-    buckerName: '...', 
-    buckerRegion: '...', 
-    tenancyOcid: 'ocid1.tenancy.oc1..aaaa...', 
-    userOcid: 'ocid1.user.oc1..aaaaaaa...', 
-    apiPrivateKey: ApiPrivateKey.fromFile(
-      fullPath: '.../.oci/private_key.pem',
-      fingerprint: 'od:b5:h6:44:1b:...'
-    ),
-  );
+final OracleObjectStorage objectStorage = OracleObjectStorage(
+  buckerNameSpace: '...', 
+  buckerName: '...', 
+  buckerRegion: '...', 
+  tenancyOcid: 'ocid1.tenancy.oc1..aaaa...', 
+  userOcid: 'ocid1.user.oc1..aaaaaaa...', 
+  apiPrivateKey: ApiPrivateKey.fromFile(
+    fullPath: '.../.oci/private_key.pem',
+    fingerprint: 'od:b5:h6:44:1b:...'
+  ),
+);
 ```
 
 ```dart

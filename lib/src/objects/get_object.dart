@@ -6,7 +6,7 @@ part of '../../oracle_object_storage.dart';
 
   final http.Response response = await http.get(
     Uri.parse(get.uri),
-    headers: get.header,
+    headers: get.headers,
   );
 
   print(response.statusCode); // esperado 200
@@ -30,7 +30,7 @@ final class GetObject implements ObjectAttributes {
   final Map<String, String>? addHeaders;
   
   @override
-  Map<String, String> get header {
+  Map<String, String> get headers {
     if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
 
       addHeaders!
