@@ -87,7 +87,7 @@ final PutObject put = objectStorage.putObject(
 final http.Response response = await http.put(
   Uri.parse(put.uri),
   body: bytes,
-  headers: put.header,
+  headers: put.headers,
 );
 
 print(response.statusCode); // esperado 200
@@ -101,7 +101,7 @@ final GetObject get = objectStorage
 
 final http.Response response = await http.get(
   Uri.parse(get.uri),
-  headers: get.header,
+  headers: get.headers,
 );
 
 print(response.statusCode); // esperado 200
@@ -115,7 +115,7 @@ final HeadObject head = objectStorage
 
 final http.Response response = await http.head(
   Uri.parse(head.uri),
-  headers: head.header,
+  headers: head.headers,
 );
 
 print(response.statusCode); // esperado 200, 404 se o arquivo não existir
@@ -129,7 +129,7 @@ final ListObjects list = objectStorage.listObjects();
 
 final http.Response response = await http.get(
   Uri.parse(list.uri),
-  headers: list.header,
+  headers: list.headers,
 );
 
 print(response.statusCode);// esperado 200
@@ -144,7 +144,7 @@ final DeleteObject delete = objectStorage
 
 final http.Response response = await http.delete(
   Uri.parse(delete.uri),
-  headers: delete.header,
+  headers: delete.headers,
 );
 
 // Status code esperado == 204 == objeto excluído com sucesso
@@ -164,7 +164,7 @@ final RenameObject rename = objectStorage.renameObject(
 final http.Response response = await http.post(
   Uri.parse(rename.uri),
   body: rename.jsonBytes,
-  headers: rename.header,
+  headers: rename.headers,
 );
 
 print('\noldPublicUrlFile: ${rename.oldPublicUrlFile}\n\n');
@@ -185,7 +185,7 @@ final UpdateObjectStorageTier updateObjectStorageTier = objectStorage.updateObje
 final http.Response response = await http.post(
   Uri.parse(updateObjectStorageTier.uri),
   body: updateObjectStorageTier.jsonBytes,
-  headers: updateObjectStorageTier.header,
+  headers: updateObjectStorageTier.headers,
 );
 
 print(response.statusCode); // esperado 200
@@ -204,7 +204,7 @@ final RestoreObjects restore = objectStorage.restore(
 final http.Response response = await http.post(
   Uri.parse(restore.uri),
   body: restore.jsonBytes,
-  headers: restore.header,
+  headers: restore.headers,
 );
 
 print(response.statusCode); // esperado 200 ou 202
@@ -226,7 +226,7 @@ final CopyObject copy = objectStorage.copyObject(
 final http.Response response = await http.post(
   Uri.parse(copy.uri),
   body: copy.jsonBytes,
-  headers: copy.header,
+  headers: copy.headers,
 );
 
 print('\npublicUrlOfCopiedFile: ${copy.publicUrlOfCopiedFile}\n');
