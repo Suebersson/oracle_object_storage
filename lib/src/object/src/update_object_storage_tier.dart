@@ -7,23 +7,6 @@ import '../../interfaces/details.dart';
 import '../../interfaces/oracle_request_attributes.dart';
 import '../../oracle_object_storage.dart';
 
-/*
-  final UpdateObjectStorageTier updateObjectStorageTier = objectStorage.updateObjectStorageTier(
-    details : UpdateObjectStorageTierDetails (
-      objectName: 'image.jpg', 
-      storageTier: StorageTier.InfrequentAccess
-    ),
-  );
-
-  final http.Response response = await http.post(
-    Uri.parse(updateObjectStorageTier.uri),
-    body: updateObjectStorageTier.jsonBytes,
-    headers: updateObjectStorageTier.headers,
-  );
-
-  print(response.statusCode); // esperado 200
-*/
-
 final class UpdateObjectStorageTier implements OracleRequestAttributes {
 
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/UpdateObjectStorageTier

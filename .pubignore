@@ -6,3 +6,4 @@
 
 /request_testing/
 /request_testing*
+/lib/**/*.md

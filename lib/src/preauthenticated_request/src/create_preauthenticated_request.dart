@@ -6,10 +6,6 @@ import '../../../oracle_object_storage.dart';
 import '../../interfaces/details.dart';
 import '../../interfaces/oracle_request_attributes.dart';
 
-/*
-
-*/
-
 final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
 
   // https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/PreauthenticatedRequest/CreatePreauthenticatedRequest

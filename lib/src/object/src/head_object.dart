@@ -3,19 +3,6 @@ import '../../oracle_object_storage.dart';
 import '../../oracle_object_storage_exeception.dart';
 import '../../query.dart';
 
-/*
-  final HeadObject head = objectStorage
-    .headObject(pathAndFileName: '/users/profilePictures/userId.jpg');
-
-  final http.Response response = await http.head(
-    Uri.parse(head.uri),
-    headers: head.headers,
-  );
-
-  print(response.statusCode); // esperado 200, 404 se o arquivo não existir
-  print(response.headers);
-*/
-
 final class HeadObject implements OracleRequestAttributes {
 
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/HeadObject

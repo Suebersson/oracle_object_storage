@@ -6,38 +6,6 @@ import '../../interfaces/oracle_request_attributes.dart';
 import '../../oracle_object_storage.dart';
 import '../../oracle_object_storage_exeception.dart';
 
-/*
-final CommitMultipartUpload parts = objectStorage.commitMultipartUpload(
-  muiltiPartObjectName: '...',
-  uploadId: '...',
-  details: CommitMultipartUploadDetails(
-    parts: [
-      PartsToCommit(
-        partNum: 1, 
-        etag: '...',
-      ),
-      PartsToCommit(
-        partNum: 2, 
-        etag: '...',
-      ),
-      PartsToCommit(
-        partNum: 3, 
-        etag: '...',
-      ),
-    ],
-  ),
-);
-
-final http.Response response = await http.post(
-  Uri.parse(parts.uri),
-  body: parts.jsonBytes,
-  headers: parts.headers,
-);
-
-print(parts.publicUrlFile);
-print(response.statusCode); // esperado 200
-*/
-
 final class CommitMultipartUpload implements OracleRequestAttributes {
   
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/CommitMultipartUpload
