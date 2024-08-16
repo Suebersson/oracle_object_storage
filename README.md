@@ -86,9 +86,9 @@ final OracleObjectStorage objectStorage = OracleObjectStorage.fromConfig(
 
 Ordem de como criar um arquivo em múltiplas partes/uploads:
 
-  1. [CreateMultipartUpload](https://pub.dev/packages/oracle_object_storage#CreateMultipartUpload)
-  2. [UploadPart](https://pub.dev/packages/oracle_object_storage#UploadPart) {enviar o corpo/conteúdo/bytes do arquivo}
-  3. [CommitMultipartUpload](https://pub.dev/packages/oracle_object_storage#CommitMultipartUpload) {finalizar/montar as partes enviadas para criar um único arquivo}
+  1. [CreateMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/create_multipart_upload.md)
+  2. [UploadPart](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/upload_part.md) {enviar o corpo/conteúdo/bytes do arquivo}
+  3. [CommitMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/commit_multipart_upload.md) {finalizar/montar as partes enviadas para criar um único arquivo}
 
 
 ## PreauthenticatedRequest
