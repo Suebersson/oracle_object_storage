@@ -1,21 +1,25 @@
-part of '../../oracle_object_storage.dart';
+import '../../interfaces/oracle_request_attributes.dart';
+import '../../oracle_object_storage.dart';
+import '../../oracle_object_storage_exeception.dart';
+import '../../query.dart';
 
 /*
-  final GetObject get = objectStorage
-    .getObject(pathAndFileName: '/users/profilePictures/userId.jpg');
+  final HeadObject head = objectStorage
+    .headObject(pathAndFileName: '/users/profilePictures/userId.jpg');
 
-  final http.Response response = await http.get(
-    Uri.parse(get.uri),
-    headers: get.headers,
+  final http.Response response = await http.head(
+    Uri.parse(head.uri),
+    headers: head.headers,
   );
 
-  print(response.statusCode); // esperado 200
+  print(response.statusCode); // esperado 200, 404 se o arquivo não existir
+  print(response.headers);
 */
 
-final class GetObject implements ObjectAttributes {
+final class HeadObject implements OracleRequestAttributes {
 
-  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/GetObject
-  const GetObject._({
+  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/HeadObject
+  const HeadObject._({
     required this.uri, 
     required this.date, 
     required this.authorization, 
@@ -49,12 +53,13 @@ final class GetObject implements ObjectAttributes {
     }
   }
 
-  /// Construir dados de autorização para o serviço [GetObject]
+  /// Construir dados de autorização para o serviço [HeadObject]
   /// 
   /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
-  factory GetObject({
+  factory HeadObject({
     required OracleObjectStorage objectStorage, 
-    required String pathAndFileName, 
+    required String pathAndFileName,
+    Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -67,7 +72,7 @@ final class GetObject implements ObjectAttributes {
 
     /*
       
-      # Modelo para String de assinatura para o método [get]
+      # Modelo para String de assinatura para o método [head]
 
       (request-target): <METHOD> <BUCKER_PATH><DIRECTORY_PATH><FILE_NAME>\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
@@ -83,13 +88,17 @@ final class GetObject implements ObjectAttributes {
 
     */
 
+    final String request = query is Query
+      ? '${objectStorage.buckerPath}/o$pathAndFileName${query.toURLParams}'
+      : '${objectStorage.buckerPath}/o$pathAndFileName';
+
     final String signingString = 
-      '(request-target): get ${objectStorage.buckerPath}/o$pathAndFileName\n'
+      '(request-target): head $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.buckerHost}';
 
-    return GetObject._(
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o$pathAndFileName', 
+    return HeadObject._(
+      uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
       host: objectStorage.buckerHost,
       addHeaders: addHeaders,
@@ -104,17 +113,19 @@ final class GetObject implements ObjectAttributes {
 
 }
 
-extension GetObjectMethod on OracleObjectStorage {
+extension HeadObjectMethod on OracleObjectStorage {
   
-  /// Construir dados de autorização para o serviço [GetObject],
+  /// Construir dados de autorização para o serviço [HeadObject],
   /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
-  GetObject getObject({
+  HeadObject headObject({
     required String pathAndFileName,
+    Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-    return GetObject(
-      objectStorage: this, 
+    return HeadObject(
+      objectStorage: this,
+      query: query, 
       date: date,
       pathAndFileName: pathAndFileName,
       addHeaders: addHeaders,

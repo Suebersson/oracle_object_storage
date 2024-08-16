@@ -1,18 +1,24 @@
-part of '../../oracle_object_storage.dart';
+import '../../interfaces/oracle_request_attributes.dart';
+import '../../oracle_object_storage.dart';
+import '../../query.dart';
 
 /*
-  final ListObjects list = objectStorage.listObjects();
+  final ListObjects list = objectStorage.listObjects(
+    query: Query({// parâmentro  opcional
+      'limit': '2', // no máximo 2 objetos
+    }),
+  );
 
   final http.Response response = await http.get(
     Uri.parse(list.uri),
     headers: list.headers,
   );
 
-  print(response.statusCode);// esperado 200
-  print(response.body);// json
+  print(response.statusCode); // esperado 200
+  print(response.body);// esperado application-json
 */
 
-final class ListObjects implements ObjectAttributes {
+final class ListObjects implements OracleRequestAttributes {
 
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/ListObject
   const ListObjects._({
@@ -49,9 +55,10 @@ final class ListObjects implements ObjectAttributes {
     }
   }
 
-  /// Construir dados de autorização para o serviço [ListObject]
+  /// Construir dados de autorização para o serviço [ListObjects]
   factory ListObjects({
     required OracleObjectStorage objectStorage, 
+    Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -76,13 +83,17 @@ final class ListObjects implements ObjectAttributes {
 
     */
 
+    final String request = query is Query
+      ? '${objectStorage.buckerPath}/o${query.toURLParams}'
+      : '${objectStorage.buckerPath}/o';
+
     final String signingString = 
-      '(request-target): get ${objectStorage.buckerPath}/o\n'
+      '(request-target): get $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.buckerHost}';
 
     return ListObjects._(
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o', 
+      uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
       host: objectStorage.buckerHost,
       addHeaders: addHeaders,
@@ -101,11 +112,13 @@ extension ListObjectsMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [ListObjects],
   ListObjects listObjects({
+    Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return ListObjects(
       objectStorage: this, 
+      query: query,
       date: date,
       addHeaders: addHeaders,
     );

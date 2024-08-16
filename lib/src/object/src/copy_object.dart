@@ -1,8 +1,13 @@
-part of '../../oracle_object_storage.dart';
+import 'dart:typed_data' show Uint8List;
+
+import '../../converters.dart';
+import '../../interfaces/details.dart';
+import '../../interfaces/oracle_request_attributes.dart';
+import '../../oracle_object_storage.dart';
 
 /*
 final CopyObject copy = objectStorage.copyObject(
-    sourceObject: CopySourceObject(
+    details: CopyObjectDetails(
       sourceObjectName: 'users/profilePictures/image.jpg', // arquivo a ser copiado
       destinationRegion: 'sa-saopaulo-1', // região do bucker para onde o arquivo será copiado
       destinationNamespace: '...', // nameSpace do bucker para onde o arquivo será copiado
@@ -21,7 +26,7 @@ final CopyObject copy = objectStorage.copyObject(
   print(response.statusCode); // esperado 202
 */
 
-final class CopyObject implements ObjectAttributes{
+final class CopyObject implements OracleRequestAttributes{
   
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/CopyObject
   // https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/copyingobjects.htm
@@ -63,7 +68,7 @@ final class CopyObject implements ObjectAttributes{
       ..update('date', (_) => date, ifAbsent: () => date,)
       ..update('host', (_) => host, ifAbsent: () => host,)
       ..update('x-content-sha256', (_) => xContentSha256, ifAbsent: () => xContentSha256,)
-      ..update('content-type', (_) => 'application/json', ifAbsent: () => 'application/json',)
+      ..update('content-type', (_) => contentType, ifAbsent: () => contentType,)
       ..update('content-Length', (_) => contentLegth, ifAbsent: () => contentLegth,);
 
       return addHeaders!;
@@ -74,7 +79,7 @@ final class CopyObject implements ObjectAttributes{
         'date': date,
         'host': host,
         'x-content-sha256': xContentSha256,
-        'content-type': 'application/json',
+        'content-type': contentType,
         'content-Length': contentLegth,
       };
     }
@@ -84,19 +89,13 @@ final class CopyObject implements ObjectAttributes{
   /// região ou para outra região [CopyObject]
   factory CopyObject({
     required OracleObjectStorage objectStorage, 
-    required CopySourceObject sourceObject,
+    required CopyObjectDetails details,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-    final String jsonData = sourceObject.toJson;
-
-    final Uint8List jsonBytes = convert.utf8.encode(jsonData);
-
-    final String xContentSha256 = jsonBytes.toSha256Base64;
-    
     /*
       # Modelo para String de assinatura para o método [post]
 
@@ -116,29 +115,31 @@ final class CopyObject implements ObjectAttributes{
       version="1"
     */
 
+    final String request = '${objectStorage.buckerPath}/actions/copyObject';
+
     final String signingString = 
-      '(request-target): post ${objectStorage.buckerPath}/actions/copyObject\n'
+      '(request-target): post $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.buckerHost}\n'
-      'x-content-sha256: $xContentSha256\n'
-      'content-type: application/json\n'
-      'content-length: ${jsonBytes.length}';
+      'x-content-sha256: ${details.xContentSha256}\n'
+      'content-type: ${details.contentType}\n'
+      'content-length: ${details.bytesLength}';
       
     return CopyObject._(
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/actions/copyObject', 
+      uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
       host: objectStorage.buckerHost,
       addHeaders: addHeaders,
-      xContentSha256: xContentSha256,
-      contentType: 'application/json',
-      contentLegth: '${jsonBytes.length}',
-      jsonBytes: jsonBytes,
-      jsonData: jsonData,
+      xContentSha256: details.xContentSha256,
+      contentType: details.contentType,
+      contentLegth: '${details.bytesLength}',
+      jsonBytes: details.bytes,
+      jsonData: details.json,
       publicUrlOfCopiedFile: 
-        'https://objectstorage.${sourceObject.source['destinationRegion']}.oraclecloud.com'
-        '/n/${sourceObject.source['destinationNamespace']}'
-        '/b/${sourceObject.source['destinationBucket']}'
-        '/o/${sourceObject.source['destinationObjectName']}',
+        'https://objectstorage.${details.details['destinationRegion']}.oraclecloud.com'
+        '/n/${details.details['destinationNamespace']}'
+        '/b/${details.details['destinationBucket']}'
+        '/o/${details.details['destinationObjectName']}',
       authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
         'algorithm="rsa-sha256",'
@@ -155,13 +156,13 @@ extension CopyObjectMethod on OracleObjectStorage {
   /// Cria uma solicitação para copiar um arquivo dentro de uma 
   /// região ou para outra região [CopyObject]
   CopyObject copyObject({
-    required CopySourceObject sourceObject,
+    required CopyObjectDetails details,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return CopyObject(
       objectStorage: this,
-      sourceObject: sourceObject, 
+      details: details, 
       date: date,
       addHeaders: addHeaders,
     );
@@ -169,22 +170,37 @@ extension CopyObjectMethod on OracleObjectStorage {
 
 }
 
-final class CopySourceObject {
+final class CopyObjectDetails implements Details<Map<String, dynamic>> {
 
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/datatypes/CopyObjectDetails
-  const CopySourceObject._(this.source);
+  const CopyObjectDetails._({
+    required this.details,
+    required this.json,
+    required this.bytes,
+    required this.xContentSha256,
+  }) : 
+    contentType = 'application/json', 
+    bytesLength = bytes.length;
 
-  final Map<String, String> source;
+  @override
+  final Map<String, dynamic> details;
 
-  String get toJson => source.toJson;
+  @override
+  final Uint8List bytes;
 
-  factory CopySourceObject({
+  @override
+  final int bytesLength;
+  
+  @override
+  final String contentType, json, xContentSha256;
+
+  factory CopyObjectDetails({
     required String sourceObjectName, 
     required String destinationRegion, 
     required String destinationNamespace,
     required String destinationBucket,
     required String destinationObjectName,
-    String? destinationObjectMetadata,
+    Map<String, String>? destinationObjectMetadata,
     String? sourceObjectIfMatchETag,
     String? destinationObjectIfMatchETag,
     String? destinationObjectIfNoneMatchETag,
@@ -192,7 +208,7 @@ final class CopySourceObject {
     String? sourceVersionId,
   }) {
 
-    final Map<String, String> query = {
+    final Map<String, dynamic> source = {
       'sourceObjectName': sourceObjectName,
       'destinationRegion': destinationRegion,
       'destinationNamespace': destinationNamespace,
@@ -200,27 +216,39 @@ final class CopySourceObject {
       'destinationObjectName': destinationObjectName,
     };
       
-    if (destinationObjectMetadata is String && destinationObjectMetadata.isNotEmpty) {
-      query.putIfAbsent('destinationObjectMetadata', () => destinationObjectMetadata);
+    if (destinationObjectMetadata is Map<String, String> && destinationObjectMetadata.isNotEmpty) {
+      source.putIfAbsent('destinationObjectMetadata', () => destinationObjectMetadata);
     }
     if (sourceObjectIfMatchETag is String && sourceObjectIfMatchETag.isNotEmpty) {
-      query.putIfAbsent('sourceObjectIfMatchETag', () => sourceObjectIfMatchETag);
+      source.putIfAbsent('sourceObjectIfMatchETag', () => sourceObjectIfMatchETag);
     }
     if (destinationObjectIfMatchETag is String && destinationObjectIfMatchETag.isNotEmpty) {
-      query.putIfAbsent('destinationObjectIfMatchETag', () => destinationObjectIfMatchETag);
+      source.putIfAbsent('destinationObjectIfMatchETag', () => destinationObjectIfMatchETag);
     }
     if (destinationObjectIfNoneMatchETag is String && destinationObjectIfNoneMatchETag.isNotEmpty) {
-      query.putIfAbsent('destinationObjectIfNoneMatchETag', () => destinationObjectIfNoneMatchETag);
+      source.putIfAbsent('destinationObjectIfNoneMatchETag', () => destinationObjectIfNoneMatchETag);
     }
     if (destinationObjectStorageTier is String && destinationObjectStorageTier.isNotEmpty) {
-      query.putIfAbsent('destinationObjectStorageTier', () => destinationObjectStorageTier);
+      source.putIfAbsent('destinationObjectStorageTier', () => destinationObjectStorageTier);
     }
     if (sourceVersionId is String && sourceVersionId.isNotEmpty) {
-      query.putIfAbsent('sourceVersionId', () => sourceVersionId);
+      source.putIfAbsent('sourceVersionId', () => sourceVersionId);
     }
 
-    return CopySourceObject._(Map<String, String>.unmodifiable(query));
+    final String json = source.toJson;
+
+    final Uint8List bytes = json.utf8ToBytes;
+
+    return CopyObjectDetails._(
+      details: source, 
+      json: json, 
+      bytes: bytes, 
+      xContentSha256: bytes.toSha256Base64,
+    );
 
   }
+
+  @override
+  String toString() => '$runtimeType($details)'.replaceAll(RegExp('{|}'), '');
 
 }

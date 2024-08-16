@@ -1,43 +1,57 @@
-part of '../../oracle_object_storage.dart';
+import 'dart:typed_data' show Uint8List;
+
+import '../../converters.dart';
+import '../../interfaces/oracle_request_attributes.dart';
+import '../../oracle_object_storage.dart';
 
 /*
-  final RestoreObjects restoreObjects = objectStorage.restoreObjects(
-    restoreObjectsSource: RestoreObjectsSource(
-      objectName: 'image.jpg', 
-      hours: 120
-    )
+  final CreateMultipartUpload create = objectStorage.createMultipartUpload(
+    muiltiPartObjectName: 'users/profilePictures/object_file.jpg',
   );
 
   final http.Response response = await http.post(
-    Uri.parse(restoreObjects.uri),
-    body: restoreObjects.jsonBytes,
-    headers: restoreObjects.headers,
+    Uri.parse(create.uri),
+    body: create.jsonBytes,
+    headers: create.headers,
   );
 
-  print(response.statusCode); // esperado 200 ou 202
+  print(response.statusCode); // esperado 200 + application-json
+
+  final Map<String, dynamic> json = {};
+
+  if (response.statusCode == 200) {
+    
+    json.addAll(jsonDecode(response.body));
+
+    print('uploadId: ${json['uploadId'] ?? "undefined"}');
+
+  }
 */
 
-final class RestoreObjects implements ObjectAttributes {
+/// Criar um objeto com uploads separados
+final class CreateMultipartUpload implements OracleRequestAttributes {
 
-  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/RestoreObjects
-  const RestoreObjects._({
+  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/
+  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/CreateMultipartUpload
+  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/datatypes/CreateMultipartUploadDetails
+  const CreateMultipartUpload._({
     required this.uri, 
     required this.date, 
     required this.authorization, 
     required this.host, 
-    required this.xContentSha256,
-    required this.contentLegth,
-    required this.contentType,
+    required this.xContentSha256, 
+    required this.contentLegth, 
+    required this.contentType, 
+    required this.addHeaders,
+    required this.muiltiPartObjectName,
     required this.jsonBytes,
-    required this.jsonData,
-    this.addHeaders,
   });
-
+  
   @override
   final String uri, date, authorization, host;
 
   final String 
-    jsonData,
+    muiltiPartObjectName,
     xContentSha256, 
     contentLegth, 
     contentType;
@@ -73,25 +87,23 @@ final class RestoreObjects implements ObjectAttributes {
     }
   }
 
-  factory RestoreObjects({
+  factory CreateMultipartUpload({
     required OracleObjectStorage objectStorage, 
-    required RestoreObjectsSource restoreObjectsSource,
+    required String muiltiPartObjectName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-    final String jsonData = restoreObjectsSource.toJson;
-
-    final Uint8List jsonBytes = convert.utf8.encode(jsonData);
+    final Uint8List jsonBytes = '{"object":"$muiltiPartObjectName"}'.utf8ToBytes;
 
     final String xContentSha256 = jsonBytes.toSha256Base64;
     
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKER_PATH>/actions/restoreObjects\n
+      (request-target): <METHOD> <BUCKER_PATH>/u\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -99,7 +111,7 @@ final class RestoreObjects implements ObjectAttributes {
       content-length: <FILE_BYTES>
 
       # Modelo de autorização/authorization para adicionar nas requisições Rest API
-      
+
       Signature headers="date (request-target) date host x-content-sha256 content-type content-length",
       keyId="<TENANCY_OCID>/<USER_OCID>/<API_KEY_FINGERPRINT>",
       algorithm="rsa-sha256",
@@ -108,23 +120,23 @@ final class RestoreObjects implements ObjectAttributes {
     */
 
     final String signingString = 
-      '(request-target): post ${objectStorage.buckerPath}/actions/restoreObjects\n'
+      '(request-target): post ${objectStorage.buckerPath}/u\n'
       'date: $dateString\n'
       'host: ${objectStorage.buckerHost}\n'
       'x-content-sha256: $xContentSha256\n'
       'content-type: application/json\n'
       'content-length: ${jsonBytes.length}';
       
-    return RestoreObjects._(
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/actions/restoreObjects', 
+    return CreateMultipartUpload._(
+      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/u', 
       date: dateString, 
       host: objectStorage.buckerHost,
       addHeaders: addHeaders,
       xContentSha256: xContentSha256,
       contentType: 'application/json',
       contentLegth: '${jsonBytes.length}',
+      muiltiPartObjectName: muiltiPartObjectName,
       jsonBytes: jsonBytes,
-      jsonData: jsonData,
       authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
         'algorithm="rsa-sha256",'
@@ -136,67 +148,28 @@ final class RestoreObjects implements ObjectAttributes {
 
 }
 
-extension RestoreObjectsMethod on OracleObjectStorage {
+extension CreateMultipartUploadMethod on OracleObjectStorage {
   
-  /// Construir dados de autorização para o serviço [RestoreObjects],
-  RestoreObjects restoreObjects({
-    required RestoreObjectsSource restoreObjectsSource,
+  /// Construir dados de autorização para o serviço [CreateMultipartUpload]
+  /// 
+  /// [muiltiPartObjectName] diretório + nome do arquivo 
+  /// 
+  /// Ex: users/profilePicture/userId.jpg
+  /// 
+  /// ou
+  /// 
+  /// Ex: userId.jpg
+  CreateMultipartUpload createMultipartUpload({
+    required String muiltiPartObjectName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-    return RestoreObjects(
+    return CreateMultipartUpload(
       objectStorage: this,
-      restoreObjectsSource: restoreObjectsSource, 
+      muiltiPartObjectName: muiltiPartObjectName, 
       date: date,
       addHeaders: addHeaders,
     );
-  }
-
-}
-
-final class RestoreObjectsSource {
-
-  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/datatypes/RestoreObjectsDetails
-  const RestoreObjectsSource._(this.source);
-
-  final Map<String, dynamic> source;
-
-  String get toJson => source.toJson;
-
-  @override
-  String toString() => '$runtimeType($source)'.replaceAll(RegExp('{|}'), '');
-
-  /// Para arquivos na raíz/root do bucker, basta apenas informar o nome do arquivo
-  /// 
-  /// ex: fileName.jpg
-  /// 
-  /// Para arquivos dentro de diretórios, informar a path do diretório + o nome do arquivo
-  /// 
-  /// ex: users/profilePictures/fileName.jpg
-  ///
-  /// [objectName] o nome de arquivo existente
-  factory RestoreObjectsSource({
-    required String objectName, 
-    required int hours, 
-    String? versionId, 
-  }) {
-
-    if (hours < 1 || hours > 240) {
-      throw const OracleObjectStorageExeception('Defina a duração em horas para restaurar o '
-        'arquivo entre 1 e 240 horas.');
-    }
-
-    final Map<String, dynamic> query = {
-      'objectName': objectName,
-      'hours': hours,
-    };
-      
-    if (versionId is String && versionId.isNotEmpty) {
-      query.putIfAbsent('versionId', () => versionId);
-    }
-
-    return RestoreObjectsSource._(Map<String, dynamic>.unmodifiable(query));
-
   }
 
 }

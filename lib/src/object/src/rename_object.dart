@@ -1,10 +1,15 @@
-part of '../../oracle_object_storage.dart';
+import 'dart:typed_data' show Uint8List;
+
+import '../../converters.dart';
+import '../../interfaces/details.dart';
+import '../../interfaces/oracle_request_attributes.dart';
+import '../../oracle_object_storage.dart';
 
 /*
   final RenameObject rename = objectStorage.renameObject(
-    sourceObject: RenameSourceObject(
+    details: RenameObjectDetails(
       sourceName: 'users/profilePictures/userId.jpg', 
-      newName: 'users/profilePictures/xuxa.jpg',
+      newName: 'users/profilePictures/fileName.jpg',
     ),
   );
 
@@ -19,7 +24,7 @@ part of '../../oracle_object_storage.dart';
   print(response.statusCode); // esperado 200
 */
 
-final class RenameObject implements ObjectAttributes {
+final class RenameObject implements OracleRequestAttributes {
 
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/RenameObject
   const RenameObject._({
@@ -62,7 +67,7 @@ final class RenameObject implements ObjectAttributes {
       ..update('date', (_) => date, ifAbsent: () => date,)
       ..update('host', (_) => host, ifAbsent: () => host,)
       ..update('x-content-sha256', (_) => xContentSha256, ifAbsent: () => xContentSha256,)
-      ..update('content-type', (_) => 'application/json', ifAbsent: () => 'application/json',)
+      ..update('content-type', (_) => contentType, ifAbsent: () => contentType,)
       ..update('content-Length', (_) => contentLegth, ifAbsent: () => contentLegth,);
 
       return addHeaders!;    
@@ -73,7 +78,7 @@ final class RenameObject implements ObjectAttributes {
         'date': date,
         'host': host,
         'x-content-sha256': xContentSha256,
-        'content-type': 'application/json',
+        'content-type': contentType,
         'content-Length': contentLegth,
       };
     }
@@ -81,19 +86,13 @@ final class RenameObject implements ObjectAttributes {
 
   factory RenameObject({
     required OracleObjectStorage objectStorage, 
-    required RenameSourceObject sourceObject,
+    required RenameObjectDetails details,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-    final String jsonData = sourceObject.toJson;
-
-    final Uint8List jsonBytes = convert.utf8.encode(jsonData);
-
-    final String xContentSha256 = jsonBytes.toSha256Base64;
-    
     /*
       # Modelo para String de assinatura para o método [post]
 
@@ -113,26 +112,28 @@ final class RenameObject implements ObjectAttributes {
       version="1"
     */
 
+    final String request = '${objectStorage.buckerPath}/actions/renameObject';
+
     final String signingString = 
-      '(request-target): post ${objectStorage.buckerPath}/actions/renameObject\n'
+      '(request-target): post $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.buckerHost}\n'
-      'x-content-sha256: $xContentSha256\n'
-      'content-type: application/json\n'
-      'content-length: ${jsonBytes.length}';
+      'x-content-sha256: ${details.xContentSha256}\n'
+      'content-type: ${details.contentType}\n'
+      'content-length: ${details.bytesLength}';
       
     return RenameObject._(
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/actions/renameObject', 
+      uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
       host: objectStorage.buckerHost,
       addHeaders: addHeaders,
-      xContentSha256: xContentSha256,
-      contentType: 'application/json',
-      contentLegth: '${jsonBytes.length}',
-      jsonBytes: jsonBytes,
-      jsonData: jsonData,
-      newPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o/${sourceObject.source['newName']}',
-      oldPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o/${sourceObject.source['sourceName']}',
+      xContentSha256: details.xContentSha256,
+      contentType: details.contentType,
+      contentLegth: '${details.bytesLength}',
+      jsonBytes: details.bytes,
+      jsonData: details.json,
+      newPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o/${details.details['newName']}',
+      oldPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o/${details.details['sourceName']}',
       authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
         'algorithm="rsa-sha256",'
@@ -148,13 +149,13 @@ extension RenameObjectMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [RenameObject],
   RenameObject renameObject({
-    required RenameSourceObject sourceObject,
+    required RenameObjectDetails details,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return RenameObject(
       objectStorage: this,
-      sourceObject: sourceObject, 
+      details: details, 
       date: date,
       addHeaders: addHeaders,
     );
@@ -162,17 +163,29 @@ extension RenameObjectMethod on OracleObjectStorage {
 
 }
 
-final class RenameSourceObject {
+final class RenameObjectDetails implements Details<Map<String, String>> {
   
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/datatypes/RenameObjectDetails
-  const RenameSourceObject._(this.source);
-
-  final Map<String, String> source;
-
-  String get toJson => source.toJson;
+  const RenameObjectDetails._({
+    required this.details,
+    required this.json,
+    required this.bytes,
+    required this.xContentSha256,
+  }) : 
+    contentType = 'application/json', 
+    bytesLength = bytes.length;
 
   @override
-  String toString() => '$runtimeType($source)'.replaceAll(RegExp('{|}'), '');
+  final Map<String, String> details;
+
+  @override
+  final Uint8List bytes;
+
+  @override
+  final int bytesLength;
+  
+  @override
+  final String contentType, json, xContentSha256;
 
   /// Para arquivos na raíz/root do bucker, basta apenas informar o nome do arquivo
   /// 
@@ -189,7 +202,7 @@ final class RenameSourceObject {
   /// [sourceName] o nome de arquivo existente
   /// 
   /// [newName] novo nome para renomear o arquivo
-  factory RenameSourceObject({
+  factory RenameObjectDetails({
     required String sourceName, 
     required String newName, 
     String? srcObjIfMatchETag, 
@@ -197,23 +210,35 @@ final class RenameSourceObject {
     String? newObjIfNoneMatchETag,
   }) {
 
-    final Map<String, String> query = {
+    final Map<String, String> source = {
       'sourceName': sourceName,
       'newName': newName,
     };
       
     if (srcObjIfMatchETag is String && srcObjIfMatchETag.isNotEmpty) {
-      query.putIfAbsent('srcObjIfMatchETag', () => srcObjIfMatchETag);
+      source.putIfAbsent('srcObjIfMatchETag', () => srcObjIfMatchETag);
     }
     if (newObjIfMatchETag is String && newObjIfMatchETag.isNotEmpty) {
-      query.putIfAbsent('newObjIfMatchETag', () => newObjIfMatchETag);
+      source.putIfAbsent('newObjIfMatchETag', () => newObjIfMatchETag);
     }
     if (newObjIfNoneMatchETag is String && newObjIfNoneMatchETag.isNotEmpty) {
-      query.putIfAbsent('newObjIfNoneMatchETag', () => newObjIfNoneMatchETag);
+      source.putIfAbsent('newObjIfNoneMatchETag', () => newObjIfNoneMatchETag);
     }
 
-    return RenameSourceObject._(Map<String, String>.unmodifiable(query));
+    final String json = source.toJson;
+
+    final Uint8List bytes = json.utf8ToBytes;
+
+    return RenameObjectDetails._(
+      details: source, 
+      json: json, 
+      bytes: bytes, 
+      xContentSha256: bytes.toSha256Base64,
+    );
 
   }
+
+  @override
+  String toString() => '$runtimeType($details)'.replaceAll(RegExp('{|}'), '');
 
 }

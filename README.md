@@ -63,6 +63,13 @@ final OracleObjectStorage objectStorage = OracleObjectStorage.fromConfig(
 );
 ```
 
+## Ordem de como criar um arquivo em múltiplas partes/uploads
+
+Métodos:
+
+  1. [CreateMultipartUpload](https://pub.dev/packages/oracle_object_storage#CreateMultipartUpload)
+  2. [UploadPart](https://pub.dev/packages/oracle_object_storage#UploadPart) {enviar o corpo/conteúdo/bytes do arquivo}
+  3. [CommitMultipartUpload](https://pub.dev/packages/oracle_object_storage#CommitMultipartUpload) {finalizar/montar as partes enviadas para criar um único arquivo}
 
 ## [PutObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/PutObject)
 
@@ -96,8 +103,7 @@ print(response.statusCode); // esperado 200
 ## [GetObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/GetObject)
 
 ```dart
-final GetObject get = objectStorage
-  .getObject(pathAndFileName: '/users/profilePictures/fileName.jpg');
+final GetObject get = objectStorage.getObject(pathAndFileName: '/users/profilePictures/fileName.jpg');
 
 final http.Response response = await http.get(
   Uri.parse(get.uri),
@@ -110,8 +116,7 @@ print(response.statusCode); // esperado 200
 ## [HeadObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/HeadObject)
 
 ```dart
-final HeadObject head = objectStorage
-  .headObject(pathAndFileName: '/users/profilePictures/fileName.jpg');
+final HeadObject head = objectStorage.headObject(pathAndFileName: '/users/profilePictures/fileName.jpg');
 
 final http.Response response = await http.head(
   Uri.parse(head.uri),
@@ -125,15 +130,19 @@ print(response.headers);
 ## [ListObjects](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/ListObjects)
 
 ```dart
-final ListObjects list = objectStorage.listObjects();
+final ListObjects list = objectStorage.listObjects(
+  query: Query({// parâmentro  opcional
+    'limit': '2', // no máximo 2 objetos
+  }),
+);
 
 final http.Response response = await http.get(
   Uri.parse(list.uri),
   headers: list.headers,
 );
 
-print(response.statusCode);// esperado 200
-print(response.body);// json
+print(response.statusCode); // esperado 200
+print(response.body);// esperado application-json
 ```
 
 ## [DeleteObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/DeleteObject)
@@ -155,7 +164,7 @@ print(response.statusCode);
 
 ```dart
 final RenameObject rename = objectStorage.renameObject(
-  sourceObject: RenameSourceObject(
+  details: RenameSourceObject(
     sourceName: 'users/profilePictures/fileName.jpg', 
     newName: 'users/profilePictures/anyName.jpg',
   ),
@@ -176,7 +185,7 @@ print(response.statusCode); // esperado 200
 
 ```dart
 final UpdateObjectStorageTier updateObjectStorageTier = objectStorage.updateObjectStorageTier(
-  objectStorageTier: ObjectStorageTier(
+  details : ObjectStorageTier(
     objectName: 'image.jpg', 
     storageTier: StorageTier.InfrequentAccess
   ),
@@ -195,7 +204,7 @@ print(response.statusCode); // esperado 200
 
 ```dart
 final RestoreObjects restore = objectStorage.restore(
-  restoreObjectsSource: RestoreObjectsSource(
+  details: RestoreObjectsSource(
     objectName: 'image.jpg', 
     hours: 120
   )
@@ -214,7 +223,7 @@ print(response.statusCode); // esperado 200 ou 202
 
 ```dart
 final CopyObject copy = objectStorage.copyObject(
-    sourceObject: CopySourceObject(
+    details: CopySourceObject(
       sourceObjectName: 'users/profilePictures/image.jpg', // arquivo a ser copiado
       destinationRegion: 'sa-saopaulo-1', // região do bucker para onde o arquivo será copiado
       destinationNamespace: '...', // nameSpace do bucker para onde o arquivo será copiado
@@ -232,3 +241,177 @@ final http.Response response = await http.post(
 print('\npublicUrlOfCopiedFile: ${copy.publicUrlOfCopiedFile}\n');
 print(response.statusCode); // esperado 202
 ```
+
+## [CreateMultipartUpload](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/CreateMultipartUpload)
+
+```dart
+final CreateMultipartUpload create = objectStorage.createMultipartUpload(
+  muiltiPartObjectName: 'users/profilePictures/object_file.jpg',
+);
+
+final http.Response response = await http.post(
+  Uri.parse(create.uri),
+  body: create.jsonBytes,
+  headers: create.headers,
+);
+
+print(response.statusCode); // esperado 200 + application-json
+
+final Map<String, dynamic> json = {};
+
+if (response.statusCode == 200) {
+  
+  json.addAll(jsonDecode(response.body));
+
+  print('uploadId: ${json['uploadId'] ?? "undefined"}');
+
+}
+```
+
+## [ListMultipartUploads](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/ListMultipartUploads)
+
+```dart
+final ListMultipartUploads list = objectStorage.listMultipartUploads(
+  query: Query({// atributo  Opcional
+    'limit': '5', // no máximo 5 objetos
+  }),
+);
+
+final http.Response response = await http.get(
+  Uri.parse(list.uri),
+  headers: list.headers,
+);
+
+print(response.statusCode); // esperado 200
+print(response.body);// esperado application-json
+```
+
+
+## [ListObjectVersions](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/ListObjectVersions)
+
+```dart
+final ListObjectVersions list = objectStorage.listObjectVersions(
+  query: Query({// parâmentro  opcional
+    'limit': '10', // no máximo 10 objetos
+    'prefix': 'events/banners/', // todos os objetos de uma pasta
+    'fields': 'name,timeCreated', // apenas os campos especificos
+  }),
+);
+
+final http.Response response = await http.get(
+  Uri.parse(list.uri),
+  headers: list.headers,
+);
+
+print(response.statusCode); // esperado 200
+print(response.body);// esperado application-json
+```
+
+## [AbortMultipartUpload](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/AbortMultipartUpload)
+
+```dart
+final AbortMultipartUpload abort = objectStorage.abortMultipartUpload(
+  muiltiPartObjectName: 'muiltPart/object_file.jpg',
+  uploadId: '...',
+);
+
+final http.Response response = await http.delete(
+  Uri.parse(abort.uri),
+  headers: abort.headers,
+);
+
+// Status code esperado == 204 == operação multi part cancelada
+print(response.statusCode);
+```
+
+## [ListMultipartUploadParts](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/ListMultipartUploadParts)
+
+```dart
+final ListMultipartUploadParts list = objectStorage.listMultipartUploadParts(
+  pathAndFileName: 'object_file.jpg',
+  query: Query({
+    'uploadId': '892d7aa7b-69df-ea50-3b10-85djfad37095',
+  }),
+);
+
+final http.Response response = await http.get(
+  Uri.parse(list.uri),
+  headers: list.headers,
+);
+
+print(response.statusCode); // esperado 200
+print(response.body);// esperado application-json
+```
+
+## [CommitMultipartUpload](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/CommitMultipartUpload)
+
+```dart
+final CommitMultipartUpload parts = objectStorage.commitMultipartUpload(
+  muiltiPartObjectName: '...',
+  uploadId: '...',
+  details: CommitMultipartUploadDetails(
+    parts: [
+      PartsToCommit(
+        partNum: 1, 
+        etag: '...',
+      ),
+      PartsToCommit(
+        partNum: 2, 
+        etag: '...',
+      ),
+      PartsToCommit(
+        partNum: 3, 
+        etag: '...',
+      ),
+    ],
+  ),
+);
+
+final http.Response response = await http.post(
+  Uri.parse(parts.uri),
+  body: parts.jsonBytes,
+  headers: parts.headers,
+);
+
+print(parts.publicUrlFile);
+print(response.statusCode); // esperado 200
+```
+
+## [UploadPart](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/UploadPart)
+
+```dart
+final File file = File(".../fileName.jpg");
+
+final Uint8List bytes = await file.readAsBytes();
+
+final UploadPart uploadPart = objectStorage.uploadPart(
+  uploadId: '...',
+  uploadPartNum: 1,
+  muiltiPartObjectName: '...',
+  xContentSha256: bytes.toSha256Base64,
+  contentLength: bytes.length.toString(),
+  contentType: 'image/jpeg', //application/octet-stream
+);
+
+final http.Response response = await http.put(
+  Uri.parse(uploadPart.uri),
+  body: bytes,
+  headers: uploadPart.headers,
+);
+
+
+print(response.statusCode);// esperado 200
+print('etag: ${response.headers['etag'] ?? "undefined"}'); // esperado identificação do upload
+```
+
+<!-- ## [CreatePreauthenticatedRequest](https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/PreauthenticatedRequest/CreatePreauthenticatedRequest)
+
+```dart
+
+``` -->
+
+## PreauthenticatedRequest
+  - [CreatePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/create_preauthenticated_request.md)
+  - [DeletePreauthenticatedRequest]()
+  - [GetPreauthenticatedRequest]()
+  - [ListPreauthenticatedRequests]()

@@ -1,26 +1,28 @@
-part of '../../oracle_object_storage.dart';
+import '../../interfaces/oracle_request_attributes.dart';
+import '../../oracle_object_storage.dart';
 
 /*
-  final HeadObject head = objectStorage
-    .headObject(pathAndFileName: '/users/profilePictures/userId.jpg');
-
-  final http.Response response = await http.head(
-    Uri.parse(head.uri),
-    headers: head.headers,
+  final DeletePreauthenticatedRequest delete = objectStorage.deletePreauthenticatedRequest(
+    parId: 'EiMeeRZs6FaPWBu8bDS3jXVf/NvZlfE4trI89kvUOygVUA/Hko+t8V2vKUy0k5I1',
   );
 
-  print(response.statusCode); // esperado 200, 404 se o arquivo não existir
-  print(response.headers);
+  final http.Response response = await http.delete(
+    Uri.parse(delete.uri),
+    headers: delete.headers,
+  );
+
+  // Status code esperado == 200 ou 204 == autenticação excluída com sucesso
+  print(response.statusCode);
 */
 
-final class HeadObject implements ObjectAttributes {
-
-  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/HeadObject
-  const HeadObject._({
+final class DeletePreauthenticatedRequest implements OracleRequestAttributes {
+  
+  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/PreauthenticatedRequest/DeletePreauthenticatedRequest
+  const DeletePreauthenticatedRequest._({
     required this.uri, 
     required this.date, 
     required this.authorization, 
-    required this.host,
+    required this.host, 
     this.addHeaders,
   });
   
@@ -29,7 +31,7 @@ final class HeadObject implements ObjectAttributes {
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
     if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
@@ -50,27 +52,21 @@ final class HeadObject implements ObjectAttributes {
     }
   }
 
-  /// Construir dados de autorização para o serviço [HeadObject]
-  /// 
-  /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
-  factory HeadObject({
+  /// Construir dados de autorização para o serviço [DeletePreauthenticatedRequest]
+  factory DeletePreauthenticatedRequest({
     required OracleObjectStorage objectStorage, 
-    required String pathAndFileName, 
+    required String parId, 
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
 
-    if (pathAndFileName.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o caminho completo do arquivo');
-    }
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-    /*
+     /*
       
-      # Modelo para String de assinatura para o método [head]
+      # Modelo para string de assinatura para o método [delete]
 
-      (request-target): <METHOD> <BUCKER_PATH><DIRECTORY_PATH><FILE_NAME>\n
+      (request-target): <METHOD> <BUCKER_PATH>/p/<parId>\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -84,13 +80,15 @@ final class HeadObject implements ObjectAttributes {
 
     */
 
+    final String request = '${objectStorage.buckerPath}/p/$parId';
+
     final String signingString = 
-      '(request-target): head ${objectStorage.buckerPath}/o$pathAndFileName\n'
+      '(request-target): delete $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.buckerHost}';
 
-    return HeadObject._(
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o$pathAndFileName', 
+    return DeletePreauthenticatedRequest._(
+      uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
       host: objectStorage.buckerHost,
       addHeaders: addHeaders,
@@ -105,19 +103,18 @@ final class HeadObject implements ObjectAttributes {
 
 }
 
-extension HeadObjectMethod on OracleObjectStorage {
+extension DeletePreauthenticatedRequestMethod on OracleObjectStorage {
   
-  /// Construir dados de autorização para o serviço [HeadObject],
-  /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
-  HeadObject headObject({
-    required String pathAndFileName,
+  /// Construir dados de autorização para o serviço [DeletePreauthenticatedRequest]
+  DeletePreauthenticatedRequest deletePreauthenticatedRequest({
+    required String parId,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-    return HeadObject(
+    return DeletePreauthenticatedRequest(
       objectStorage: this, 
+      parId: parId,
       date: date,
-      pathAndFileName: pathAndFileName,
       addHeaders: addHeaders,
     );
   }

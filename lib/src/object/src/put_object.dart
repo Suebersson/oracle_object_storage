@@ -1,4 +1,6 @@
-part of '../../oracle_object_storage.dart';
+import '../../interfaces/oracle_request_attributes.dart';
+import '../../oracle_object_storage.dart';
+import '../../oracle_object_storage_exeception.dart';
 
 /*
   File file = File(".../fileNAme.jpg");
@@ -28,7 +30,7 @@ part of '../../oracle_object_storage.dart';
   print(response.headers.toString());
 */
 
-final class PutObject implements ObjectAttributes {
+final class PutObject implements OracleRequestAttributes {
   
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/
   // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/PutObject
@@ -79,11 +81,21 @@ final class PutObject implements ObjectAttributes {
     }
   }
 
-  /// Construir dados de autorização para o serviço [PutObject],
-  /// [date] na zona UTC,
-  /// [contentLength] tamanho do arquivo em bytes,
-  /// [contentType] tipo de arquivo,
-  /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
+  /// Construir dados de autorização para o serviço [PutObject]
+  /// 
+  /// [date] na zona UTC
+  /// 
+  /// [contentLength] tamanho do arquivo em bytes
+  /// 
+  /// [contentType] tipo de arquivo
+  /// 
+  /// [pathAndFileName] diretório + nome do arquivo 
+  /// 
+  /// Ex: /users/profilePicture/userId.jpg
+  /// 
+  /// ou
+  /// 
+  /// Ex: userId.jpg
   factory PutObject({
     required OracleObjectStorage objectStorage, 
     required String pathAndFileName, 
@@ -124,8 +136,10 @@ final class PutObject implements ObjectAttributes {
 
     */
 
+    final String request = '${objectStorage.buckerPath}/o$pathAndFileName';
+
     final String signingString = 
-      '(request-target): put ${objectStorage.buckerPath}/o$pathAndFileName\n'
+      '(request-target): put $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.buckerHost}\n'
       'x-content-sha256: $xContentSha256\n'
@@ -134,7 +148,7 @@ final class PutObject implements ObjectAttributes {
 
     return PutObject._(
       publicUrlFile: objectStorage.getPublicUrlFile(pathAndFileName),
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o$pathAndFileName',
+      uri: '${objectStorage.serviceURLOrigin}$request',
       date: dateString, 
       host: objectStorage.buckerHost,
       xContentSha256: xContentSha256,
@@ -156,11 +170,21 @@ extension PutObjectMethod on OracleObjectStorage {
 
   // https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingobjects.htm#nameprefix
   
-  /// Construir dados de autorização para o serviço [PutObject],
-  /// [date] na zona UTC,
-  /// [contentLength] tamanho do arquivo em bytes,
-  /// [contentType] tipo de arquivo,
-  /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
+  /// Construir dados de autorização para o serviço [PutObject]
+  /// 
+  /// [date] na zona UTC
+  /// 
+  /// [contentLength] tamanho do arquivo em bytes
+  /// 
+  /// [contentType] tipo de arquivo
+  /// 
+  /// [pathAndFileName] diretório + nome do arquivo 
+  /// 
+  /// Ex: /users/profilePicture/userId.jpg
+  /// 
+  /// ou
+  /// 
+  /// Ex: userId.jpg
   PutObject putObject({
     required String pathAndFileName,
     required String xContentSha256,

@@ -1,10 +1,18 @@
 ## 1.0.0 Métodos disponíveis
-- PutObject
-- GetObject
-- HeadObject
-- ListObjects
-- DeleteObject
-- RenameObject
-- UpdateObjectStorageTier
-- RestoreObjects
-- CopyObject
+- [PutObject](https://pub.dev/packages/oracle_object_storage#PutObject)
+- [GetObject](https://pub.dev/packages/oracle_object_storage#GetObject)
+- [HeadObject](https://pub.dev/packages/oracle_object_storage#HeadObject)
+- [ListObjects](https://pub.dev/packages/oracle_object_storage#ListObjects)
+- [ListObjectVersions](https://pub.dev/packages/oracle_object_storage#ListObjectVersions)
+- [DeleteObject](https://pub.dev/packages/oracle_object_storage#DeleteObject)
+- [RenameObject](https://pub.dev/packages/oracle_object_storage#RenameObject)
+- [UpdateObjectStorageTier](https://pub.dev/packages/oracle_object_storage#UpdateObjectStorageTier)
+- [RestoreObjects](https://pub.dev/packages/oracle_object_storage#RestoreObjects)
+- [CopyObject](https://pub.dev/packages/oracle_object_storage#CopyObject)
+- [CreateMultipartUpload](https://pub.dev/packages/oracle_object_storage#CreateMultipartUpload)
+- [UploadPart](https://pub.dev/packages/oracle_object_storage#UploadPart)
+- [CommitMultipartUpload](https://pub.dev/packages/oracle_object_storage#CommitMultipartUpload)
+- [ListMultipartUploadParts](https://pub.dev/packages/oracle_object_storage#ListMultipartUploadParts)
+- [ListMultipartUploads](https://pub.dev/packages/oracle_object_storage#ListMultipartUploads)
+- [AbortMultipartUpload](https://pub.dev/packages/oracle_object_storage#AbortMultipartUpload)
+- [CreatePreauthenticatedRequest](https://pub.dev/packages/oracle_object_storage#CreatePreauthenticatedRequest)

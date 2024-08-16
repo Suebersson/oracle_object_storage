@@ -1,26 +1,27 @@
-part of '../../oracle_object_storage.dart';
+import '../../interfaces/oracle_request_attributes.dart';
+import '../../oracle_object_storage.dart';
 
 /*
-  final DeleteObject delete = objectStorage
-    .deleteObject(pathAndFileName: '/users/profilePictures/userId.jpg');
-
-  final http.Response response = await http.delete(
-    Uri.parse(delete.uri),
-    headers: delete.headers,
+  final GetPreauthenticatedRequest get = objectStorage.getPreauthenticatedRequest(
+    parId: 'KjZkD2/MaoSecI+zDMX7ivFSzA6Wh+vv2fUjya1NfyMSTyU1DpRHjQPfk1Jce3Fb',
   );
 
-  // Status code esperado == 204 == objeto excluído com sucesso
-  print(response.statusCode);
+  final http.Response response = await http.get(
+    Uri.parse(get.uri),
+    headers: get.headers,
+  );
+
+  print(response.statusCode); // esperado 200
+  print(response.body);
 */
 
-final class DeleteObject implements ObjectAttributes {
-
-  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/DeleteObject
-  const DeleteObject._({
+final class GetPreauthenticatedRequest implements OracleRequestAttributes {
+  
+  const GetPreauthenticatedRequest._({
     required this.uri, 
     required this.date, 
     required this.authorization, 
-    required this.host, 
+    required this.host,
     this.addHeaders,
   });
   
@@ -50,27 +51,21 @@ final class DeleteObject implements ObjectAttributes {
     }
   }
 
-  /// Construir dados de autorização para o serviço [DeleteObject]
-  /// 
-  /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
-  factory DeleteObject({
+  /// Construir dados de autorização para o serviço [GetPreauthenticatedRequest]
+  factory GetPreauthenticatedRequest({
     required OracleObjectStorage objectStorage, 
-    required String pathAndFileName, 
+    required String parId, 
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
 
-    if (pathAndFileName.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o caminho completo do arquivo');
-    }
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-     /*
+    /*
       
-      # Modelo para string de assinatura para o método [delete]
+      # Modelo para String de assinatura para o método [get]
 
-      (request-target): <METHOD> <BUCKER_PATH><DIRECTORY_PATH><FILE_NAME>\n
+      (request-target): <METHOD> <BUCKER_PATH>/p/<parId>\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -84,13 +79,15 @@ final class DeleteObject implements ObjectAttributes {
 
     */
 
+    final String request = '${objectStorage.buckerPath}/p/$parId';
+
     final String signingString = 
-      '(request-target): delete ${objectStorage.buckerPath}/o$pathAndFileName\n'
+      '(request-target): get $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.buckerHost}';
 
-    return DeleteObject._(
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o$pathAndFileName', 
+    return GetPreauthenticatedRequest._(
+      uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
       host: objectStorage.buckerHost,
       addHeaders: addHeaders,
@@ -105,19 +102,18 @@ final class DeleteObject implements ObjectAttributes {
 
 }
 
-extension DeleteObjectMethod on OracleObjectStorage {
+extension GetPreauthenticatedRequestMethod on OracleObjectStorage {
   
-  /// Construir dados de autorização para o serviço [DeleteObject],
-  /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
-  DeleteObject deleteObject({
-    required String pathAndFileName,
+  /// Construir dados de autorização para o serviço [GetPreauthenticatedRequest],
+  GetPreauthenticatedRequest getPreauthenticatedRequest({
+    required String parId,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-    return DeleteObject(
+    return GetPreauthenticatedRequest(
       objectStorage: this, 
+      parId: parId,
       date: date,
-      pathAndFileName: pathAndFileName,
       addHeaders: addHeaders,
     );
   }

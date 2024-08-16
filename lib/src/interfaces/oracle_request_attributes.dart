@@ -1,6 +1,4 @@
-part of '../oracle_object_storage.dart';
-
-abstract interface class ObjectAttributes {
+abstract interface class OracleRequestAttributes {
   String get uri;
   String get date;
   String get authorization;

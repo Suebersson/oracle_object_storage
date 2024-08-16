@@ -1,4 +1,10 @@
-part of '../oracle_object_storage.dart';
+import 'dart:io' show File;
+import 'dart:typed_data' show Uint8List;
+import 'dart:developer' show log;
+
+import './converters.dart';
+import './request_signing_service.dart';
+import './oracle_object_storage_exeception.dart';
 
 /*
   int count = 0;

@@ -1,4 +1,8 @@
-part of '../oracle_object_storage.dart';
+import 'dart:convert' as convert;
+import 'dart:typed_data' show Uint8List;
+import 'package:pointycastle/digests/sha256.dart' show SHA256Digest;
+
+import './oracle_object_storage.dart';
 
 extension ConverterForBytes on Uint8List {
 
@@ -19,6 +23,29 @@ extension ConverterForString on String {
   Uint8List get base64ToBytes => convert.base64.decode(this);
 
   Uint8List get utf8ToBytes => convert.utf8.encode(this);
+
+  dynamic get jsonToObject => convert.json.decode(
+    this,
+    reviver: (key, value) {
+      try {
+        if (value is String && RegExp(r'^(\d{4}-\d{2}-\d{2})|(-\d{4}-\d{2}-\d{2})').hasMatch(value)) {
+          return DateTime.tryParse(value) ?? value;
+        } else if(value is String && (value.toLowerCase() == 'true' || value.toLowerCase() == 'false')) {
+          return bool.tryParse(value) ?? value;
+        } else if(value is String && RegExp('^[0-9]{1,}\$').hasMatch(value)) {
+          return int.tryParse(value) ?? value;
+        } else if(value is String && RegExp('^[0-9]{1,}\\.[0-9]{1,}\$').hasMatch(value)) {
+          return double.tryParse(value) ?? value;
+        } else {
+          return value;
+        }
+      } on FormatException {
+        return value;
+      } catch (_) {
+        return value;
+      }
+    },
+  );
 
 }
 

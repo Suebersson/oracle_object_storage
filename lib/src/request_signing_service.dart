@@ -2,7 +2,7 @@ import 'dart:typed_data' show Uint8List;
 import 'package:asn1lib/asn1lib.dart';
 import 'package:pointycastle/export.dart';
 
-import '../oracle_object_storage.dart' show ConverterForBytes;
+import './converters.dart';
 
 // https://pub.dev/packages/asn1lib
 // https://pub.dev/packages/pointycastle
@@ -12,7 +12,7 @@ final class RequestSigningService {
   final SHA256Digest digest;
   final AsymmetricBlockCipher cipher;
   final String digestIdentifierHex;
-  final Uint8List digestBytes, digestIdentifierHexLength;
+  final Uint8List digestBytes, digestIdentifierHexBytes;
   final RSAPrivateKey rsaPrivateKey;
   // final RSAPublicKey rsaPublicKey;
   final CipherParameters cipherParameters;
@@ -25,7 +25,7 @@ final class RequestSigningService {
     required this.digestIdentifierHex, 
   }) : 
     cipherParameters = PrivateKeyParameter<RSAPrivateKey>(rsaPrivateKey),
-    digestIdentifierHexLength = decodeHexString(digestIdentifierHex),
+    digestIdentifierHexBytes = decodeHexString(digestIdentifierHex),
     digestBytes = Uint8List(digest.digestSize);
 
   factory RequestSigningService(Uint8List privateKeyBytes) {
@@ -50,13 +50,17 @@ final class RequestSigningService {
       ..reset()
       ..init(true, cipherParameters);
 
-    return cipher.process(_encode(digestBytes)).toBase64;
+    return cipher.process(encode(
+      digestBytes: digestBytes, 
+      digestIdentifierHexBytes: digestIdentifierHexBytes,
+    ),).toBase64;
 
   }
 
-  Uint8List _encode(Uint8List digestBytes) {
+  static Uint8List encode({
+    required Uint8List digestBytes, required Uint8List digestIdentifierHexBytes,}) {
 
-    final Uint8List out = Uint8List(2 + 2 + digestIdentifierHexLength.length + 2 + 2 + digestBytes.length);
+    final Uint8List out = Uint8List(2 + 2 + digestIdentifierHexBytes.length + 2 + 2 + digestBytes.length);
 
     int i = 0;
 
@@ -66,11 +70,11 @@ final class RequestSigningService {
 
     // algorithmIdentifier.header
     out[i++] = 48;
-    out[i++] = digestIdentifierHexLength.length + 2;
+    out[i++] = digestIdentifierHexBytes.length + 2;
 
     // algorithmIdentifier.bytes
-    out.setAll(i, digestIdentifierHexLength);
-    i += digestIdentifierHexLength.length;
+    out.setAll(i, digestIdentifierHexBytes);
+    i += digestIdentifierHexBytes.length;
 
     // algorithmIdentifier.null
     out[i++] = 5;
