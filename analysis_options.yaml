@@ -24,10 +24,20 @@ analyzer:
   errors: 
     unnecessary_await_in_return: warning
     avoid_print: warning
+    unused_import: warning
     always_declare_return_types: error
+    dead_code: error
 
 linter:
   rules:
+
+    unawaited_futures: true
+
+    unnecessary_new: true
+    
+    unnecessary_library_name: false
+
+    avoid_void_async: false
 
     # preferência para importação de arquivos(.dart) do projeto será relativa 
     prefer_relative_imports: true 

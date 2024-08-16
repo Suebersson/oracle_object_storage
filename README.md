@@ -7,7 +7,8 @@
 [![pub points](https://img.shields.io/pub/points/oracle_object_storage?logo=dart)](https://pub.dev/packages/oracle_object_storage/score)
 [![License: BSD](https://img.shields.io/badge/license-BSD-blue.svg)](https://pub.dev/packages/oracle_object_storage/license)
 
-Package para construir os headers necessários para [requisições](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/signingrequests.htm#Request_Signatures) REST API através dos métodos de solicitações com base na [documentação](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/) para usar o serviço da Oracle Object Storage.
+
+Package para construir os headers necessários para [requisições](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/signingrequests.htm#Request_Signatures) REST API através dos métodos de solicitações com base na [documentação](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/) para usar o serviço da Oracle Object Storage. [Como contribuir com este package](https://github.com/Suebersson/oracle_object_storage/blob/main/CONTRIBUTING.md)
 
 Como criar sua [chave de API](https://docs.oracle.com/en/learn/manage-oci-restapi/index.html#task-1-set-up-oracle-cloud-infrastructure-api-keys) para acesso ao bucker
 
@@ -96,3 +97,11 @@ Ordem de como criar um arquivo em múltiplas partes/uploads:
   - [DeletePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/delete_preauthenticated_request.md)
   - [GetPreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/get_preauthenticated_request.md)
   - [ListPreauthenticatedRequests](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/list_preauthenticated_requests.md)
+
+  ## Bucket
+  - [CreateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/create_bucket.md)
+  - [DeleteBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/delete_bucket.md)
+  - [GetBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/get_bucket.md)
+  - [HeadBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/head_bucket.md)
+  - [ListBuckets](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/list_buckets.md)
+  - [UpdateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/update_bucket.md)
