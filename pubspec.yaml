@@ -18,8 +18,7 @@ documentation: https://pub.dev/documentation/oracle_object_storage/latest/
 # git push -u origin main
 
 environment:
-  sdk: ^3.0.0
-  # sdk: ^3.4.3
+  sdk: ^3.0.0 # ^3.4.3
 
 platforms:
   android:
