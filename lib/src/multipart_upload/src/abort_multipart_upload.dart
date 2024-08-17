@@ -121,11 +121,11 @@ extension AbortMultipartUploadMethod on OracleObjectStorage {
   }) {
     return AbortMultipartUpload(
       objectStorage: this, 
+      objectName: objectName,
       uploadId: uploadId,
       namespaceName: namespaceName,
       bucketName: bucketName,
       date: date,
-      objectName: objectName,
       addHeaders: addHeaders,
     );
   }

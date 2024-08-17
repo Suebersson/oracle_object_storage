@@ -59,7 +59,9 @@ final class UploadPart implements OracleRequestAttributes {
     required int uploadPartNum,
     required String xContentSha256,
     required String contentType, 
-    required String contentLength, 
+    required String contentLength,
+    String? namespaceName,
+    String? bucketName, 
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -67,10 +69,9 @@ final class UploadPart implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
-
       # Modelo para string de assinatura para o método [put] ou [post]
 
-      (request-target): <METHOD> <BUCKET_PATH>/u<DIRECTORY_PATH><FILE_NAME><?uploadId=...&uploadPartNum=...>\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/u/{objectName}?uploadId=...&uploadPartNum=...\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -84,10 +85,12 @@ final class UploadPart implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
-    final String request = '${objectStorage.bucketPath}/u/$objectName'
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/u/$objectName'
       '?uploadId=$uploadId&uploadPartNum=$uploadPartNum';
 
     final String signingString = 
@@ -134,7 +137,9 @@ extension UploadPartMethod on OracleObjectStorage {
     required int uploadPartNum,
     required String xContentSha256,
     required String contentType, 
-    required String contentLength, 
+    required String contentLength,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -146,6 +151,10 @@ extension UploadPartMethod on OracleObjectStorage {
       xContentSha256: xContentSha256, 
       contentType: contentType, 
       contentLength: contentLength,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
+      date: date,
+      addHeaders: addHeaders,
     );
   }
 

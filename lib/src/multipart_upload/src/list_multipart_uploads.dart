@@ -39,9 +39,11 @@ final class ListMultipartUploads implements OracleRequestAttributes {
     }
   }
 
-    /// Construir dados de autorização para o serviço [ListObjects]
+  /// Construir dados de autorização para o serviço [ListMultipartUploads]
   factory ListMultipartUploads({
     required OracleObjectStorage objectStorage,
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
@@ -50,10 +52,9 @@ final class ListMultipartUploads implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
-      
       # Modelo para String de assinatura para o método
 
-      (request-target): get <BUCKET_PATH>/u\n
+      (request-target): get /n/{namespaceName}/b/{bucketName}/u\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -64,12 +65,14 @@ final class ListMultipartUploads implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
     final String request = query is Query
-      ? '${objectStorage.bucketPath}/u${query.toURLParams}'
-      : '${objectStorage.bucketPath}/u';
+      ? '/n/$namespaceName/b/$bucketName/u${query.toURLParams}'
+      : '/n/$namespaceName/b/$bucketName/u';
 
     final String signingString = 
       '(request-target): get $request\n'
@@ -95,21 +98,17 @@ final class ListMultipartUploads implements OracleRequestAttributes {
 extension ListMultipartUploadsMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [ListMultipartUploads]
-  /// 
-  /// [objectName] diretório + nome do arquivo 
-  /// 
-  /// Ex: users/profilePicture/userId.jpg
-  /// 
-  /// ou
-  /// 
-  /// Ex: userId.jpg
   ListMultipartUploads listMultipartUploads({
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return ListMultipartUploads(
       objectStorage: this,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       query: query,
       date: date,
       addHeaders: addHeaders,

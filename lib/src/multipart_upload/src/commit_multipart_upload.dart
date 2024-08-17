@@ -228,17 +228,12 @@ final class CommitMultipartUploadDetails implements Details<Map<String, dynamic>
 }
 
 final class PartsToCommit {
- 
   const PartsToCommit({required this.partNum, required this.etag});
- 
   final int partNum;
   final String etag;
-
   Map<String, dynamic> get toMap => {
     'partNum': partNum,
     'etag': etag,
   };
-
   String get toJson => toMap.toJson;
-
 }

@@ -47,6 +47,8 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
     required OracleObjectStorage objectStorage, 
     required String objectName, 
     required Query query,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -61,10 +63,9 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
-      
       # Modelo para String de assinatura para o método [get]
 
-      (request-target): <METHOD> <BUCKET_PATH>/u<DIRECTORY_PATH><FILE_NAME><?uploadId=...>\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/u/{objectName}?uploadId=...\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -75,10 +76,12 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
-    final String request = '${objectStorage.bucketPath}/u/$objectName${query.toURLParams}';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/u/$objectName${query.toURLParams}';
 
     final String signingString = 
       '(request-target): get $request\n'
@@ -115,14 +118,16 @@ extension ListMultipartUploadPartsMethod on OracleObjectStorage {
   ListMultipartUploadParts listMultipartUploadParts({
     required String objectName,
     required Query query,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return ListMultipartUploadParts(
       objectStorage: this,
+      objectName: objectName,
       query: query,
       date: date,
-      objectName: objectName,
       addHeaders: addHeaders,
     );
   }

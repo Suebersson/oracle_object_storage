@@ -49,7 +49,7 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
       ..update('date', (_) => date, ifAbsent: () => date,)
       ..update('host', (_) => host, ifAbsent: () => host,)
       ..update('x-content-sha256', (_) => xContentSha256, ifAbsent: () => xContentSha256,)
-      ..update('content-type', (_) => 'contentType', ifAbsent: () => 'contentType',)
+      ..update('content-type', (_) => contentType, ifAbsent: () => contentType,)
       ..update('content-Length', (_) => contentLegth, ifAbsent: () => contentLegth,);
 
       return addHeaders!;    
@@ -60,7 +60,7 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
         'date': date,
         'host': host,
         'x-content-sha256': xContentSha256,
-        'content-type': 'contentType',
+        'content-type': contentType,
         'content-Length': contentLegth,
       };
     }
@@ -175,13 +175,13 @@ final class CreateMultipartUploadDetails implements Details<Map<String, dynamic>
   @override
   final String contentType, json, xContentSha256;
 
-  /// [object] o nome de arquivo específico
+  /// [objectName] o nome de arquivo específico
   /// 
   /// arquivo: events/banners/fileName.jpg  
   /// 
   /// prefixo: events/banners/
   factory CreateMultipartUploadDetails({
-    required String object,
+    required String objectName,
     String? cacheControl,
     String? contentDisposition,
     String? contentEncoding,
@@ -191,12 +191,12 @@ final class CreateMultipartUploadDetails implements Details<Map<String, dynamic>
     MultiPartStorageTier? storageTier,
   }) {
 
-    if (object.isEmpty) {
+    if (objectName.isEmpty) {
       return throw const OracleObjectStorageExeception('Defina o nome do [object]');
     }
 
     final Map<String, dynamic> source = {
-      'object': object,
+      'object': objectName,
     };
 
     if (cacheControl is String) {

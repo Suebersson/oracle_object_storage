@@ -21,3 +21,15 @@ final class OpcMeta {
   }
 
 }
+
+/*
+  String get metaFormat {
+    return metadata.entries.fold('', (previousValue, entry) {
+      if (previousValue.isNotEmpty) {
+        return '$previousValue, opc-meta-${entry.key}:${entry.value}';
+      } else {
+        return 'opc-meta-${entry.key}:${entry.value}';
+      }
+    });
+  }
+*/
