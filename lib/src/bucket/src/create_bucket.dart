@@ -255,8 +255,8 @@ enum Versioning {
   Disabled;
 }
 
+// https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/understandingstoragetiers.htm
 enum AutoTiering {
-  // https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/understandingstoragetiers.htm
   Standard,
   Archive,
   InfrequentAccess; 
