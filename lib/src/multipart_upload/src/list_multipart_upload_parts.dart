@@ -42,16 +42,16 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
 
   /// Construir dados de autorização para o serviço [ListMultipartUploadParts]
   /// 
-  /// [muiltiPartObjectName] Ex: users/profilePicture/userId.jpg
+  /// [objectName] Ex: users/profilePicture/userId.jpg
   factory ListMultipartUploadParts({
     required OracleObjectStorage objectStorage, 
-    required String muiltiPartObjectName, 
+    required String objectName, 
     required Query query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
 
-    if (muiltiPartObjectName.isEmpty) {
+    if (objectName.isEmpty) {
       return throw const OracleObjectStorageExeception('Defina o nome do arquivo');
     }
     if (!query.querys.containsKey('uploadId')) {
@@ -78,7 +78,7 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
 
     */
 
-    final String request = '${objectStorage.bucketPath}/u/$muiltiPartObjectName${query.toURLParams}';
+    final String request = '${objectStorage.bucketPath}/u/$objectName${query.toURLParams}';
 
     final String signingString = 
       '(request-target): get $request\n'
@@ -105,7 +105,7 @@ extension ListMultipartUploadPartsMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [ListMultipartUploadParts]
   /// 
-  /// [muiltiPartObjectName] diretório + nome do arquivo 
+  /// [objectName] diretório + nome do arquivo 
   /// 
   /// Ex: users/profilePicture/userId.jpg
   /// 
@@ -113,7 +113,7 @@ extension ListMultipartUploadPartsMethod on OracleObjectStorage {
   /// 
   /// Ex: userId.jpg
   ListMultipartUploadParts listMultipartUploadParts({
-    required String muiltiPartObjectName,
+    required String objectName,
     required Query query,
     DateTime? date,
     Map<String, String>? addHeaders,
@@ -122,7 +122,7 @@ extension ListMultipartUploadPartsMethod on OracleObjectStorage {
       objectStorage: this,
       query: query,
       date: date,
-      muiltiPartObjectName: muiltiPartObjectName,
+      objectName: objectName,
       addHeaders: addHeaders,
     );
   }

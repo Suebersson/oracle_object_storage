@@ -2,7 +2,7 @@
 
 ```dart
 final CreateMultipartUpload create = objectStorage.createMultipartUpload(
-  muiltiPartObjectName: 'users/profilePictures/object_file.jpg',
+  objectName: 'users/profilePictures/object_file.jpg',
 );
 
 final http.Response response = await http.post(

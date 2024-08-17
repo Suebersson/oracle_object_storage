@@ -96,7 +96,7 @@ extension ListMultipartUploadsMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [ListMultipartUploads]
   /// 
-  /// [muiltiPartObjectName] diretório + nome do arquivo 
+  /// [objectName] diretório + nome do arquivo 
   /// 
   /// Ex: users/profilePicture/userId.jpg
   /// 

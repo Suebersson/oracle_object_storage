@@ -2,7 +2,7 @@
 
 ```dart
 final ListMultipartUploadParts list = objectStorage.listMultipartUploadParts(
-  muiltiPartObjectName: 'object_file.jpg',
+  objectName: 'object_file.jpg',
   query: const Query({
     'uploadId': '892d7aa7b-69df-ea50-3b10-85djfad37095',
   }),

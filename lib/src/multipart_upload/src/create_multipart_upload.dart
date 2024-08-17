@@ -1,8 +1,13 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:typed_data' show Uint8List;
 
 import '../../converters.dart';
+import '../../interfaces/details.dart';
 import '../../interfaces/oracle_request_attributes.dart';
+import '../../opc_meta.dart';
 import '../../oracle_object_storage.dart';
+import '../../oracle_object_storage_exeception.dart';
 
 /// Criar um objeto com uploads separados
 final class CreateMultipartUpload implements OracleRequestAttributes {
@@ -19,7 +24,6 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
     required this.contentLegth, 
     required this.contentType, 
     required this.addHeaders,
-    required this.muiltiPartObjectName,
     required this.jsonBytes,
   });
   
@@ -27,7 +31,6 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
   final String uri, date, authorization, host;
 
   final String 
-    muiltiPartObjectName,
     xContentSha256, 
     contentLegth, 
     contentType;
@@ -46,7 +49,7 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
       ..update('date', (_) => date, ifAbsent: () => date,)
       ..update('host', (_) => host, ifAbsent: () => host,)
       ..update('x-content-sha256', (_) => xContentSha256, ifAbsent: () => xContentSha256,)
-      ..update('content-type', (_) => 'application/json', ifAbsent: () => 'application/json',)
+      ..update('content-type', (_) => 'contentType', ifAbsent: () => 'contentType',)
       ..update('content-Length', (_) => contentLegth, ifAbsent: () => contentLegth,);
 
       return addHeaders!;    
@@ -57,7 +60,7 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
         'date': date,
         'host': host,
         'x-content-sha256': xContentSha256,
-        'content-type': 'application/json',
+        'content-type': 'contentType',
         'content-Length': contentLegth,
       };
     }
@@ -65,21 +68,19 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
 
   factory CreateMultipartUpload({
     required OracleObjectStorage objectStorage, 
-    required String muiltiPartObjectName,
+    required CreateMultipartUploadDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-    final Uint8List jsonBytes = '{"object":"$muiltiPartObjectName"}'.utf8ToBytes;
-
-    final String xContentSha256 = jsonBytes.toSha256Base64;
-    
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKET_PATH>/u\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/u\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -95,24 +96,28 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
       version="1"
     */
 
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/u';
+
     final String signingString = 
-      '(request-target): post ${objectStorage.bucketPath}/u\n'
+      '(request-target): post $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.bucketHost}\n'
-      'x-content-sha256: $xContentSha256\n'
-      'content-type: application/json\n'
-      'content-length: ${jsonBytes.length}';
+      'x-content-sha256: ${details.xContentSha256}\n'
+      'content-type: ${details.contentType}\n'
+      'content-length: ${details.bytesLength}';
       
     return CreateMultipartUpload._(
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.bucketPath}/u', 
+      uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
-      xContentSha256: xContentSha256,
-      contentType: 'application/json',
-      contentLegth: '${jsonBytes.length}',
-      muiltiPartObjectName: muiltiPartObjectName,
-      jsonBytes: jsonBytes,
+      xContentSha256: details.xContentSha256,
+      contentType: details.contentType,
+      contentLegth: '${details.bytesLength}',
+      jsonBytes: details.bytes,
       authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
         'algorithm="rsa-sha256",'
@@ -127,25 +132,116 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
 extension CreateMultipartUploadMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [CreateMultipartUpload]
-  /// 
-  /// [muiltiPartObjectName] diretório + nome do arquivo 
-  /// 
-  /// Ex: users/profilePicture/userId.jpg
-  /// 
-  /// ou
-  /// 
-  /// Ex: userId.jpg
   CreateMultipartUpload createMultipartUpload({
-    required String muiltiPartObjectName,
+    required CreateMultipartUploadDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return CreateMultipartUpload(
       objectStorage: this,
-      muiltiPartObjectName: muiltiPartObjectName, 
+      details: details,
+      namespaceName: namespaceName,
+      bucketName: bucketName, 
       date: date,
       addHeaders: addHeaders,
     );
   }
 
+}
+
+final class CreateMultipartUploadDetails implements Details<Map<String, dynamic>> {
+
+  // https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/CreateMultipartUploadDetails
+  const CreateMultipartUploadDetails._({
+    required this.details,
+    required this.json,
+    required this.bytes,
+    required this.xContentSha256,
+  }) : 
+    contentType = 'application/json', 
+    bytesLength = bytes.length;
+
+  @override
+  final Map<String, dynamic> details;
+
+  @override
+  final Uint8List bytes;
+
+  @override
+  final int bytesLength;
+  
+  @override
+  final String contentType, json, xContentSha256;
+
+  /// [object] o nome de arquivo específico
+  /// 
+  /// arquivo: events/banners/fileName.jpg  
+  /// 
+  /// prefixo: events/banners/
+  factory CreateMultipartUploadDetails({
+    required String object,
+    String? cacheControl,
+    String? contentDisposition,
+    String? contentEncoding,
+    String? contentLanguage,
+    String? contentType,
+    OpcMeta? metadata,
+    MultiPartStorageTier? storageTier,
+  }) {
+
+    if (object.isEmpty) {
+      return throw const OracleObjectStorageExeception('Defina o nome do [object]');
+    }
+
+    final Map<String, dynamic> source = {
+      'object': object,
+    };
+
+    if (cacheControl is String) {
+      source.addAll({'cacheControl': cacheControl});
+    }
+    if (contentDisposition is String) {
+      source.addAll({'contentDisposition': contentDisposition});
+    }
+    if (contentEncoding is String) {
+      source.addAll({'contentEncoding': contentEncoding});
+    }
+    if (contentLanguage is String) {
+      source.addAll({'contentLanguage': contentLanguage});
+    }
+    if (contentType is String) {
+      source.addAll({'contentType': contentType});
+    }
+    if (metadata is OpcMeta) {
+      source.addAll({'metadata': metadata.metaFormat});
+    }
+    if (storageTier is MultiPartStorageTier) {
+      source.addAll({'storageTier': storageTier.name});
+    }
+
+    final String json = source.toJson;
+
+    final Uint8List bytes = json.utf8ToBytes;
+
+    return CreateMultipartUploadDetails._(
+      details: source, 
+      json: json, 
+      bytes: bytes, 
+      xContentSha256: bytes.toSha256Base64,
+    );
+
+  }
+
+  @override
+  String toString() => '$runtimeType($details)'.replaceAll(RegExp('{|}'), '');
+
+}
+
+enum MultiPartStorageTier {
+  // https://docs.oracle.com/en-us/iaas/Content/Object/Concepts/understandingstoragetiers.htm
+  Standard,
+  Archive,
+  InfrequentAccess; 
 }

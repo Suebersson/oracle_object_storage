@@ -2,7 +2,7 @@
 
 ```dart
   final AbortMultipartUpload abort = objectStorage.abortMultipartUpload(
-    muiltiPartObjectName: 'muiltPart/object_file.jpg',
+    objectName: 'muiltPart/object_file.jpg',
     uploadId: '...',
   );
 

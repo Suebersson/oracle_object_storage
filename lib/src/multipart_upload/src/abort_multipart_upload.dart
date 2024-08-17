@@ -41,26 +41,27 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
 
   /// Construir dados de autorização para o serviço [AbortMultipartUpload]
   /// 
-  /// [muiltiPartObjectName] Ex: /users/profilePicture/userId.jpg
+  /// [objectName] Ex: users/profilePicture/userId.jpg
   factory AbortMultipartUpload({
     required OracleObjectStorage objectStorage, 
-    required String muiltiPartObjectName,
+    required String objectName,
     required String uploadId,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
 
-    if (muiltiPartObjectName.isEmpty) {
+    if (objectName.isEmpty) {
       return throw const OracleObjectStorageExeception('Defina o caminho completo do arquivo');
     }
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
      /*
-      
       # Modelo para string de assinatura para o método [delete]
 
-      (request-target): <METHOD> <BUCKET_PATH>/u<DIRECTORY_PATH><FILE_NAME>\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/u/{objectName}\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -71,10 +72,12 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
-    final String request = '${objectStorage.bucketPath}/u/$muiltiPartObjectName?uploadId=$uploadId';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/u/$objectName?uploadId=$uploadId';
 
     final String signingString = 
       '(request-target): delete $request\n'
@@ -101,7 +104,7 @@ extension AbortMultipartUploadMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [AbortMultipartUpload]
   /// 
-  /// [muiltiPartObjectName] diretório + nome do arquivo 
+  /// [objectName] diretório + nome do arquivo 
   /// 
   /// Ex: users/profilePicture/userId.jpg
   /// 
@@ -109,16 +112,20 @@ extension AbortMultipartUploadMethod on OracleObjectStorage {
   /// 
   /// Ex: userId.jpg
   AbortMultipartUpload abortMultipartUpload({
-    required String muiltiPartObjectName,
+    required String objectName,
     required String uploadId,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return AbortMultipartUpload(
       objectStorage: this, 
       uploadId: uploadId,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       date: date,
-      muiltiPartObjectName: muiltiPartObjectName,
+      objectName: objectName,
       addHeaders: addHeaders,
     );
   }

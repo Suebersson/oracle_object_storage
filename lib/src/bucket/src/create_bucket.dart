@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-import 'dart:typed_data';
+import 'dart:typed_data' show Uint8List;
 
 import '../../converters.dart';
 import '../../interfaces/details.dart';

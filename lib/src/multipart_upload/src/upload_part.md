@@ -8,7 +8,7 @@ final Uint8List bytes = await file.readAsBytes();
 final UploadPart uploadPart = objectStorage.uploadPart(
   uploadId: '...',
   uploadPartNum: 1,
-  muiltiPartObjectName: '...',
+  objectName: '...',
   xContentSha256: bytes.toSha256Base64,
   contentLength: bytes.length.toString(),
   contentType: 'image/jpeg', //application/octet-stream

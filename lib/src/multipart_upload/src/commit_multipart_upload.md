@@ -2,7 +2,7 @@
 
 ```dart
 final CommitMultipartUpload parts = objectStorage.commitMultipartUpload(
-  muiltiPartObjectName: '...',
+  objectName: '...',
   uploadId: '...',
   details: CommitMultipartUploadDetails(
     parts: [

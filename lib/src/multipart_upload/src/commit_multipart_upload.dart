@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:typed_data' show Uint8List;
 
 import '../../converters.dart';
 import '../../interfaces/details.dart';
@@ -68,7 +68,9 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
     required OracleObjectStorage objectStorage, 
     required CommitMultipartUploadDetails details,
     required String uploadId,
-    required String muiltiPartObjectName,
+    required String objectName,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -78,7 +80,7 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKET_PATH>/u<DIRECTORY_PATH><FILE_NAME><?uploadId=...>\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/u/{objectName}?uploadId=...\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -94,7 +96,10 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
       version="1"
     */
 
-    final String request = '${objectStorage.bucketPath}/u/$muiltiPartObjectName?uploadId=$uploadId';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/u/$objectName?uploadId=$uploadId';
 
     final String signingString = 
       '(request-target): post $request\n'
@@ -105,7 +110,7 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
       'content-length: ${details.bytesLength}';
       
     return CommitMultipartUpload._(
-      publicUrlFile: objectStorage.getPublicUrlFile('/$muiltiPartObjectName'),
+      publicUrlFile: objectStorage.getPublicUrlFile('/$objectName'),
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
@@ -130,7 +135,7 @@ extension CommitMultipartUploadMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [CommitMultipartUpload]
   /// 
-  /// [muiltiPartObjectName] diretório + nome do arquivo 
+  /// [objectName] diretório + nome do arquivo 
   /// 
   /// Ex: users/profilePicture/userId.jpg
   /// 
@@ -139,17 +144,21 @@ extension CommitMultipartUploadMethod on OracleObjectStorage {
   /// Ex: userId.jpg
   CommitMultipartUpload commitMultipartUpload({
     required CommitMultipartUploadDetails details,
-    required String muiltiPartObjectName,
+    required String objectName,
     required String uploadId,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
   
     return CommitMultipartUpload(
       objectStorage: this, 
-      muiltiPartObjectName: muiltiPartObjectName,
+      objectName: objectName,
       uploadId: uploadId,
       details: details,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       date: date,
       addHeaders: addHeaders,
     );

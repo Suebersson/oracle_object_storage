@@ -54,7 +54,7 @@ final class UploadPart implements OracleRequestAttributes {
 
   factory UploadPart({
     required OracleObjectStorage objectStorage, 
-    required String muiltiPartObjectName,
+    required String objectName,
     required String uploadId,
     required int uploadPartNum,
     required String xContentSha256,
@@ -87,7 +87,7 @@ final class UploadPart implements OracleRequestAttributes {
 
     */
 
-    final String request = '${objectStorage.bucketPath}/u/$muiltiPartObjectName'
+    final String request = '${objectStorage.bucketPath}/u/$objectName'
       '?uploadId=$uploadId&uploadPartNum=$uploadPartNum';
 
     final String signingString = 
@@ -121,7 +121,7 @@ extension UploadPartMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [UploadPart]
   /// 
-  /// [muiltiPartObjectName] diretório + nome do arquivo 
+  /// [objectName] diretório + nome do arquivo 
   /// 
   /// Ex: users/profilePicture/userId.jpg
   /// 
@@ -129,7 +129,7 @@ extension UploadPartMethod on OracleObjectStorage {
   /// 
   /// Ex: userId.jpg
   UploadPart uploadPart({
-    required String muiltiPartObjectName,
+    required String objectName,
     required String uploadId,
     required int uploadPartNum,
     required String xContentSha256,
@@ -140,7 +140,7 @@ extension UploadPartMethod on OracleObjectStorage {
   }) {
     return UploadPart(
       objectStorage: this, 
-      muiltiPartObjectName: muiltiPartObjectName, 
+      objectName: objectName, 
       uploadId: uploadId, 
       uploadPartNum: uploadPartNum, 
       xContentSha256: xContentSha256, 
