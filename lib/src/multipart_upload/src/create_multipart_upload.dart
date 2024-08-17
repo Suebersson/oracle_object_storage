@@ -79,7 +79,7 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKER_PATH>/u\n
+      (request-target): <METHOD> <BUCKET_PATH>/u\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -96,17 +96,17 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
     */
 
     final String signingString = 
-      '(request-target): post ${objectStorage.buckerPath}/u\n'
+      '(request-target): post ${objectStorage.bucketPath}/u\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}\n'
+      'host: ${objectStorage.bucketHost}\n'
       'x-content-sha256: $xContentSha256\n'
       'content-type: application/json\n'
       'content-length: ${jsonBytes.length}';
       
     return CreateMultipartUpload._(
-      uri: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/u', 
+      uri: '${objectStorage.serviceURLOrigin}${objectStorage.bucketPath}/u', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       xContentSha256: xContentSha256,
       contentType: 'application/json',

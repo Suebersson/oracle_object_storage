@@ -41,6 +41,8 @@ linter:
 
     # preferência para importação de arquivos(.dart) do projeto será relativa 
     prefer_relative_imports: true 
+
+    prefer_const_constructors: true
     
     camel_case_types: true
     

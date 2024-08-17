@@ -64,7 +64,7 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
       
       # Modelo para String de assinatura para o método [get]
 
-      (request-target): <METHOD> <BUCKER_PATH>/u<DIRECTORY_PATH><FILE_NAME><?uploadId=...>\n
+      (request-target): <METHOD> <BUCKET_PATH>/u<DIRECTORY_PATH><FILE_NAME><?uploadId=...>\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -78,17 +78,17 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
 
     */
 
-    final String request = '${objectStorage.buckerPath}/u/$muiltiPartObjectName${query.toURLParams}';
+    final String request = '${objectStorage.bucketPath}/u/$muiltiPartObjectName${query.toURLParams}';
 
     final String signingString = 
       '(request-target): get $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}';
+      'host: ${objectStorage.bucketHost}';
 
     return ListMultipartUploadParts._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'

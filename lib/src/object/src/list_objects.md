@@ -2,7 +2,7 @@
 
 ```dart
 final ListObjects list = objectStorage.listObjects(
-  query: Query({// parâmentro  opcional
+  query: const Query({// parâmentro  opcional
     'limit': '2', // no máximo 2 objetos
   }),
 );

@@ -42,6 +42,8 @@ final class DeletePreauthenticatedRequest implements OracleRequestAttributes {
   factory DeletePreauthenticatedRequest({
     required OracleObjectStorage objectStorage, 
     required String parId, 
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -49,10 +51,9 @@ final class DeletePreauthenticatedRequest implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
      /*
-      
       # Modelo para string de assinatura para o método [delete]
 
-      (request-target): <METHOD> <BUCKER_PATH>/p/<parId>\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/p/{parId}\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -63,20 +64,22 @@ final class DeletePreauthenticatedRequest implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
-    final String request = '${objectStorage.buckerPath}/p/$parId';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/p/$parId';
 
     final String signingString = 
       '(request-target): delete $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}';
+      'host: ${objectStorage.bucketHost}';
 
     return DeletePreauthenticatedRequest._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
@@ -94,12 +97,16 @@ extension DeletePreauthenticatedRequestMethod on OracleObjectStorage {
   /// Construir dados de autorização para o serviço [DeletePreauthenticatedRequest]
   DeletePreauthenticatedRequest deletePreauthenticatedRequest({
     required String parId,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return DeletePreauthenticatedRequest(
       objectStorage: this, 
       parId: parId,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       date: date,
       addHeaders: addHeaders,
     );

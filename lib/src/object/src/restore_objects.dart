@@ -74,7 +74,7 @@ final class RestoreObjects implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKER_PATH>/actions/restoreObjects\n
+      (request-target): <METHOD> <BUCKET_PATH>/actions/restoreObjects\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -90,12 +90,12 @@ final class RestoreObjects implements OracleRequestAttributes {
       version="1"
     */
 
-    final String request = '${objectStorage.buckerPath}/actions/restoreObjects';
+    final String request = '${objectStorage.bucketPath}/actions/restoreObjects';
 
     final String signingString = 
       '(request-target): post $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}\n'
+      'host: ${objectStorage.bucketHost}\n'
       'x-content-sha256: ${details.xContentSha256}\n'
       'content-type: ${details.contentType}\n'
       'content-length: ${details.bytesLength}';
@@ -103,7 +103,7 @@ final class RestoreObjects implements OracleRequestAttributes {
     return RestoreObjects._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       xContentSha256: details.xContentSha256,
       contentType: details.contentType,

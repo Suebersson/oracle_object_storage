@@ -2,7 +2,7 @@
 
 ```dart
 final ListMultipartUploads list = objectStorage.listMultipartUploads(
-  query: Query({// atributo  Opcional
+  query: const Query({// atributo  Opcional
     'limit': '5', // no máximo 5 objetos
   }),
 );

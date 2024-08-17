@@ -57,13 +57,14 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
     }
   }
 
-
   /// Construir dados de autorização para o serviço [CreatePreauthenticatedRequest]
   /// 
   /// [date] na zona UTC
   factory CreatePreauthenticatedRequest({
     required OracleObjectStorage objectStorage, 
     required CreatePreauthenticatedRequestDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -74,7 +75,7 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
 
       # Modelo para string de assinatura para o método [put] ou [post]
 
-      (request-target): <METHOD> <BUCKER_PATH>/p/\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/p/\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -91,12 +92,15 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
 
     */
 
-    final String request = '${objectStorage.buckerPath}/p/';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/p/';
 
     final String signingString = 
       '(request-target): post $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}\n'
+      'host: ${objectStorage.bucketHost}\n'
       'x-content-sha256: ${details.xContentSha256}\n'
       'content-type: ${details.contentType}\n'
       'content-length: ${details.bytesLength}';
@@ -104,7 +108,7 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
     return CreatePreauthenticatedRequest._(
       uri: '${objectStorage.serviceURLOrigin}$request',
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       jsonBytes: details.bytes,
       xContentSha256: details.xContentSha256,
       contentType: details.contentType,
@@ -126,12 +130,16 @@ extension CreatePreauthenticatedRequestMethod on OracleObjectStorage {
   /// Construir dados de autorização para o serviço [CreatePreauthenticatedRequest]
   CreatePreauthenticatedRequest createPreauthenticatedRequest({
     required CreatePreauthenticatedRequestDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return CreatePreauthenticatedRequest(
       objectStorage: this, 
       details: details,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       date: date,
       addHeaders: addHeaders,
     );

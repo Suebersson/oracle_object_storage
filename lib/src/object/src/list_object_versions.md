@@ -2,7 +2,7 @@
 
 ```dart
 final ListObjectVersions list = objectStorage.listObjectVersions(
-  query: Query({// parâmentro  opcional
+  query: const Query({// parâmentro  opcional
     'limit': '10', // no máximo 10 objetos
     'prefix': 'events/banners/', // todos os objetos de uma pasta
     'fields': 'name,timeCreated', // apenas os campos especificos

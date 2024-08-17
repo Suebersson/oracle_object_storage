@@ -2,7 +2,7 @@
 
 ```dart
 final ListPreauthenticatedRequests list = objectStorage.listPreauthenticatedRequests(
-    query: Query({// parâmentro  opcional
+    query: const Query({// parâmentro  opcional
         'limit': '1', // no máximo 10 objetos
         'objectNamePrefix': 'events/banners/', // todos os objetos de uma pasta
     }),

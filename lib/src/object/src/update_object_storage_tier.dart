@@ -75,7 +75,7 @@ final class UpdateObjectStorageTier implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKER_PATH>/actions/updateObjectStorageTier\n
+      (request-target): <METHOD> <BUCKET_PATH>/actions/updateObjectStorageTier\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -91,12 +91,12 @@ final class UpdateObjectStorageTier implements OracleRequestAttributes {
       version="1"
     */
 
-    final String request = '${objectStorage.buckerPath}/actions/updateObjectStorageTier';
+    final String request = '${objectStorage.bucketPath}/actions/updateObjectStorageTier';
 
     final String signingString = 
       '(request-target): post $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}\n'
+      'host: ${objectStorage.bucketHost}\n'
       'x-content-sha256: ${details.xContentSha256}\n'
       'content-type: ${details.contentType}\n'
       'content-length: ${details.bytesLength}';
@@ -104,7 +104,7 @@ final class UpdateObjectStorageTier implements OracleRequestAttributes {
     return UpdateObjectStorageTier._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       xContentSha256: details.xContentSha256,
       contentType: details.contentType,
@@ -178,7 +178,7 @@ final class UpdateObjectStorageTierDetails implements Details<Map<String, String
   /// [objectName] o nome de arquivo existente
   factory UpdateObjectStorageTierDetails ({
     required String objectName, 
-    required StorageTier storageTier, 
+    required ObjectStorageTier storageTier, 
     String? versionId, 
   }) {
 
@@ -209,8 +209,8 @@ final class UpdateObjectStorageTierDetails implements Details<Map<String, String
 
 }
 
-enum StorageTier {
+enum ObjectStorageTier {
   Standard,
-  InfrequentAccess,
-  Archive;
+  Archive,
+  InfrequentAccess;
 }

@@ -77,7 +77,7 @@ final class RenameObject implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKER_PATH>/actions/renameObject\n
+      (request-target): <METHOD> <BUCKET_PATH>/actions/renameObject\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -93,12 +93,12 @@ final class RenameObject implements OracleRequestAttributes {
       version="1"
     */
 
-    final String request = '${objectStorage.buckerPath}/actions/renameObject';
+    final String request = '${objectStorage.bucketPath}/actions/renameObject';
 
     final String signingString = 
       '(request-target): post $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}\n'
+      'host: ${objectStorage.bucketHost}\n'
       'x-content-sha256: ${details.xContentSha256}\n'
       'content-type: ${details.contentType}\n'
       'content-length: ${details.bytesLength}';
@@ -106,15 +106,15 @@ final class RenameObject implements OracleRequestAttributes {
     return RenameObject._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       xContentSha256: details.xContentSha256,
       contentType: details.contentType,
       contentLegth: '${details.bytesLength}',
       jsonBytes: details.bytes,
       jsonData: details.json,
-      newPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o/${details.details['newName']}',
-      oldPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.buckerPath}/o/${details.details['sourceName']}',
+      newPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.bucketPath}/o/${details.details['newName']}',
+      oldPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.bucketPath}/o/${details.details['sourceName']}',
       authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
         'algorithm="rsa-sha256",'

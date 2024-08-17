@@ -7,8 +7,6 @@ homepage: https://github.com/Suebersson/oracle_object_storage.git
 repository: https://github.com/Suebersson/oracle_object_storage
 issue_tracker: https://github.com/Suebersson/oracle_object_storage/issues
 documentation: https://pub.dev/documentation/oracle_object_storage/latest/
-funding:
-  - https://github.com/Suebersson/oracle_object_storage/blob/main/CONTRIBUTORS.md
  
 # Comandos para atulizar o repositório no github
 # git init
@@ -34,7 +32,7 @@ topics:
   - oracle-cloud
   - oracle-object-storage
   - cloud-storage
-  - storage
+  - oci
 
 dependencies:
   intl: ^0.19.0

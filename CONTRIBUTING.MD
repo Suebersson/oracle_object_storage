@@ -1,10 +1,10 @@
 ## Como contribuir com este package
 
-- Localizar e corrigir erros de execuções em qualquer método de requisição
+- Localizar e corrigir erros de execuções ou pontos que podem ser melhorados em qualquer método de requisição
 
-- Criar um novo método de requisição ou uma categoria inteira para usar os serviços Oracle Cloud e solicitar a implementação
+- Criar um novo método de requisição ou uma categoria inteira para usar os serviços Oracle Cloud
 
-- Sugestões de como melhoar o package
+- Sugestões de como melhorar o package
 
 ## Regras de implementações
 
@@ -34,6 +34,30 @@
     ...
 
 - Declarar a categoria e seus métodos de requisições no arquivo README.md
+
+
+## Como enviar sua contribuição
+
+1. Faça um fork deste repositório
+2. Faça as correções, ajustes ou implementações
+3. Formate todos os arquivos .dart na pasta lib: dart format 'lib\.'
+4. Use o dart analyze para encontrar má pratica de desenvolmento: dart analyze 'lib\.'
+5. Verificar se existe algum problema com o package: dart pub publish --dry-run
+6. Gerar um relatório sobre o package: [pana](https://pub.dev/packages/pana)
+7. Faça o pull request do repositório com suas contribuições
+8. Sua solitação pull request será analizada pelos mantenedores deste package e será implantada se aprovada 
+
+Para instalar o pana: dart pub global activate pana
+
+Pontos a serem considerados:
+  - as plataformas compatíveis com o package
+	- pontuação, sempre buscar pontuação máxima tratando todos pontos a serem melhorados 
+	- se existe algum problema com as denpendências
+	- se tem suporte ao null-safety
+	- se possuí uma documentação
+	- se possuí um projeto de como usar este package, pasta 'example'
+	- se os arquivos [pubspec](https://dart.dev/tools/pub/pubspec).yaml, README.md, CHANGELOG.md, LICENCE estão todos corretos
+	- se atende ao critério de pelo menos 20% de comentários no códigos fonte
 
 
 ## [Contribuintes](https://github.com/Suebersson/oracle_object_storage/graphs/contributors)

@@ -78,7 +78,7 @@ final class CopyObject implements OracleRequestAttributes{
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKER_PATH>/actions/copyObject\n
+      (request-target): <METHOD> <BUCKET_PATH>/actions/copyObject\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -94,12 +94,12 @@ final class CopyObject implements OracleRequestAttributes{
       version="1"
     */
 
-    final String request = '${objectStorage.buckerPath}/actions/copyObject';
+    final String request = '${objectStorage.bucketPath}/actions/copyObject';
 
     final String signingString = 
       '(request-target): post $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}\n'
+      'host: ${objectStorage.bucketHost}\n'
       'x-content-sha256: ${details.xContentSha256}\n'
       'content-type: ${details.contentType}\n'
       'content-length: ${details.bytesLength}';
@@ -107,7 +107,7 @@ final class CopyObject implements OracleRequestAttributes{
     return CopyObject._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       xContentSha256: details.xContentSha256,
       contentType: details.contentType,

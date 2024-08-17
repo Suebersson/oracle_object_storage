@@ -23,17 +23,17 @@ final class OracleObjectStorage {
   // https://docs.oracle.com/pt-br/iaas/Content/API/Concepts/signingrequests.htm#ObjectStoragePut
 
   const OracleObjectStorage({
-    required this.buckerNameSpace,
-    required this.buckerName,
-    required this.buckerRegion,
+    required this.bucketNameSpace,
+    required this.bucketName,
+    required this.bucketRegion,
     required this.tenancyOcid,
     required this.userOcid,
     required this.apiPrivateKey,
   }): 
-    buckerHost = 'objectstorage.$buckerRegion.oraclecloud.com',
-    buckerPath = '/n/$buckerNameSpace/b/$buckerName',
-    serviceURLOrigin = 'https://objectstorage.$buckerRegion.oraclecloud.com',
-    publicFileURLPath = 'https://$buckerNameSpace.objectstorage.$buckerRegion.oci.customer-oci.com/n/$buckerNameSpace/b/$buckerName/o';
+    bucketHost = 'objectstorage.$bucketRegion.oraclecloud.com',
+    bucketPath = '/n/$bucketNameSpace/b/$bucketName',
+    serviceURLOrigin = 'https://objectstorage.$bucketRegion.oraclecloud.com',
+    publicFileURLPath = 'https://$bucketNameSpace.objectstorage.$bucketRegion.oci.customer-oci.com/n/$bucketNameSpace/b/$bucketName/o';
 
   factory OracleObjectStorage.fromConfig({
     required String configFullPath, required String  privateKeyFullPath,}) {
@@ -54,18 +54,18 @@ final class OracleObjectStorage {
 
         final String fileBody = file.readAsStringSync();
 
-        final Map<String, dynamic> config = fileBody.replaceAll('\n', '').jsonToObject;
+        final Map<String, dynamic> config = fileBody.replaceAll('\n', '').decodeJson;
 
         return OracleObjectStorage(
-          buckerNameSpace: config['buckerNameSpace'] ?? config['nameSpace'] ?? config['namespace'] 
-            ?? _generateExeception<String>('O nomeSpace do bucker não foi definido, '
-                'insira a chave e valor no arquivo json [buckerNameSpace]'), 
-          buckerName: config['buckerName'] ?? config['buckername'] ?? config['name'] 
-            ?? _generateExeception<String>('O nome do bucker não foi definido, '
-                'insira a chave e valor no arquivo json [buckerName]'), 
-          buckerRegion: config['region'] ?? config['buckerRegion'] ?? config['buckerregion'] 
-            ?? _generateExeception<String>('A região do bucker não foi definida, '
-                'insira a chave e valor no arquivo json [buckerRegion]'), 
+          bucketNameSpace: config['bucketNameSpace'] ?? config['nameSpace'] ?? config['namespace'] 
+            ?? _generateExeception<String>('O nomeSpace do bucket não foi definido, '
+                'insira a chave e valor no arquivo json [bucketNameSpace]'), 
+          bucketName: config['bucketName'] ?? config['buckername'] ?? config['name'] 
+            ?? _generateExeception<String>('O nome do bucket não foi definido, '
+                'insira a chave e valor no arquivo json [bucketName]'), 
+          bucketRegion: config['region'] ?? config['bucketRegion'] ?? config['buckerregion'] 
+            ?? _generateExeception<String>('A região do bucket não foi definida, '
+                'insira a chave e valor no arquivo json [bucketRegion]'), 
           tenancyOcid: config['tenancy'] ?? config['tenancyOcid'] ?? config['tenancyOCID'] 
             ?? _generateExeception<String>('A tenancy não foi definida, '
                 'insira a chave e valor no arquivo json [tenancyOcid]'),
@@ -91,7 +91,7 @@ final class OracleObjectStorage {
         stackTrace: stackTrace,
         error: error,
       );
-      return throw OracleObjectStorageExeception('Erro ao tentar definir alguma variável com tipos diferentes');
+      return throw const OracleObjectStorageExeception('Erro ao tentar definir alguma variável com tipos diferentes');
     } on OracleObjectStorageExeception catch (error, stackTrace) {
       log(
         error.message,
@@ -116,11 +116,11 @@ final class OracleObjectStorage {
   static T _generateExeception<T>(String message) => throw OracleObjectStorageExeception(message);
 
   final String 
-    buckerNameSpace,
-    buckerName,
-    buckerHost,
-    buckerRegion,
-    buckerPath,
+    bucketNameSpace,
+    bucketName,
+    bucketHost,
+    bucketRegion,
+    bucketPath,
     tenancyOcid,
     userOcid,
     serviceURLOrigin,
@@ -140,7 +140,7 @@ final class OracleObjectStorage {
 
   // https://docs.oracle.com/pt-br/iaas/Content/Object/Concepts/dedicatedendpoints.htm#dedicated-endpoints__OCIObjectStoragededicatedendpoints-NewURLs
   // https://<BUCKER_NAME_SPACE>.objectstorage.<BUCKER_REGION>.oci.customer-oci.com/n/<BUCKER_NAME_SPACE>/b/<BUCKER_NAME>/o<FULLPATH_FILE_NAME>'; 
-  /// URL publica para acesso de arquivo no bucker
+  /// URL publica para acesso de arquivo no bucket
   /// 
   /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
   String getPublicUrlFile(String pathAndFileName) {

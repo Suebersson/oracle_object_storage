@@ -60,7 +60,7 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
       
       # Modelo para string de assinatura para o método [delete]
 
-      (request-target): <METHOD> <BUCKER_PATH>/u<DIRECTORY_PATH><FILE_NAME>\n
+      (request-target): <METHOD> <BUCKET_PATH>/u<DIRECTORY_PATH><FILE_NAME>\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -74,17 +74,17 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
 
     */
 
-    final String request = '${objectStorage.buckerPath}/u/$muiltiPartObjectName?uploadId=$uploadId';
+    final String request = '${objectStorage.bucketPath}/u/$muiltiPartObjectName?uploadId=$uploadId';
 
     final String signingString = 
       '(request-target): delete $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}';
+      'host: ${objectStorage.bucketHost}';
 
     return AbortMultipartUpload._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'

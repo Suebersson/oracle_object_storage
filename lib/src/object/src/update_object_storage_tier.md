@@ -4,7 +4,7 @@
 final UpdateObjectStorageTier updateObjectStorageTier = objectStorage.updateObjectStorageTier(
   details : UpdateObjectStorageTierDetails (
     objectName: 'image.jpg', 
-    storageTier: StorageTier.InfrequentAccess
+    storageTier: ObjectStorageTier.InfrequentAccess
   ),
 );
 

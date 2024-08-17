@@ -70,7 +70,7 @@ final class UploadPart implements OracleRequestAttributes {
 
       # Modelo para string de assinatura para o método [put] ou [post]
 
-      (request-target): <METHOD> <BUCKER_PATH>/u<DIRECTORY_PATH><FILE_NAME><?uploadId=...&uploadPartNum=...>\n
+      (request-target): <METHOD> <BUCKET_PATH>/u<DIRECTORY_PATH><FILE_NAME><?uploadId=...&uploadPartNum=...>\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -87,13 +87,13 @@ final class UploadPart implements OracleRequestAttributes {
 
     */
 
-    final String request = '${objectStorage.buckerPath}/u/$muiltiPartObjectName'
+    final String request = '${objectStorage.bucketPath}/u/$muiltiPartObjectName'
       '?uploadId=$uploadId&uploadPartNum=$uploadPartNum';
 
     final String signingString = 
       '(request-target): put $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}\n'
+      'host: ${objectStorage.bucketHost}\n'
       'x-content-sha256: $xContentSha256\n'
       'content-type: $contentType\n'
       'content-length: $contentLength';
@@ -101,7 +101,7 @@ final class UploadPart implements OracleRequestAttributes {
     return UploadPart._(
       uri: '${objectStorage.serviceURLOrigin}$request',
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       xContentSha256: xContentSha256,
       contentType: contentType,
       contentLegth: contentLength,

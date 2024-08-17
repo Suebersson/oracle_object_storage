@@ -7,9 +7,9 @@ import 'package:oracle_object_storage/oracle_object_storage.dart';
 void main() async{
 
   final OracleObjectStorage objectStorage = OracleObjectStorage(
-    buckerNameSpace: '...', 
-    buckerName: '...', 
-    buckerRegion: 'sa-saopaulo-1', 
+    bucketNameSpace: '...', 
+    bucketName: '...', 
+    bucketRegion: 'sa-saopaulo-1', 
     tenancyOcid: 'ocid1.tenancy.oc1..aaa...', 
     userOcid: 'ocid1.user.oc1..aaaaa...', 
     apiPrivateKey: ApiPrivateKey.fromFile(

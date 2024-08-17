@@ -16,6 +16,8 @@ extension ConverterForDate on DateTime {
 
   String get toFormatRCF1123 => '${OracleObjectStorage.dateFormatRCF1123.format(this)} GMT';
 
+  String get toFormatRCF3339 => toIso8601String();
+
 }
 
 extension ConverterForString on String {
@@ -24,7 +26,7 @@ extension ConverterForString on String {
 
   Uint8List get utf8ToBytes => convert.utf8.encode(this);
 
-  dynamic get jsonToObject => convert.json.decode(
+  dynamic get decodeJson => convert.json.decode(
     this,
     reviver: (key, value) {
       try {

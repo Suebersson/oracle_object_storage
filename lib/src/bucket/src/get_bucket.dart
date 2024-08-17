@@ -42,6 +42,8 @@ final class GetBucket implements OracleRequestAttributes {
   /// Construir dados de autorização para o serviço [GetBucket]
   factory GetBucket({
     required OracleObjectStorage objectStorage, 
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
@@ -52,7 +54,7 @@ final class GetBucket implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [get]
 
-      (request-target): <METHOD> <BUCKER_PATH>/\n
+      (request-target): <METHOD> <BUCKET_PATH>/\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -65,19 +67,23 @@ final class GetBucket implements OracleRequestAttributes {
       version="1"
     */
 
+
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
     final String request = query is Query
-      ? '${objectStorage.buckerPath}/${query.toURLParams}'
-      : '${objectStorage.buckerPath}/';
+      ? '/n/$namespaceName/b/$bucketName/${query.toURLParams}'
+      : '/n/$namespaceName/b/$bucketName/';
 
     final String signingString = 
       '(request-target): get $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}';
+      'host: ${objectStorage.bucketHost}';
 
     return GetBucket._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
@@ -94,12 +100,16 @@ extension GetBucketMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [GetBucket]
   GetBucket getBucket({
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return GetBucket(
       objectStorage: this,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       query: query,
       date: date,
       addHeaders: addHeaders,

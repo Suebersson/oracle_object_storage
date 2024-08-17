@@ -15,7 +15,7 @@
 tenancy_ocid="ocid1.tenancy.oc1..aaaaaaaa..."
 
 # namespace of the tenancy
-namespace="BUCKER_NAME_SPACE"
+namespace="BUCKET_NAME_SPACE"
 
 # OCID of the user making the rest call
 user_ocid="ocid1.user.oc1..aaaa..."
@@ -27,7 +27,7 @@ privateKeyPath=".../private_key.pem"
 fingerprint="5d:b5:d6:44:..."
 
 #bucket name for uplaod/ put
-bucket="BUCKER_NAME"
+bucket="BUCKET_NAME"
 
 #file name for upload/ put
 object="users/profilePictures/userId.jpg"
@@ -35,10 +35,10 @@ object="users/profilePictures/userId.jpg"
 # The REST api you want to call, with any required paramters.
 rest_api="/n/$namespace/b/$bucket/o/$object"
 
-buckerRegion="sa-saopaulo-1"
+bucketRegion="sa-saopaulo-1"
 
 # The host you want to make the call against
-host="objectstorage.$buckerRegion.oraclecloud.com"
+host="objectstorage.$bucketRegion.oraclecloud.com"
 
 # the file containing the data you want to POST to the rest endpoint
 # caminho completo do arquivo

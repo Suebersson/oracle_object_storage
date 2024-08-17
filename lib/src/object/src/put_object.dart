@@ -91,7 +91,7 @@ final class PutObject implements OracleRequestAttributes {
       
       # Modelo para string de assinatura para o método [put] ou [post]
 
-      (request-target): <METHOD> <BUCKER_PATH><DIRECTORY_PATH><FILE_NAME>\n
+      (request-target): <METHOD> <BUCKET_PATH><DIRECTORY_PATH><FILE_NAME>\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -108,12 +108,12 @@ final class PutObject implements OracleRequestAttributes {
 
     */
 
-    final String request = '${objectStorage.buckerPath}/o$pathAndFileName';
+    final String request = '${objectStorage.bucketPath}/o$pathAndFileName';
 
     final String signingString = 
       '(request-target): put $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}\n'
+      'host: ${objectStorage.bucketHost}\n'
       'x-content-sha256: $xContentSha256\n'
       'content-type: $contentType\n'
       'content-length: $contentLength';
@@ -122,7 +122,7 @@ final class PutObject implements OracleRequestAttributes {
       publicUrlFile: objectStorage.getPublicUrlFile(pathAndFileName),
       uri: '${objectStorage.serviceURLOrigin}$request',
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       xContentSha256: xContentSha256,
       contentType: contentType,
       contentLegth: contentLength,

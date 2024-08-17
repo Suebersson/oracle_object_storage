@@ -52,7 +52,7 @@ final class ListObjectVersions implements OracleRequestAttributes {
       
       # Modelo para String de assinatura para o método
 
-      (request-target): get <BUCKER_PATH>/objectversions\n
+      (request-target): get <BUCKET_PATH>/objectversions\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -67,18 +67,18 @@ final class ListObjectVersions implements OracleRequestAttributes {
     */
 
     final String request = query is Query
-      ? '${objectStorage.buckerPath}/objectversions${query.toURLParams}'
-      : '${objectStorage.buckerPath}/objectversions';
+      ? '${objectStorage.bucketPath}/objectversions${query.toURLParams}'
+      : '${objectStorage.bucketPath}/objectversions';
 
     final String signingString = 
       '(request-target): get $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}';
+      'host: ${objectStorage.bucketHost}';
 
     return ListObjectVersions._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'

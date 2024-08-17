@@ -41,7 +41,9 @@ final class ListPreauthenticatedRequests implements OracleRequestAttributes {
 
   /// Construir dados de autorização para o serviço [ListPreauthenticatedRequests]
   factory ListPreauthenticatedRequests({
-    required OracleObjectStorage objectStorage, 
+    required OracleObjectStorage objectStorage,
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
@@ -50,10 +52,9 @@ final class ListPreauthenticatedRequests implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
-      
       # Modelo para String de assinatura para o método
 
-      (request-target): get <BUCKER_PATH>/p/\n
+      (request-target): get /n/{namespaceName}/b/{bucketName}/p/\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -64,22 +65,24 @@ final class ListPreauthenticatedRequests implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
     final String request = query is Query
-      ? '${objectStorage.buckerPath}/p/${query.toURLParams}'
-      : '${objectStorage.buckerPath}/p/';
+      ? '/n/$namespaceName/b/$bucketName/p/${query.toURLParams}'
+      : '/n/$namespaceName/b/$bucketName/p/';
 
     final String signingString = 
       '(request-target): get $request\n'
       'date: $dateString\n'
-      'host: ${objectStorage.buckerHost}';
+      'host: ${objectStorage.bucketHost}';
 
     return ListPreauthenticatedRequests._(
       uri: '${objectStorage.serviceURLOrigin}$request', 
       date: dateString, 
-      host: objectStorage.buckerHost,
+      host: objectStorage.bucketHost,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
@@ -96,12 +99,16 @@ extension ListPreauthenticatedRequestsMethod on OracleObjectStorage {
   
   /// Construir dados de autorização para o serviço [ListPreauthenticatedRequests],
   ListPreauthenticatedRequests listPreauthenticatedRequests({
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return ListPreauthenticatedRequests(
       objectStorage: this,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       query: query,
       date: date,
       addHeaders: addHeaders,
