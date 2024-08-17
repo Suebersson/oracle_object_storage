@@ -6,6 +6,7 @@
 
 - Sugestões de como melhorar o package
 
+
 ## Regras de implementações
 
 - Manter o padrão de organização da arquitetura do package. Cada categoria é um micro package que contém seus métodos de requisições, cada método/serviço é independente e isolado sem herdar os métodos e atributos de outros métodos
