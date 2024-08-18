@@ -1,4 +1,4 @@
-## [UpdateObjectStorageTier](https://pub.dev/packages/oracle_object_storage#UpdateObjectStorageTier)
+## [UpdateObjectStorageTier](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/UpdateObjectStorageTier)
 
 ```dart
 final UpdateObjectStorageTier updateObjectStorageTier = objectStorage.updateObjectStorageTier(

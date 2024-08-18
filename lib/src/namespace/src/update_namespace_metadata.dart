@@ -1,36 +1,40 @@
-// ignore_for_file: constant_identifier_names
-
 import 'dart:typed_data' show Uint8List;
 
-import '../../../oracle_object_storage.dart';
+import '../../converters.dart';
 import '../../interfaces/details.dart';
 import '../../interfaces/oracle_request_attributes.dart';
+import '../../oracle_object_storage.dart';
 
-final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
-
-  // https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/PreauthenticatedRequest/CreatePreauthenticatedRequest
-  const CreatePreauthenticatedRequest._({
+final class UpdateNamespaceMetadata implements OracleRequestAttributes {
+  
+  // https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/Namespace/UpdateNamespaceMetadata
+  const UpdateNamespaceMetadata._({
     required this.uri, 
     required this.date, 
     required this.authorization, 
-    required this.host,
-    required this.jsonBytes,
+    required this.host, 
     required this.xContentSha256,
     required this.contentLegth,
     required this.contentType,
+    required this.jsonBytes,
+    required this.jsonData,
     this.addHeaders,
   });
 
   @override
   final String uri, date, authorization, host;
 
-  final String xContentSha256, contentLegth, contentType;
+  final String 
+    jsonData,
+    xContentSha256, 
+    contentLegth, 
+    contentType;
 
   final Uint8List jsonBytes;
 
   @override
   final Map<String, String>? addHeaders;
-
+  
   @override
   Map<String, String> get headers {
     if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
@@ -57,14 +61,10 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
     }
   }
 
-  /// Construir dados de autorização para o serviço [CreatePreauthenticatedRequest]
-  /// 
-  /// [date] na zona UTC
-  factory CreatePreauthenticatedRequest({
+  factory UpdateNamespaceMetadata({
     required OracleObjectStorage objectStorage, 
-    required CreatePreauthenticatedRequestDetails details,
+    required UpdateNamespaceMetadataDetails details,
     String? namespaceName,
-    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -72,9 +72,9 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
-      # Modelo para string de assinatura para o método [put] ou [post]
+      # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/p/\n
+      (request-target): <METHOD> /n/{namespaceName}\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -91,27 +91,27 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
     */
 
     namespaceName ??= objectStorage.bucketNameSpace;
-    bucketName ??= objectStorage.bucketName;
 
-    final String request = '/n/$namespaceName/b/$bucketName/p/';
+    final String request = '/n/$namespaceName';
 
     final String signingString = 
-      '(request-target): post $request\n'
+      '(request-target): put $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.bucketHost}\n'
       'x-content-sha256: ${details.xContentSha256}\n'
       'content-type: ${details.contentType}\n'
       'content-length: ${details.bytesLength}';
-
-    return CreatePreauthenticatedRequest._(
-      uri: '${objectStorage.serviceAPIOrigin}$request',
+      
+    return UpdateNamespaceMetadata._(
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
-      jsonBytes: details.bytes,
+      addHeaders: addHeaders,
       xContentSha256: details.xContentSha256,
       contentType: details.contentType,
       contentLegth: '${details.bytesLength}',
-      addHeaders: addHeaders,
+      jsonBytes: details.bytes,
+      jsonData: details.json,
       authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
         'algorithm="rsa-sha256",'
@@ -123,33 +123,30 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
 
 }
 
-extension CreatePreauthenticatedRequestMethod on OracleObjectStorage {
+extension UpdateNamespaceMetadataMethod on OracleObjectStorage {
   
-  /// Construir dados de autorização para o serviço [CreatePreauthenticatedRequest]
-  CreatePreauthenticatedRequest createPreauthenticatedRequest({
-    required CreatePreauthenticatedRequestDetails details,
+  /// Construir dados de autorização para o serviço [UpdateNamespaceMetadata]
+  UpdateNamespaceMetadata updateNamespaceMetadata({
+    required UpdateNamespaceMetadataDetails details,
     String? namespaceName,
-    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-    return CreatePreauthenticatedRequest(
-      objectStorage: this, 
-      details: details,
+    return UpdateNamespaceMetadata(
+      objectStorage: this,
+      details : details,
       namespaceName: namespaceName,
-      bucketName: bucketName,
       date: date,
       addHeaders: addHeaders,
     );
-    
   }
 
 }
 
-final class CreatePreauthenticatedRequestDetails implements Details<Map<String, String>> {
+final class UpdateNamespaceMetadataDetails implements Details<Map<String, String>> {
 
-  // https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/CreatePreauthenticatedRequestDetails
-  const CreatePreauthenticatedRequestDetails._({
+  // https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/UpdateNamespaceMetadataDetails
+  const UpdateNamespaceMetadataDetails ._({
     required this.details,
     required this.json,
     required this.bytes,
@@ -170,43 +167,25 @@ final class CreatePreauthenticatedRequestDetails implements Details<Map<String, 
   @override
   final String contentType, json, xContentSha256;
 
-  /// [timeExpires] no formato RFC 3339
-  /// 
-  /// [objectName] o nome de arquivo específico ou um prefixo
-  /// 
-  /// arquivo: events/banners/fileName.jpg  
-  /// 
-  /// prefixo: events/banners/
-  factory CreatePreauthenticatedRequestDetails({
-    required AccessType accessType,
-    required String name,
-    required String timeExpires,
-    BucketListingAction? bucketListingAction,
-    String? objectName,
+  factory UpdateNamespaceMetadataDetails({
+    String? defaultS3CompartmentId, 
+    String? defaultSwiftCompartmentId, 
   }) {
 
-    if (name.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o nome do acesso pré-autenticado');
+    final Map<String, String> source = {};
+      
+    if (defaultS3CompartmentId is String && defaultS3CompartmentId.isNotEmpty) {
+      source.putIfAbsent('defaultS3CompartmentId', () => defaultS3CompartmentId);
     }
-
-    final Map<String, String> source = {
-      'accessType': accessType.name,
-      'name': name,
-      'timeExpires': timeExpires,
-    };
-
-    if (bucketListingAction is BucketListingAction) {
-      source.addAll({'bucketListingAction': bucketListingAction.name});
-    }
-    if (objectName is String && objectName.isNotEmpty) {
-      source.addAll({'objectName': objectName});
+    if (defaultSwiftCompartmentId is String && defaultSwiftCompartmentId.isNotEmpty) {
+      source.putIfAbsent('defaultSwiftCompartmentId', () => defaultSwiftCompartmentId);
     }
 
     final String json = source.toJson;
 
     final Uint8List bytes = json.utf8ToBytes;
 
-    return CreatePreauthenticatedRequestDetails._(
+    return UpdateNamespaceMetadataDetails._(
       details: source, 
       json: json, 
       bytes: bytes, 
@@ -217,19 +196,5 @@ final class CreatePreauthenticatedRequestDetails implements Details<Map<String, 
 
   @override
   String toString() => '$runtimeType($details)'.replaceAll(RegExp('{|}'), '');
-
-}
-
-enum AccessType {
-  ObjectRead,
-  ObjectWrite,
-  ObjectReadWrite,
-  AnyObjectWrite,
-  AnyObjectRead,
-  AnyObjectReadWrite;
-}
-
-enum BucketListingAction {
-  Deny,
-  ListObjects;
+  
 }

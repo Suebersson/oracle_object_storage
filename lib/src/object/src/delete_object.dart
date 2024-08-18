@@ -45,7 +45,9 @@ final class DeleteObject implements OracleRequestAttributes {
   /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
   factory DeleteObject({
     required OracleObjectStorage objectStorage, 
-    required String pathAndFileName, 
+    required String pathAndFileName,
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
@@ -58,10 +60,9 @@ final class DeleteObject implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
      /*
-      
       # Modelo para string de assinatura para o método [delete]
 
-      (request-target): <METHOD> <BUCKET_PATH>/o<DIRECTORY_PATH><FILE_NAME>\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/o/{objectName}\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -72,12 +73,14 @@ final class DeleteObject implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
     final String request = query is Query
-      ? '${objectStorage.bucketPath}/o$pathAndFileName${query.toURLParams}'
-      : '${objectStorage.bucketPath}/o$pathAndFileName';
+      ? '/n/$namespaceName/b/$bucketName/o$pathAndFileName${query.toURLParams}'
+      : '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
 
     final String signingString = 
       '(request-target): delete $request\n'
@@ -85,7 +88,7 @@ final class DeleteObject implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return DeleteObject._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
@@ -106,12 +109,16 @@ extension DeleteObjectMethod on OracleObjectStorage {
   /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
   DeleteObject deleteObject({
     required String pathAndFileName,
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return DeleteObject(
-      objectStorage: this, 
+      objectStorage: this,
+      namespaceName: namespaceName,
+      bucketName: bucketName, 
       query: query,
       date: date,
       pathAndFileName: pathAndFileName,

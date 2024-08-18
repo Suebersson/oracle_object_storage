@@ -1,4 +1,4 @@
-## [RestoreObjects](https://pub.dev/packages/oracle_object_storage#RestoreObjects)
+## [RestoreObjects](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/RestoreObjects)
 
 ```dart
 final RestoreObjects restoreObjects = objectStorage.restoreObjects(

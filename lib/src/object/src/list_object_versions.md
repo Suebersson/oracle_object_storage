@@ -1,4 +1,4 @@
-## [ListObjectVersions](https://pub.dev/packages/oracle_object_storage#ListObjectVersions)
+## [ListObjectVersions](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/ListObjectVersions)
 
 ```dart
 final ListObjectVersions list = objectStorage.listObjectVersions(

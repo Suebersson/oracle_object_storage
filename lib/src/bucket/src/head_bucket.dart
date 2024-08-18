@@ -79,7 +79,7 @@ final class HeadBucket implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return HeadBucket._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,

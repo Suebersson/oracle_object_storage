@@ -1,4 +1,4 @@
-## [ListObjects](https://pub.dev/packages/oracle_object_storage#ListObjects)
+## [ListObjects](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/ListObjects)
 
 ```dart
 final ListObjects list = objectStorage.listObjects(

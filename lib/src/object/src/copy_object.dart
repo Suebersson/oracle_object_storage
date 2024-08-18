@@ -69,6 +69,8 @@ final class CopyObject implements OracleRequestAttributes{
   factory CopyObject({
     required OracleObjectStorage objectStorage, 
     required CopyObjectDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -78,7 +80,7 @@ final class CopyObject implements OracleRequestAttributes{
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKET_PATH>/actions/copyObject\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/actions/copyObject\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -94,7 +96,10 @@ final class CopyObject implements OracleRequestAttributes{
       version="1"
     */
 
-    final String request = '${objectStorage.bucketPath}/actions/copyObject';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/actions/copyObject';
 
     final String signingString = 
       '(request-target): post $request\n'
@@ -105,7 +110,7 @@ final class CopyObject implements OracleRequestAttributes{
       'content-length: ${details.bytesLength}';
       
     return CopyObject._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
@@ -136,12 +141,16 @@ extension CopyObjectMethod on OracleObjectStorage {
   /// região ou para outra região [CopyObject]
   CopyObject copyObject({
     required CopyObjectDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return CopyObject(
       objectStorage: this,
-      details: details, 
+      details: details,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       date: date,
       addHeaders: addHeaders,
     );

@@ -89,7 +89,7 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
       'host: ${objectStorage.bucketHost}';
 
     return ListMultipartUploadParts._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,

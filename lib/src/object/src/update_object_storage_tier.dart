@@ -65,7 +65,9 @@ final class UpdateObjectStorageTier implements OracleRequestAttributes {
 
   factory UpdateObjectStorageTier({
     required OracleObjectStorage objectStorage, 
-    required UpdateObjectStorageTierDetails  details ,
+    required UpdateObjectStorageTierDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -75,7 +77,7 @@ final class UpdateObjectStorageTier implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKET_PATH>/actions/updateObjectStorageTier\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/actions/updateObjectStorageTier\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -91,7 +93,10 @@ final class UpdateObjectStorageTier implements OracleRequestAttributes {
       version="1"
     */
 
-    final String request = '${objectStorage.bucketPath}/actions/updateObjectStorageTier';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/actions/updateObjectStorageTier';
 
     final String signingString = 
       '(request-target): post $request\n'
@@ -102,7 +107,7 @@ final class UpdateObjectStorageTier implements OracleRequestAttributes {
       'content-length: ${details.bytesLength}';
       
     return UpdateObjectStorageTier._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
@@ -128,20 +133,23 @@ extension UpdateObjectStorageTierMethod on OracleObjectStorage {
   /// 
   /// Altera a camada de armazenamento do arquivo especificado
   UpdateObjectStorageTier updateObjectStorageTier({
-    required UpdateObjectStorageTierDetails  details ,
+    required UpdateObjectStorageTierDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return UpdateObjectStorageTier(
       objectStorage: this,
-      details : details , 
+      details : details,
+      namespaceName: namespaceName,
+      bucketName: bucketName, 
       date: date,
       addHeaders: addHeaders,
     );
   }
 
 }
-
 
 final class UpdateObjectStorageTierDetails implements Details<Map<String, String>> {
 
@@ -176,7 +184,7 @@ final class UpdateObjectStorageTierDetails implements Details<Map<String, String
   /// ex: users/profilePictures/fileName.jpg
   ///
   /// [objectName] o nome de arquivo existente
-  factory UpdateObjectStorageTierDetails ({
+  factory UpdateObjectStorageTierDetails({
     required String objectName, 
     required ObjectStorageTier storageTier, 
     String? versionId, 

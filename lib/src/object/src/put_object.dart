@@ -73,7 +73,9 @@ final class PutObject implements OracleRequestAttributes {
     required String pathAndFileName, 
     required String xContentSha256,
     required String contentType, 
-    required String contentLength, 
+    required String contentLength,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -85,13 +87,12 @@ final class PutObject implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
-
       // https://docs.oracle.com/pt-br/iaas/Content/API/Concepts/signingrequests.htm#ObjectStoragePut
       // https://docs.oracle.com/en/learn/manage-oci-restapi/index.html#task-1-set-up-oracle-cloud-infrastructure-api-keys
       
       # Modelo para string de assinatura para o método [put] ou [post]
 
-      (request-target): <METHOD> <BUCKET_PATH><DIRECTORY_PATH><FILE_NAME>\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/o/{objectName}\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -105,10 +106,12 @@ final class PutObject implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
-    final String request = '${objectStorage.bucketPath}/o$pathAndFileName';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
 
     final String signingString = 
       '(request-target): put $request\n'
@@ -120,7 +123,7 @@ final class PutObject implements OracleRequestAttributes {
 
     return PutObject._(
       publicUrlFile: objectStorage.getPublicUrlFile(pathAndFileName),
-      uri: '${objectStorage.serviceURLOrigin}$request',
+      uri: '${objectStorage.serviceAPIOrigin}$request',
       date: dateString, 
       host: objectStorage.bucketHost,
       xContentSha256: xContentSha256,
@@ -161,7 +164,9 @@ extension PutObjectMethod on OracleObjectStorage {
     required String pathAndFileName,
     required String xContentSha256,
     required String contentType, 
-    required String contentLength, 
+    required String contentLength,
+    String? namespaceName,
+    String? bucketName, 
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -170,7 +175,9 @@ extension PutObjectMethod on OracleObjectStorage {
       pathAndFileName: pathAndFileName,
       xContentSha256: xContentSha256,
       contentType: contentType,
-      contentLength: contentLength, 
+      contentLength: contentLength,
+      namespaceName: namespaceName,
+      bucketName: bucketName, 
       date: date,
       addHeaders: addHeaders,
     );

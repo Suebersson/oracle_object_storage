@@ -1,4 +1,4 @@
-## [CopyObject](https://pub.dev/packages/oracle_object_storage#CopyObject)
+## [CopyObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/CopyObject)
 
 ```dart
 final CopyObject copy = objectStorage.copyObject(

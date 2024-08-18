@@ -104,7 +104,7 @@ final class CreateBucket implements OracleRequestAttributes {
       'content-length: ${details.bytesLength}';
 
     return CreateBucket._(
-      uri: '${objectStorage.serviceURLOrigin}$request',
+      uri: '${objectStorage.serviceAPIOrigin}$request',
       date: dateString, 
       host: objectStorage.bucketHost,
       jsonBytes: details.bytes,

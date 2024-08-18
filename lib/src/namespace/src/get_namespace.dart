@@ -1,12 +1,11 @@
 import '../../interfaces/oracle_request_attributes.dart';
 import '../../oracle_object_storage.dart';
-import '../../oracle_object_storage_exeception.dart';
 import '../../query.dart';
 
-final class GetObject implements OracleRequestAttributes {
-
-  // https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/GetObject
-  const GetObject._({
+final class GetNamespace implements OracleRequestAttributes {
+  
+  // https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/Namespace/GetNamespace
+  const GetNamespace._({
     required this.uri, 
     required this.date, 
     required this.authorization, 
@@ -40,29 +39,20 @@ final class GetObject implements OracleRequestAttributes {
     }
   }
 
-  /// Construir dados de autorização para o serviço [GetObject]
-  /// 
-  /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
-  factory GetObject({
+  /// Construir dados de autorização para o serviço [GetNamespace]
+  factory GetNamespace({
     required OracleObjectStorage objectStorage, 
-    required String pathAndFileName, 
-    String? namespaceName,
-    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
-    if (pathAndFileName.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o caminho completo do arquivo');
-    }
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
       # Modelo para String de assinatura para o método [get]
 
-      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/o/{objectName}\n
+      (request-target): <METHOD> /n/\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -75,19 +65,16 @@ final class GetObject implements OracleRequestAttributes {
       version="1"
     */
 
-    namespaceName ??= objectStorage.bucketNameSpace;
-    bucketName ??= objectStorage.bucketName;
-
     final String request = query is Query
-      ? '/n/$namespaceName/b/$bucketName/o$pathAndFileName${query.toURLParams}'
-      : '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
+      ? '/n/${query.toURLParams}'
+      : '/n/';
 
     final String signingString = 
       '(request-target): get $request\n'
       'date: $dateString\n'
       'host: ${objectStorage.bucketHost}';
 
-    return GetObject._(
+    return GetNamespace._(
       uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
@@ -100,28 +87,21 @@ final class GetObject implements OracleRequestAttributes {
     );
 
   }
-
+  
 }
 
-extension GetObjectMethod on OracleObjectStorage {
+extension GetNamespaceMethod on OracleObjectStorage {
   
-  /// Construir dados de autorização para o serviço [GetObject],
-  /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
-  GetObject getObject({
-    required String pathAndFileName,
-    String? namespaceName,
-    String? bucketName,
+  /// Construir dados de autorização para o serviço [GetNamespace]
+  GetNamespace getNamespace({
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-    return GetObject(
+    return GetNamespace(
       objectStorage: this,
-      namespaceName: namespaceName,
-      bucketName: bucketName,
       query: query,
       date: date,
-      pathAndFileName: pathAndFileName,
       addHeaders: addHeaders,
     );
   }

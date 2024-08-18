@@ -110,7 +110,7 @@ final class CreateMultipartUpload implements OracleRequestAttributes {
       'content-length: ${details.bytesLength}';
       
     return CreateMultipartUpload._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,

@@ -1,4 +1,4 @@
-## [GetObject](https://pub.dev/packages/oracle_object_storage#GetObject)
+## [GetObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/GetObject)
 
 ```dart
 final GetObject get = objectStorage.getObject(pathAndFileName: '/users/profilePictures/userId.jpg');

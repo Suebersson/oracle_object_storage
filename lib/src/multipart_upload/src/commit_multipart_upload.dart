@@ -111,7 +111,7 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
       
     return CommitMultipartUpload._(
       publicUrlFile: objectStorage.getPublicUrlFile('/$objectName'),
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,

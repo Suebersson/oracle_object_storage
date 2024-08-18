@@ -106,7 +106,7 @@ final class UpdateBucket implements OracleRequestAttributes {
       'content-length: ${details.bytesLength}';
 
     return UpdateBucket._(
-      uri: '${objectStorage.serviceURLOrigin}$request',
+      uri: '${objectStorage.serviceAPIOrigin}$request',
       date: dateString, 
       host: objectStorage.bucketHost,
       jsonBytes: details.bytes,

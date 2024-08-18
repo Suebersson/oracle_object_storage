@@ -78,7 +78,7 @@ final class DeleteBucket implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return DeleteBucket._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,

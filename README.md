@@ -1,11 +1,13 @@
 # [![Oracle](https://raw.githubusercontent.com/Suebersson/oracle_object_storage/main/oracle.svg)](https://www.oracle.com/br/cloud/) Oracle Cloud Object Storage
 
-[![sdk dart](https://img.shields.io/badge/SDK-Dart-blue.svg)](https://dart.dev/get-dart)
-[![sdk flutter](https://img.shields.io/badge/SDK-Flutter-blue.svg)](https://docs.flutter.dev/get-started/install)
+[![sdk dart](https://img.shields.io/badge/SDK-Dart-blue.svg?color=blue)](https://dart.dev/get-dart)
+[![sdk flutter](https://img.shields.io/badge/SDK-Flutter-blue.svg?color=blue)](https://docs.flutter.dev/get-started/install)
 [![pub package](https://img.shields.io/pub/v/oracle_object_storage.svg?color=blue)](https://pub.dev/packages/oracle_object_storage)
-[![popularity](https://img.shields.io/pub/popularity/oracle_object_storage?logo=dart)](https://pub.dev/packages/oracle_object_storage/score)
-[![pub points](https://img.shields.io/pub/points/oracle_object_storage?logo=dart)](https://pub.dev/packages/oracle_object_storage/score)
-[![License: BSD](https://img.shields.io/badge/license-BSD-blue.svg)](https://pub.dev/packages/oracle_object_storage/license)
+[![popularity](https://img.shields.io/pub/popularity/oracle_object_storage?logo=dart&color=blue)](https://pub.dev/packages/oracle_object_storage/score)
+[![pub points](https://img.shields.io/pub/points/oracle_object_storage?logo=dart&color=blue)](https://pub.dev/packages/oracle_object_storage/score)
+[![License: BSD](https://img.shields.io/badge/license-BSD-blue.svg?color=blue)](https://pub.dev/packages/oracle_object_storage/license)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/Suebersson/oracle_object_storage?color=blue)](https://github.com/Suebersson/oracle_object_storage/issues)
+![GitHub top language](https://img.shields.io/github/languages/top/Suebersson/oracle_object_storage?color=blue)
 
 
 Package para construir os headers necessários para [requisições](https://docs.oracle.com/en-us/iaas/Content/API/Concepts/signingrequests.htm#Request_Signatures) REST API através dos métodos de solicitações com base na [documentação](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/) para usar o serviço da Oracle Object Storage. [Como contribuir com este package](https://github.com/Suebersson/oracle_object_storage/blob/main/CONTRIBUTING.md)
@@ -98,10 +100,17 @@ Ordem de como criar um arquivo em múltiplas partes/uploads:
   - [GetPreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/get_preauthenticated_request.md)
   - [ListPreauthenticatedRequests](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/list_preauthenticated_requests.md)
 
-  ## Bucket
+
+## Bucket
   - [CreateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/create_bucket.md)
   - [DeleteBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/delete_bucket.md)
   - [GetBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/get_bucket.md)
   - [HeadBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/head_bucket.md)
   - [ListBuckets](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/list_buckets.md)
   - [UpdateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/update_bucket.md)
+
+
+## Namespace
+  - [GetNamespace](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/namespace/src/get_namespace.md)
+  - [GetNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/namespace/src/get_namespace_metadata.md)
+  - [UpdateNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/namespace/src/update_namespace_metadata.md)

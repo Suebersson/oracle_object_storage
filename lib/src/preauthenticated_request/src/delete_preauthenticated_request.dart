@@ -77,7 +77,7 @@ final class DeletePreauthenticatedRequest implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return DeletePreauthenticatedRequest._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,

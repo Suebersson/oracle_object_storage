@@ -77,7 +77,7 @@ final class GetPreauthenticatedRequest implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return GetPreauthenticatedRequest._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,

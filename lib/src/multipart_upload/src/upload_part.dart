@@ -102,7 +102,7 @@ final class UploadPart implements OracleRequestAttributes {
       'content-length: $contentLength';
 
     return UploadPart._(
-      uri: '${objectStorage.serviceURLOrigin}$request',
+      uri: '${objectStorage.serviceAPIOrigin}$request',
       date: dateString, 
       host: objectStorage.bucketHost,
       xContentSha256: xContentSha256,

@@ -1,4 +1,4 @@
-## [RenameObject](https://pub.dev/packages/oracle_object_storage#RenameObject)
+## [RenameObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/RenameObject)
 
 ```dart
 final RenameObject rename = objectStorage.renameObject(

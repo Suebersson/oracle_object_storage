@@ -32,7 +32,7 @@ final class OracleObjectStorage {
   }): 
     bucketHost = 'objectstorage.$bucketRegion.oraclecloud.com',
     bucketPath = '/n/$bucketNameSpace/b/$bucketName',
-    serviceURLOrigin = 'https://objectstorage.$bucketRegion.oraclecloud.com',
+    serviceAPIOrigin = 'https://objectstorage.$bucketRegion.oraclecloud.com',
     publicFileURLPath = 'https://$bucketNameSpace.objectstorage.$bucketRegion.oci.customer-oci.com/n/$bucketNameSpace/b/$bucketName/o';
 
   factory OracleObjectStorage.fromConfig({
@@ -123,7 +123,7 @@ final class OracleObjectStorage {
     bucketPath,
     tenancyOcid,
     userOcid,
-    serviceURLOrigin,
+    serviceAPIOrigin,
     publicFileURLPath; 
   
   final ApiPrivateKey apiPrivateKey;

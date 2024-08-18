@@ -1,4 +1,4 @@
-## [PutObject](https://pub.dev/packages/oracle_object_storage#PutObject)
+## [PutObject](https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/PutObject)
 
 ```dart
 File file = File(".../fileNAme.jpg");

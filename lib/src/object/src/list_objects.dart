@@ -41,7 +41,9 @@ final class ListObjects implements OracleRequestAttributes {
 
   /// Construir dados de autorização para o serviço [ListObjects]
   factory ListObjects({
-    required OracleObjectStorage objectStorage, 
+    required OracleObjectStorage objectStorage,
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
@@ -50,10 +52,9 @@ final class ListObjects implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
-      
       # Modelo para String de assinatura para o método
 
-      (request-target): get <BUCKET_PATH>/o\n
+      (request-target): get /n/{namespaceName}/b/{bucketName}/o\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -64,12 +65,14 @@ final class ListObjects implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
     final String request = query is Query
-      ? '${objectStorage.bucketPath}/o${query.toURLParams}'
-      : '${objectStorage.bucketPath}/o';
+      ? '/n/$namespaceName/b/$bucketName/o${query.toURLParams}'
+      : '/n/$namespaceName/b/$bucketName/o';
 
     final String signingString = 
       '(request-target): get $request\n'
@@ -77,7 +80,7 @@ final class ListObjects implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return ListObjects._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
@@ -94,14 +97,18 @@ final class ListObjects implements OracleRequestAttributes {
 
 extension ListObjectsMethod on OracleObjectStorage {
   
-  /// Construir dados de autorização para o serviço [ListObjects],
+  /// Construir dados de autorização para o serviço [ListObjects]
   ListObjects listObjects({
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return ListObjects(
-      objectStorage: this, 
+      objectStorage: this,
+      namespaceName: namespaceName,
+      bucketName: bucketName, 
       query: query,
       date: date,
       addHeaders: addHeaders,

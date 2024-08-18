@@ -68,6 +68,8 @@ final class RenameObject implements OracleRequestAttributes {
   factory RenameObject({
     required OracleObjectStorage objectStorage, 
     required RenameObjectDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -77,7 +79,7 @@ final class RenameObject implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKET_PATH>/actions/renameObject\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/actions/renameObject\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -93,7 +95,10 @@ final class RenameObject implements OracleRequestAttributes {
       version="1"
     */
 
-    final String request = '${objectStorage.bucketPath}/actions/renameObject';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/actions/renameObject';
 
     final String signingString = 
       '(request-target): post $request\n'
@@ -104,7 +109,7 @@ final class RenameObject implements OracleRequestAttributes {
       'content-length: ${details.bytesLength}';
       
     return RenameObject._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
@@ -113,8 +118,8 @@ final class RenameObject implements OracleRequestAttributes {
       contentLegth: '${details.bytesLength}',
       jsonBytes: details.bytes,
       jsonData: details.json,
-      newPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.bucketPath}/o/${details.details['newName']}',
-      oldPublicUrlFile: '${objectStorage.serviceURLOrigin}${objectStorage.bucketPath}/o/${details.details['sourceName']}',
+      newPublicUrlFile: '${objectStorage.serviceAPIOrigin}${objectStorage.bucketPath}/o/${details.details['newName']}',
+      oldPublicUrlFile: '${objectStorage.serviceAPIOrigin}${objectStorage.bucketPath}/o/${details.details['sourceName']}',
       authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
         'keyId="${objectStorage.tenancyOcid}/${objectStorage.userOcid}/${objectStorage.apiPrivateKey.fingerprint}",'
         'algorithm="rsa-sha256",'
@@ -131,12 +136,16 @@ extension RenameObjectMethod on OracleObjectStorage {
   /// Construir dados de autorização para o serviço [RenameObject],
   RenameObject renameObject({
     required RenameObjectDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return RenameObject(
       objectStorage: this,
       details: details, 
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       date: date,
       addHeaders: addHeaders,
     );

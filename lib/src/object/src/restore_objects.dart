@@ -65,6 +65,8 @@ final class RestoreObjects implements OracleRequestAttributes {
   factory RestoreObjects({
     required OracleObjectStorage objectStorage, 
     required RestoreObjectsDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -74,7 +76,7 @@ final class RestoreObjects implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [post]
 
-      (request-target): <METHOD> <BUCKET_PATH>/actions/restoreObjects\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/actions/restoreObjects\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>\n
       x-content-sha256: <FILE_HASH_IN_BASE64>\n'
@@ -90,7 +92,10 @@ final class RestoreObjects implements OracleRequestAttributes {
       version="1"
     */
 
-    final String request = '${objectStorage.bucketPath}/actions/restoreObjects';
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
+    final String request = '/n/$namespaceName/b/$bucketName/actions/restoreObjects';
 
     final String signingString = 
       '(request-target): post $request\n'
@@ -101,7 +106,7 @@ final class RestoreObjects implements OracleRequestAttributes {
       'content-length: ${details.bytesLength}';
       
     return RestoreObjects._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
@@ -126,12 +131,16 @@ extension RestoreObjectsMethod on OracleObjectStorage {
   /// Construir dados de autorização para o serviço [RestoreObjects],
   RestoreObjects restoreObjects({
     required RestoreObjectsDetails details,
+    String? namespaceName,
+    String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return RestoreObjects(
       objectStorage: this,
-      details: details, 
+      details: details,
+      namespaceName: namespaceName,
+      bucketName: bucketName, 
       date: date,
       addHeaders: addHeaders,
     );

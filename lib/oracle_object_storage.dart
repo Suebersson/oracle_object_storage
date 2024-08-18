@@ -11,3 +11,4 @@ export './src/multipart_upload/multipart_upload.dart';
 export './src/preauthenticated_request/preauthenticated_request.dart';
 export './src/object/object.dart';
 export './src/bucket/bucket.dart';
+export './src/namespace/namespace.dart';

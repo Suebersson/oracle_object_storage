@@ -85,7 +85,7 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return AbortMultipartUpload._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,

@@ -40,7 +40,9 @@ final class ListObjectVersions implements OracleRequestAttributes {
 
   /// Construir dados de autorização para o serviço [ListObjectVersions]
   factory ListObjectVersions({
-    required OracleObjectStorage objectStorage, 
+    required OracleObjectStorage objectStorage,
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
@@ -49,10 +51,9 @@ final class ListObjectVersions implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
-      
       # Modelo para String de assinatura para o método
 
-      (request-target): get <BUCKET_PATH>/objectversions\n
+      (request-target): get /n/{namespaceName}/b/{bucketName}/objectversions\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -63,12 +64,14 @@ final class ListObjectVersions implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
     final String request = query is Query
-      ? '${objectStorage.bucketPath}/objectversions${query.toURLParams}'
-      : '${objectStorage.bucketPath}/objectversions';
+      ? '/n/$namespaceName/b/$bucketName/objectversions${query.toURLParams}'
+      : '/n/$namespaceName/b/$bucketName/objectversions';
 
     final String signingString = 
       '(request-target): get $request\n'
@@ -76,7 +79,7 @@ final class ListObjectVersions implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return ListObjectVersions._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
@@ -93,14 +96,18 @@ final class ListObjectVersions implements OracleRequestAttributes {
 
 extension ListObjectVersionsMethod on OracleObjectStorage {
   
-  /// Construir dados de autorização para o serviço [ListObjectVersions],
+  /// Construir dados de autorização para o serviço [ListObjectVersions]
   ListObjectVersions listObjectVersions({
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return ListObjectVersions(
-      objectStorage: this, 
+      objectStorage: this,
+      namespaceName: namespaceName,
+      bucketName: bucketName, 
       query: query,
       date: date,
       addHeaders: addHeaders,

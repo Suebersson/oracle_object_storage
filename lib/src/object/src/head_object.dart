@@ -46,6 +46,8 @@ final class HeadObject implements OracleRequestAttributes {
   factory HeadObject({
     required OracleObjectStorage objectStorage, 
     required String pathAndFileName,
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
@@ -58,10 +60,9 @@ final class HeadObject implements OracleRequestAttributes {
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
-      
       # Modelo para String de assinatura para o método [head]
 
-      (request-target): <METHOD> <BUCKET_PATH><DIRECTORY_PATH><FILE_NAME>\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/o/{objectName}\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -72,12 +73,14 @@ final class HeadObject implements OracleRequestAttributes {
       algorithm="rsa-sha256",
       signature="<SIGNATURE>",
       version="1"
-
     */
 
+    namespaceName ??= objectStorage.bucketNameSpace;
+    bucketName ??= objectStorage.bucketName;
+
     final String request = query is Query
-      ? '${objectStorage.bucketPath}/o$pathAndFileName${query.toURLParams}'
-      : '${objectStorage.bucketPath}/o$pathAndFileName';
+      ? '/n/$namespaceName/b/$bucketName/o$pathAndFileName${query.toURLParams}'
+      : '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
 
     final String signingString = 
       '(request-target): head $request\n'
@@ -85,7 +88,7 @@ final class HeadObject implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return HeadObject._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
@@ -106,12 +109,16 @@ extension HeadObjectMethod on OracleObjectStorage {
   /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
   HeadObject headObject({
     required String pathAndFileName,
+    String? namespaceName,
+    String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
     return HeadObject(
       objectStorage: this,
+      namespaceName: namespaceName,
+      bucketName: bucketName,
       query: query, 
       date: date,
       pathAndFileName: pathAndFileName,

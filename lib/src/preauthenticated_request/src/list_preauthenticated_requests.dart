@@ -80,7 +80,7 @@ final class ListPreauthenticatedRequests implements OracleRequestAttributes {
       'host: ${objectStorage.bucketHost}';
 
     return ListPreauthenticatedRequests._(
-      uri: '${objectStorage.serviceURLOrigin}$request', 
+      uri: '${objectStorage.serviceAPIOrigin}$request', 
       date: dateString, 
       host: objectStorage.bucketHost,
       addHeaders: addHeaders,
