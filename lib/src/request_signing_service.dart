@@ -101,8 +101,8 @@ final class RequestSigningService {
 
   /// Decodifica o códido hexadecimal
   static Uint8List decodeHexString(String input) {
-    if (!(input.length % 2 == 0)) {
-      // ex: 22
+    // ex: 22 caracteres
+    if (input.length % 2 != 0) {
       throw const RequestSigningServiceExeception(
         'Insira um comprimento de caracteres em pares',
       );

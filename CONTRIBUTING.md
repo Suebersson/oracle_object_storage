@@ -46,7 +46,7 @@
 5. Verificar se existe algum problema com o package: dart pub publish --dry-run
 6. Gerar um relatório sobre o package: [pana](https://pub.dev/packages/pana)
 7. Faça o pull request do repositório com suas contribuições
-8. Sua solitação pull request será analizada pelos mantenedores deste package e será implantada se aprovada 
+8. Sua solitação pull request será analizada pelos mantenedores deste package e será implantada se aprovada
 
 Para instalar o pana: dart pub global activate pana
 
