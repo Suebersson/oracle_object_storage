@@ -4,6 +4,7 @@ import 'package:pointycastle/digests/sha256.dart' show SHA256Digest;
 
 import './oracle_object_storage.dart';
 
+/// Auxiliar para converter objetos [Uint8List]
 extension ConverterForBytes on Uint8List {
 
   String get toSha256Base64 => convert.base64.encode(SHA256Digest().process(this));
@@ -12,6 +13,7 @@ extension ConverterForBytes on Uint8List {
 
 }
 
+/// Auxiliar para converter objetos [DateTime]
 extension ConverterForDate on DateTime {
 
   String get toFormatRCF1123 => '${OracleObjectStorage.dateFormatRCF1123.format(this)} GMT';
@@ -20,6 +22,7 @@ extension ConverterForDate on DateTime {
 
 }
 
+/// Auxiliar para converter objetos [String]
 extension ConverterForString on String {
 
   Uint8List get base64ToBytes => convert.base64.decode(this);
@@ -51,6 +54,7 @@ extension ConverterForString on String {
 
 }
 
+/// Auxiliar para converter objetos [Map]
 extension ConverterForMap on Map<String, dynamic> {
 
   String get toJson => convert.json.encode(

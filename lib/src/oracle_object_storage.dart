@@ -5,8 +5,18 @@ import 'package:intl/intl.dart' show DateFormat;
 import './oracle_object_storage_exeception.dart';
 import './private_key.dart';
 import './converters.dart';
+import './interfaces/oci_api_service.dart';
+import './interfaces/oci_bucket.dart';
+import './interfaces/oci_config.dart';
+import './interfaces/oci_services.dart';
+import './services/bucket/src/bucket.dart';
+import './services/multipart_upload/src/multipart_upload.dart';
+import './services/namespace/src/namespace.dart';
+import './services/object/src/object.dart';
+import './services/preauthenticated_request/src/preauthenticated_request.dart';
 
-final class OracleObjectStorage {
+/// Criar instância para requisições Oracle Objet Storage 
+final class OracleObjectStorage implements OCIConfig, OCIAPIService, OCIBucket, OCIServices {
 
   // Referências:
   // https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingobjects.htm
@@ -22,19 +32,21 @@ final class OracleObjectStorage {
   // https://medium.com/@pratapgowda007/signing-oci-object-storage-rest-api-requests-607fb0efa6fb
   // https://docs.oracle.com/pt-br/iaas/Content/API/Concepts/signingrequests.htm#ObjectStoragePut
 
-  const OracleObjectStorage({
-    required this.bucketNameSpace,
+  /// Criar instância para requisições Oracle Objet Storage
+  OracleObjectStorage({
+    required this.nameSpace,
     required this.bucketName,
-    required this.bucketRegion,
-    required this.tenancyOcid,
-    required this.userOcid,
+    required this.region,
+    required this.tenancy,
+    required this.user,
     required this.apiPrivateKey,
   }): 
-    bucketHost = 'objectstorage.$bucketRegion.oraclecloud.com',
-    bucketPath = '/n/$bucketNameSpace/b/$bucketName',
-    serviceAPIOrigin = 'https://objectstorage.$bucketRegion.oraclecloud.com',
-    publicFileURLPath = 'https://$bucketNameSpace.objectstorage.$bucketRegion.oci.customer-oci.com/n/$bucketNameSpace/b/$bucketName/o';
+    host = 'objectstorage.$region.oraclecloud.com',
+    bucketPath = '/n/$nameSpace/b/$bucketName',
+    apiUrlOrigin = 'https://objectstorage.$region.oraclecloud.com',
+    bucketPublicURL = 'https://$nameSpace.objectstorage.$region.oci.customer-oci.com/n/$nameSpace/b/$bucketName/o';
 
+  /// Criar instância para requisições Oracle Objet Storage
   factory OracleObjectStorage.fromConfig({
     required String configFullPath, required String  privateKeyFullPath,}) {
 
@@ -57,24 +69,24 @@ final class OracleObjectStorage {
         final Map<String, dynamic> config = fileBody.replaceAll('\n', '').decodeJson;
 
         return OracleObjectStorage(
-          bucketNameSpace: config['bucketNameSpace'] ?? config['nameSpace'] ?? config['namespace'] 
+          nameSpace: config['nameSpace'] ?? config['bucketNameSpace'] ?? config['namespace'] 
             ?? _generateExeception<String>('O nomeSpace do bucket não foi definido, '
                 'insira a chave e valor no arquivo json [bucketNameSpace]'), 
           bucketName: config['bucketName'] ?? config['buckername'] ?? config['name'] 
             ?? _generateExeception<String>('O nome do bucket não foi definido, '
                 'insira a chave e valor no arquivo json [bucketName]'), 
-          bucketRegion: config['region'] ?? config['bucketRegion'] ?? config['buckerregion'] 
+          region: config['region'] ?? config['bucketRegion'] ?? config['buckerregion'] 
             ?? _generateExeception<String>('A região do bucket não foi definida, '
                 'insira a chave e valor no arquivo json [bucketRegion]'), 
-          tenancyOcid: config['tenancy'] ?? config['tenancyOcid'] ?? config['tenancyOCID'] 
+          tenancy: config['tenancy'] ?? config['tenancyOcid'] ?? config['tenancyOCID'] 
             ?? _generateExeception<String>('A tenancy não foi definida, '
                 'insira a chave e valor no arquivo json [tenancyOcid]'),
-          userOcid: config['user'] ?? config['userOcid'] ?? config['userOCID'] 
+          user: config['user'] ?? config['userOcid'] ?? config['userOCID'] 
             ?? _generateExeception<String>('O ID de usuário não foi definido, '
                 'insira a chave e valor no arquivo json [userOcid]'),
           apiPrivateKey: ApiPrivateKey.fromFile(
             fullPath: privateKeyFullPath, 
-            fingerprint: config['fingerprint'] ?? config['fingerprint'] 
+            fingerprint: config['fingerprint'] ?? config['Fingerprint'] ?? config['fingerPrint'] 
               ?? _generateExeception<String>('A assinatura digital da chave de API não foi definida, '
                 'insira a chave e valor no arquivo json [fingerprint]'),
           ),
@@ -115,17 +127,19 @@ final class OracleObjectStorage {
 
   static T _generateExeception<T>(String message) => throw OracleObjectStorageExeception(message);
 
+  @override
   final String 
-    bucketNameSpace,
+    region,
+    tenancy,
+    user,
+    nameSpace,
+    apiUrlOrigin,
+    host,
     bucketName,
-    bucketHost,
-    bucketRegion,
-    bucketPath,
-    tenancyOcid,
-    userOcid,
-    serviceAPIOrigin,
-    publicFileURLPath; 
+    bucketPublicURL,
+    bucketPath;
   
+  @override
   final ApiPrivateKey apiPrivateKey;
 
   // https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#RFC_1123_DATE_TIME
@@ -139,12 +153,27 @@ final class OracleObjectStorage {
   }
 
   // https://docs.oracle.com/pt-br/iaas/Content/Object/Concepts/dedicatedendpoints.htm#dedicated-endpoints__OCIObjectStoragededicatedendpoints-NewURLs
-  // https://<BUCKER_NAME_SPACE>.objectstorage.<BUCKER_REGION>.oci.customer-oci.com/n/<BUCKER_NAME_SPACE>/b/<BUCKER_NAME>/o<FULLPATH_FILE_NAME>'; 
+  // https://<NAME_SPACE>.objectstorage.<REGION>.oci.customer-oci.com/n/<NAME_SPACE>/b/<BUCKER_NAME>/o<FULLPATH_FILE_NAME>'; 
   /// URL publica para acesso de arquivo no bucket
   /// 
   /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
   String getPublicUrlFile(String pathAndFileName) {
-    return '$publicFileURLPath$pathAndFileName';
+    return '$bucketPublicURL$pathAndFileName';
   }
+  
+  @override
+  late final ObjectStorage object = ObjectStorage(this);
+
+  @override
+  late final Namespace namespace = Namespace(this);
+
+  @override
+  late final Bucket bucket = Bucket(this);
+
+  @override
+  late final MultipartUpload multipartUpload = MultipartUpload(this);
+
+  @override
+  late final PreauthenticatedRequest preauthenticatedRequest = PreauthenticatedRequest(this);
 
 }

@@ -22,7 +22,7 @@ final OracleObjectStorage objectStorage = OracleObjectStorage(
   bucketName: '...', 
   bucketRegion: '...', 
   tenancyOcid: 'ocid1.tenancy.oc1..aaaaa...', 
-  userOcid: 'ocid1.user.oc1..aaaaaa...', 
+  user: 'ocid1.user.oc1..aaaaaa...', 
   apiPrivateKey: ApiPrivateKey.fromValue(
     key: '''
   -----BEGIN PRIVATE KEY-----
@@ -41,7 +41,7 @@ final OracleObjectStorage objectStorage = OracleObjectStorage(
   bucketName: '...', 
   bucketRegion: '...', 
   tenancyOcid: 'ocid1.tenancy.oc1..aaaa...', 
-  userOcid: 'ocid1.user.oc1..aaaaaaa...', 
+  user: 'ocid1.user.oc1..aaaaaaa...', 
   apiPrivateKey: ApiPrivateKey.fromFile(
     fullPath: '.../.oci/private_key.pem',
     fingerprint: 'od:b5:h6:44:1b:...'
@@ -55,7 +55,7 @@ final OracleObjectStorage objectStorage = OracleObjectStorage(
   "bucketNameSpace": "...",
   "bucketName": "...",
   "bucketRegion": "...",
-  "userOcid": "ocid1.user.oc1..aaaaaa...",
+  "user": "ocid1.user.oc1..aaaaaa...",
   "fingerprint": "od:b5:h6:44:1b:...",
   "tenancyOcid": "ocid1.tenancy.oc1..aaaaa..."
 }
@@ -67,50 +67,50 @@ final OracleObjectStorage objectStorage = OracleObjectStorage.fromConfig(
 ```
 
 ## Object
-- [CopyObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/copy_object.md)
-- [DeleteObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/delete_object.md)
-- [GetObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/get_object.md)
-- [HeadObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/head_object.md)
-- [ListObjectVersions](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/list_object_versions.md)
-- [ListObjects](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/list_objects.md)
-- [PutObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/put_object.md)
-- [RenameObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/rename_object.md)
-- [RestoreObjects](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/restore_objects.md)
-- [UpdateObjectStorageTier](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/object/src/update_object_storage_tier.md)
+- [CopyObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/copy_object.md)
+- [DeleteObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/delete_object.md)
+- [GetObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/get_object.md)
+- [HeadObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/head_object.md)
+- [ListObjectVersions](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/list_object_versions.md)
+- [ListObjects](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/list_objects.md)
+- [PutObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/put_object.md)
+- [RenameObject](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/rename_object.md)
+- [RestoreObjects](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/restore_objects.md)
+- [UpdateObjectStorageTier](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object/src/methods/update_object_storage_tier.md)
 
 
 ## MultipartUpload
-- [CreateMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/create_multipart_upload.md)
-- [AbortMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/abort_multipart_upload.md)
-- [CommitMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/commit_multipart_upload.md)
-- [ListMultipartUploadParts](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/list_multipart_upload_parts.md)
-- [ListMultipartUploads](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/list_multipart_uploads.md)
-- [UploadPart](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/upload_part.md)
-
+- [CreateMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/create_multipart_upload.md)
+- [AbortMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/abort_multipart_upload.md)
+- [CommitMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/commit_multipart_upload.md)
+- [ListMultipartUploadParts](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/list_multipart_upload_parts.md)
+- [ListMultipartUploads](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/list_multipart_uploads.md)
+- [UploadPart](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/upload_part.md)
+methods/
 Ordem de como criar um arquivo em múltiplas partes/uploads:
 
-  1. [CreateMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/create_multipart_upload.md)
-  2. [UploadPart](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/upload_part.md) {enviar o corpo/conteúdo/bytes do arquivo}
-  3. [CommitMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/multipart_upload/src/commit_multipart_upload.md) {finalizar/montar as partes enviadas para criar um único arquivo}
+  1. [CreateMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/create_multipart_upload.md)
+  2. [UploadPart](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/upload_part.md) {enviar o corpo/conteúdo/bytes do arquivo}
+  3. [CommitMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/commit_multipart_upload.md) {finalizar/montar as partes enviadas para criar um único arquivo}
 
 
 ## PreauthenticatedRequest
-  - [CreatePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/create_preauthenticated_request.md)
-  - [DeletePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/delete_preauthenticated_request.md)
-  - [GetPreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/get_preauthenticated_request.md)
-  - [ListPreauthenticatedRequests](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/preauthenticated_request/src/list_preauthenticated_requests.md)
+  - [CreatePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/create_preauthenticated_request.md)
+  - [DeletePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/delete_preauthenticated_request.md)
+  - [GetPreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/get_preauthenticated_request.md)
+  - [ListPreauthenticatedRequests](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/list_preauthenticated_requests.md)
 
 
 ## Bucket
-  - [CreateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/create_bucket.md)
-  - [DeleteBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/delete_bucket.md)
-  - [GetBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/get_bucket.md)
-  - [HeadBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/head_bucket.md)
-  - [ListBuckets](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/list_buckets.md)
-  - [UpdateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/bucket/src/update_bucket.md)
+  - [CreateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/create_bucket.md)
+  - [DeleteBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/delete_bucket.md)
+  - [GetBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/get_bucket.md)
+  - [HeadBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/head_bucket.md)
+  - [ListBuckets](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/list_buckets.md)
+  - [UpdateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/update_bucket.md)
 
 
 ## Namespace
-  - [GetNamespace](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/namespace/src/get_namespace.md)
-  - [GetNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/namespace/src/get_namespace_metadata.md)
-  - [UpdateNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/namespace/src/update_namespace_metadata.md)
+  - [GetNamespace](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/namespace/src/methods/get_namespace.md)
+  - [GetNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/namespace/src/methods/get_namespace_metadata.md)
+  - [UpdateNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/namespace/src/methods/update_namespace_metadata.md)

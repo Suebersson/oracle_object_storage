@@ -64,6 +64,8 @@ linter:
 
     # inserir uma vígula em cada atributo dos objetos
     require_trailing_commas: true
+
+    # public_member_api_docs: true
     
     # preferir que use aspas simples nas strings
     # prefer_single_quotes: true 

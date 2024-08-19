@@ -55,8 +55,13 @@ abstract interface class OCIConfig {
   String get tenancy;
   String get user;
   String get region;
-  String get serviceApiUrlOrigin;
   ApiPrivateKey get apiPrivateKey;
+}
+
+abstract interface class OCIAPIService {
+  String get nameSpace;
+  String get host;
+  String get apiUrlOrigin;
 }
 
 abstract interface class OCIServices {
@@ -68,28 +73,26 @@ abstract interface class OCIServices {
 }
 
 abstract interface class OCIBucket {
-  String get bucketNameSpace;
   String get bucketName;
-  String get bucketHost;
   String get bucketPath;
   String get bucketPublicURL;
 }
 
 
-class OracleObjectStorage implements OCIConfig, OCIBucket, OCIServices {
+class OracleObjectStorage implements OCIConfig, OCIAPIService, OCIBucket, OCIServices {
 
   OracleObjectStorage({
     required this.apiPrivateKey,
     required this.user,
     required this.tenancy,
     required this.region,
-    required this.bucketNameSpace,
+    required this.nameSpace,
     required this.bucketName,
   }) :
-    bucketHost = 'objectstorage.$region.oraclecloud.com',
-    bucketPath = '/n/$bucketNameSpace/b/$bucketName',
-    serviceApiUrlOrigin = 'https://objectstorage.$region.oraclecloud.com',
-    bucketPublicURL = 'https://$bucketNameSpace.objectstorage.$region.oci.customer-oci.com/n/$bucketNameSpace/b/$bucketName/o';
+    host = 'objectstorage.$region.oraclecloud.com',
+    bucketPath = '/n/$nameSpace/b/$bucketName',
+    apiUrlOrigin = 'https://objectstorage.$region.oraclecloud.com',
+    bucketPublicURL = 'https://$nameSpace.objectstorage.$region.oci.customer-oci.com/n/$nameSpace/b/$bucketName/o';
 
   @override
   final ApiPrivateKey apiPrivateKey;
@@ -99,10 +102,10 @@ class OracleObjectStorage implements OCIConfig, OCIBucket, OCIServices {
     user,
     tenancy,
     region,
-    serviceApiUrlOrigin,
-    bucketHost,
+    apiUrlOrigin,
+    host,
     bucketName,
-    bucketNameSpace,
+    nameSpace,
     bucketPath,
     bucketPublicURL;
 
@@ -133,7 +136,7 @@ void main() async{
     tenancy: 'tenancy', 
     region: 'region',
     bucketName: '',
-    bucketNameSpace: '', 
+    nameSpace: '', 
   );
 
   storage.namespace.getNamespace();

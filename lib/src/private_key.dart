@@ -12,7 +12,7 @@ import './oracle_object_storage_exeception.dart';
     
     if(count <= 8){
 
-      final ListObjects list = objectStorage.listObjects();
+      final ListObjects list = storage.listObjects();
 
       final http.Response response = await http.get(
         Uri.parse(list.uri),
@@ -32,6 +32,7 @@ import './oracle_object_storage_exeception.dart';
   });
 */
 
+/// Chave de API privada OCI
 final class ApiPrivateKey {
 
   ApiPrivateKey._({

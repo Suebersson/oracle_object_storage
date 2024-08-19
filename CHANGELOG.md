@@ -7,7 +7,12 @@ Serviços disponíveis para teste
 - [PreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#preauthenticatedrequest)
 - [Bucket](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#bucket)
 
-## 0.0.2-dev.1 
+## 0.0.2-dev.1
 
 - Ajustes
 - Implementação da categoria [Namespace](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#namespace)
+
+## 0.0.3-dev.1
+
+- Comentários de [documentação](https://dart.dev/tools/linter-rules/public_member_api_docs) sobre o package nos objeto dart
+- Reestruração da arquitetura de pasta e objetos dart

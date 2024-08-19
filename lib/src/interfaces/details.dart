@@ -1,5 +1,6 @@
 import 'dart:typed_data' show Uint8List;
 
+/// Interface de atributos para criar dados json para uma requisição
 abstract interface class Details<T> {
   T get details;
   String get json;

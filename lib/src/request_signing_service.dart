@@ -7,6 +7,7 @@ import './converters.dart';
 // https://pub.dev/packages/asn1lib
 // https://pub.dev/packages/pointycastle
 
+/// Serviço de assinatura para as requisições REST API
 final class RequestSigningService {
 
   final SHA256Digest digest;
@@ -28,6 +29,7 @@ final class RequestSigningService {
     digestIdentifierHexBytes = decodeHexString(digestIdentifierHex),
     digestBytes = Uint8List(digest.digestSize);
 
+  /// Serviço de assinatura para as requisições REST API
   factory RequestSigningService(Uint8List privateKeyBytes) {
     return RequestSigningService._(
       rsaPrivateKey: parserPrivateKey(parsePrivateSequence(parseSequence(privateKeyBytes))),
@@ -39,6 +41,7 @@ final class RequestSigningService {
   }
 
   // https://github.com/bcgit/pc-dart/blob/master/tutorials/rsa.md#signing-and-verifying
+  /// Assinar os dados de requisição
   String sign(Uint8List dataToSign) {
 
     digest
@@ -57,6 +60,7 @@ final class RequestSigningService {
 
   }
 
+  /// Codifica os bytes
   static Uint8List encode({
     required Uint8List digestBytes, required Uint8List digestIdentifierHexBytes,}) {
 
@@ -91,9 +95,12 @@ final class RequestSigningService {
 
   }
 
+  /// Decodifica o códido hexadecimal
   static Uint8List decodeHexString(String input) {
 
-    assert(input.length % 2 == 0, 'Insira um comprimento de caracteres em pares'); // ex: 22
+    if (!(input.length % 2 == 0)) {// ex: 22
+      throw const RequestSigningServiceExeception('Insira um comprimento de caracteres em pares');
+    }
 
     return Uint8List.fromList(
       List.generate(
@@ -125,6 +132,7 @@ final class RequestSigningService {
     return parser.nextObject() as ASN1Sequence;
   }
 
+  /// Analizar sequência da chave privada
   static RSAPrivateKey parserPrivateKey(ASN1Sequence sequence) {
     final BigInt modulus = (sequence.elements[1] as ASN1Integer).valueAsBigInteger;
     final BigInt exponent = (sequence.elements[3] as ASN1Integer).valueAsBigInteger;
@@ -133,10 +141,19 @@ final class RequestSigningService {
     return RSAPrivateKey(modulus, exponent, p, q);
   }
 
+  /// Analizar sequência da chave publica
   static RSAPublicKey parserPublicKey(ASN1Sequence sequence) {
     final BigInt modulus = (sequence.elements[0] as ASN1Integer).valueAsBigInteger;
     final BigInt exponent = (sequence.elements[1] as ASN1Integer).valueAsBigInteger;
     return RSAPublicKey(modulus, exponent);
   }
   
+}
+
+/// Exeception para serviço de assinatura
+final class RequestSigningServiceExeception implements Exception {
+  final String message;
+  const RequestSigningServiceExeception(this.message);
+  @override
+  String toString() => message;
 }

@@ -1,3 +1,6 @@
+import '../oracle_object_storage.dart';
+
+/// Interface de atributos para o objeto [OracleObjectStorage]
 abstract interface class OracleRequestAttributes {
   String get uri;
   String get date;

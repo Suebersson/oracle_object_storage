@@ -4,7 +4,7 @@
 
 name: oracle_object_storage
 description: Package para construir os headers de requisições REST API para usar os serviços da Oracle Cloud Object Storage.
-version: 0.0.2-dev.1
+version: 0.0.3-dev.1
 homepage: https://github.com/Suebersson/oracle_object_storage.git
 repository: https://github.com/Suebersson/oracle_object_storage
 issue_tracker: https://github.com/Suebersson/oracle_object_storage/issues
