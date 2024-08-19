@@ -17,7 +17,7 @@ Como criar sua [chave de API](https://docs.oracle.com/en/learn/manage-oci-restap
 ## Formas de instânciar o objeto [OracleObjectStorage](https://docs.oracle.com/pt-br/iaas/Content/Object/Concepts/objectstorageoverview.htm) para requisições [REST API](https://docs.oracle.com/en/learn/manage-oci-restapi/index.html#introduction)
 
 ```dart
-final OracleObjectStorage objectStorage = OracleObjectStorage(
+final OracleObjectStorage storage = OracleObjectStorage(
   nameSpace: '...', 
   bucketName: '...', 
   region: '...', 
@@ -36,7 +36,7 @@ final OracleObjectStorage objectStorage = OracleObjectStorage(
 ```
 
 ```dart
-final OracleObjectStorage objectStorage = OracleObjectStorage(
+final OracleObjectStorage storage = OracleObjectStorage(
   nameSpace: '...', 
   bucketName: '...', 
   region: '...', 
@@ -60,7 +60,7 @@ final OracleObjectStorage objectStorage = OracleObjectStorage(
   "fingerprint": "od:b5:h6:44:1b:...",
 }
 
-final OracleObjectStorage objectStorage = OracleObjectStorage.fromConfig(
+final OracleObjectStorage storage = OracleObjectStorage.fromConfig(
     configFullPath: '.../.oci/config.json',
     privateKeyFullPath: '.../.oci/private_key.pem'
 );
