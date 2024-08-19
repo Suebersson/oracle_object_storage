@@ -6,32 +6,42 @@ import '../object.dart';
 
 /// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/HeadObject
 final class HeadObject implements OracleRequestAttributes {
-
   const HeadObject._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -42,10 +52,10 @@ final class HeadObject implements OracleRequestAttributes {
   }
 
   /// Construir dados de autorização para o serviço [HeadObject]
-  /// 
+  ///
   /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
   factory HeadObject({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     required String pathAndFileName,
     String? namespaceName,
     String? bucketName,
@@ -53,9 +63,10 @@ final class HeadObject implements OracleRequestAttributes {
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     if (pathAndFileName.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o caminho completo do arquivo');
+      return throw const OracleObjectStorageExeception(
+        'Defina o caminho completo do arquivo',
+      );
     }
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
@@ -80,35 +91,31 @@ final class HeadObject implements OracleRequestAttributes {
     bucketName ??= storage.bucketName;
 
     final String request = query is Query
-      ? '/n/$namespaceName/b/$bucketName/o$pathAndFileName${query.toURLParams}'
-      : '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
+        ? '/n/$namespaceName/b/$bucketName/o$pathAndFileName${query.toURLParams}'
+        : '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
 
-    final String signingString = 
-      '(request-target): head $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): head $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return HeadObject._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [HeadObject]
 extension HeadObjectMethod on ObjectStorage {
-  
   /// Construir dados de autorização para o serviço [HeadObject]
-  /// 
+  ///
   /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
   HeadObject headObject({
     required String pathAndFileName,
@@ -122,11 +129,10 @@ extension HeadObjectMethod on ObjectStorage {
       storage: storage,
       namespaceName: namespaceName,
       bucketName: bucketName,
-      query: query, 
+      query: query,
       date: date,
       pathAndFileName: pathAndFileName,
       addHeaders: addHeaders,
     );
   }
-
 }

@@ -9,11 +9,10 @@ import '../preauthenticated_request.dart';
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/PreauthenticatedRequest/CreatePreauthenticatedRequest
 final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
-
   const CreatePreauthenticatedRequest._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
     required this.jsonBytes,
     required this.xContentSha256,
@@ -34,18 +33,41 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
 
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,)
-      ..update('x-content-sha256', (_) => xContentSha256, ifAbsent: () => xContentSha256,)
-      ..update('content-type', (_) => contentType, ifAbsent: () => contentType,)
-      ..update('content-Length', (_) => contentLegth, ifAbsent: () => contentLegth,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        )
+        ..update(
+          'x-content-sha256',
+          (_) => xContentSha256,
+          ifAbsent: () => xContentSha256,
+        )
+        ..update(
+          'content-type',
+          (_) => contentType,
+          ifAbsent: () => contentType,
+        )
+        ..update(
+          'content-Length',
+          (_) => contentLegth,
+          ifAbsent: () => contentLegth,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -59,17 +81,16 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
   }
 
   /// Construir dados de autorização para o serviço [CreatePreauthenticatedRequest]
-  /// 
+  ///
   /// [date] na zona UTC
   factory CreatePreauthenticatedRequest({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     required CreatePreauthenticatedRequestDetails details,
     String? namespaceName,
     String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
@@ -96,37 +117,34 @@ final class CreatePreauthenticatedRequest implements OracleRequestAttributes {
 
     final String request = '/n/$namespaceName/b/$bucketName/p/';
 
-    final String signingString = 
-      '(request-target): post $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}\n'
-      'x-content-sha256: ${details.xContentSha256}\n'
-      'content-type: ${details.contentType}\n'
-      'content-length: ${details.bytesLength}';
+    final String signingString = '(request-target): post $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}\n'
+        'x-content-sha256: ${details.xContentSha256}\n'
+        'content-type: ${details.contentType}\n'
+        'content-length: ${details.bytesLength}';
 
     return CreatePreauthenticatedRequest._(
       uri: '${storage.apiUrlOrigin}$request',
-      date: dateString, 
+      date: dateString,
       host: storage.host,
       jsonBytes: details.bytes,
       xContentSha256: details.xContentSha256,
       contentType: details.contentType,
       contentLegth: '${details.bytesLength}',
       addHeaders: addHeaders,
-      authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+      authorization:
+          'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [CreatePreauthenticatedRequest]
 extension CreatePreauthenticatedRequestMethod on PreauthenticatedRequest {
-  
   /// Construir dados de autorização para o serviço [CreatePreauthenticatedRequest]
   CreatePreauthenticatedRequest createPreauthenticatedRequest({
     required CreatePreauthenticatedRequestDetails details,
@@ -136,29 +154,26 @@ extension CreatePreauthenticatedRequestMethod on PreauthenticatedRequest {
     Map<String, String>? addHeaders,
   }) {
     return CreatePreauthenticatedRequest(
-      storage: storage, 
+      storage: storage,
       details: details,
       namespaceName: namespaceName,
       bucketName: bucketName,
       date: date,
       addHeaders: addHeaders,
     );
-    
   }
-
 }
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/CreatePreauthenticatedRequestDetails
-final class CreatePreauthenticatedRequestDetails implements Details<Map<String, String>> {
-
+final class CreatePreauthenticatedRequestDetails
+    implements Details<Map<String, String>> {
   const CreatePreauthenticatedRequestDetails._({
     required this.details,
     required this.json,
     required this.bytes,
     required this.xContentSha256,
-  }) : 
-    contentType = 'application/json', 
-    bytesLength = bytes.length;
+  })  : contentType = 'application/json',
+        bytesLength = bytes.length;
 
   @override
   final Map<String, String> details;
@@ -168,16 +183,16 @@ final class CreatePreauthenticatedRequestDetails implements Details<Map<String, 
 
   @override
   final int bytesLength;
-  
+
   @override
   final String contentType, json, xContentSha256;
 
   /// [timeExpires] no formato RFC 3339
-  /// 
+  ///
   /// [objectName] o nome de arquivo específico ou um prefixo
-  /// 
-  /// arquivo: events/banners/fileName.jpg  
-  /// 
+  ///
+  /// arquivo: events/banners/fileName.jpg
+  ///
   /// prefixo: events/banners/
   factory CreatePreauthenticatedRequestDetails({
     required AccessType accessType,
@@ -186,9 +201,10 @@ final class CreatePreauthenticatedRequestDetails implements Details<Map<String, 
     BucketListingAction? bucketListingAction,
     String? objectName,
   }) {
-
     if (name.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o nome do acesso pré-autenticado');
+      return throw const OracleObjectStorageExeception(
+        'Defina o nome do acesso pré-autenticado',
+      );
     }
 
     final Map<String, String> source = {
@@ -209,17 +225,15 @@ final class CreatePreauthenticatedRequestDetails implements Details<Map<String, 
     final Uint8List bytes = json.utf8ToBytes;
 
     return CreatePreauthenticatedRequestDetails._(
-      details: source, 
-      json: json, 
-      bytes: bytes, 
+      details: source,
+      json: json,
+      bytes: bytes,
       xContentSha256: bytes.toSha256Base64,
     );
-
   }
 
   @override
   String toString() => '$runtimeType($details)'.replaceAll(RegExp('{|}'), '');
-
 }
 
 /// Parâmentro para objeto [CreatePreauthenticatedRequestDetails]

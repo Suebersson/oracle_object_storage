@@ -5,33 +5,43 @@ import '../../../../oci_request_helpers/query.dart';
 import '../multipart_upload.dart';
 
 /// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/ListMultipartUploadParts
-final class ListMultipartUploadParts implements OracleRequestAttributes{
-  
+final class ListMultipartUploadParts implements OracleRequestAttributes {
   const ListMultipartUploadParts._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -42,23 +52,26 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
   }
 
   /// Construir dados de autorização para o serviço [ListMultipartUploadParts]
-  /// 
+  ///
   /// [objectName] Ex: users/profilePicture/userId.jpg
   factory ListMultipartUploadParts({
-    required OracleObjectStorage storage, 
-    required String objectName, 
+    required OracleObjectStorage storage,
+    required String objectName,
     required Query query,
     String? namespaceName,
     String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     if (objectName.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o nome do arquivo');
+      return throw const OracleObjectStorageExeception(
+        'Defina o nome do arquivo',
+      );
     }
     if (!query.querys.containsKey('uploadId')) {
-      return throw const OracleObjectStorageExeception('O parâmetros [uploadId] é obrigatório dentro da query');
+      return throw const OracleObjectStorageExeception(
+        'O parâmetros [uploadId] é obrigatório dentro da query',
+      );
     }
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
@@ -82,40 +95,37 @@ final class ListMultipartUploadParts implements OracleRequestAttributes{
     namespaceName ??= storage.nameSpace;
     bucketName ??= storage.bucketName;
 
-    final String request = '/n/$namespaceName/b/$bucketName/u/$objectName${query.toURLParams}';
+    final String request =
+        '/n/$namespaceName/b/$bucketName/u/$objectName${query.toURLParams}';
 
-    final String signingString = 
-      '(request-target): get $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): get $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return ListMultipartUploadParts._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [ListMultipartUploadParts]
 extension ListMultipartUploadPartsMethod on MultipartUpload {
-  
   /// Construir dados de autorização para o serviço [ListMultipartUploadParts]
-  /// 
-  /// [objectName] diretório + nome do arquivo 
-  /// 
+  ///
+  /// [objectName] diretório + nome do arquivo
+  ///
   /// Ex: users/profilePicture/userId.jpg
-  /// 
+  ///
   /// ou
-  /// 
+  ///
   /// Ex: userId.jpg
   ListMultipartUploadParts listMultipartUploadParts({
     required String objectName,
@@ -133,5 +143,4 @@ extension ListMultipartUploadPartsMethod on MultipartUpload {
       addHeaders: addHeaders,
     );
   }
-
 }

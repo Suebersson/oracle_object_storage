@@ -5,37 +5,47 @@ import '../../../../oci_request_helpers/query.dart';
 import '../object.dart';
 
 /// Construir dados de autorização para o serviço [DeleteObject]
-/// 
+///
 /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
 ///
 /// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/DeleteObject
 final class DeleteObject implements OracleRequestAttributes {
-
   const DeleteObject._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
-    required this.host, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
+    required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -46,10 +56,10 @@ final class DeleteObject implements OracleRequestAttributes {
   }
 
   /// Construir dados de autorização para o serviço [DeleteObject]
-  /// 
+  ///
   /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
   factory DeleteObject({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     required String pathAndFileName,
     String? namespaceName,
     String? bucketName,
@@ -57,14 +67,15 @@ final class DeleteObject implements OracleRequestAttributes {
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     if (pathAndFileName.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o caminho completo do arquivo');
+      return throw const OracleObjectStorageExeception(
+        'Defina o caminho completo do arquivo',
+      );
     }
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-     /*
+    /*
       # Modelo para string de assinatura para o método [delete]
 
       (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/o/{objectName}\n
@@ -84,37 +95,33 @@ final class DeleteObject implements OracleRequestAttributes {
     bucketName ??= storage.bucketName;
 
     final String request = query is Query
-      ? '/n/$namespaceName/b/$bucketName/o$pathAndFileName${query.toURLParams}'
-      : '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
+        ? '/n/$namespaceName/b/$bucketName/o$pathAndFileName${query.toURLParams}'
+        : '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
 
-    final String signingString = 
-      '(request-target): delete $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): delete $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return DeleteObject._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [DeleteObject]
-/// 
+///
 /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
 extension DeleteObjectMethod on ObjectStorage {
-  
   /// Construir dados de autorização para o serviço [DeleteObject]
-  /// 
+  ///
   /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
   DeleteObject deleteObject({
     required String pathAndFileName,
@@ -127,12 +134,11 @@ extension DeleteObjectMethod on ObjectStorage {
     return DeleteObject(
       storage: storage,
       namespaceName: namespaceName,
-      bucketName: bucketName, 
+      bucketName: bucketName,
       query: query,
       date: date,
       pathAndFileName: pathAndFileName,
       addHeaders: addHeaders,
     );
   }
-
 }

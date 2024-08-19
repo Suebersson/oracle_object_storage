@@ -18,10 +18,10 @@ Como criar sua [chave de API](https://docs.oracle.com/en/learn/manage-oci-restap
 
 ```dart
 final OracleObjectStorage objectStorage = OracleObjectStorage(
-  bucketNameSpace: '...', 
+  nameSpace: '...', 
   bucketName: '...', 
-  bucketRegion: '...', 
-  tenancyOcid: 'ocid1.tenancy.oc1..aaaaa...', 
+  region: '...', 
+  tenancy: 'ocid1.tenancy.oc1..aaaaa...', 
   user: 'ocid1.user.oc1..aaaaaa...', 
   apiPrivateKey: ApiPrivateKey.fromValue(
     key: '''
@@ -37,10 +37,10 @@ final OracleObjectStorage objectStorage = OracleObjectStorage(
 
 ```dart
 final OracleObjectStorage objectStorage = OracleObjectStorage(
-  bucketNameSpace: '...', 
+  nameSpace: '...', 
   bucketName: '...', 
-  bucketRegion: '...', 
-  tenancyOcid: 'ocid1.tenancy.oc1..aaaa...', 
+  region: '...', 
+  tenancy: 'ocid1.tenancy.oc1..aaaa...', 
   user: 'ocid1.user.oc1..aaaaaaa...', 
   apiPrivateKey: ApiPrivateKey.fromFile(
     fullPath: '.../.oci/private_key.pem',
@@ -52,12 +52,12 @@ final OracleObjectStorage objectStorage = OracleObjectStorage(
 ```dart
 .../.oci/config.json
 {
-  "bucketNameSpace": "...",
+  "nameSpace": "...",
   "bucketName": "...",
-  "bucketRegion": "...",
+  "region": "...",
   "user": "ocid1.user.oc1..aaaaaa...",
+  "tenancy": "ocid1.tenancy.oc1..aaaaa..."
   "fingerprint": "od:b5:h6:44:1b:...",
-  "tenancyOcid": "ocid1.tenancy.oc1..aaaaa..."
 }
 
 final OracleObjectStorage objectStorage = OracleObjectStorage.fromConfig(

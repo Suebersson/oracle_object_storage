@@ -11,12 +11,11 @@ import '../multipart_upload.dart';
 ///
 /// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/CommitMultipartUpload
 final class CommitMultipartUpload implements OracleRequestAttributes {
-  
   const CommitMultipartUpload._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
-    required this.host, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
+    required this.host,
     required this.xContentSha256,
     required this.contentLegth,
     required this.contentType,
@@ -29,32 +28,54 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
   @override
   final String uri, date, authorization, host;
 
-  final String 
-    publicUrlFile,
-    jsonData,
-    xContentSha256, 
-    contentLegth, 
-    contentType;
+  final String publicUrlFile,
+      jsonData,
+      xContentSha256,
+      contentLegth,
+      contentType;
 
   final Uint8List jsonBytes;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,)
-      ..update('x-content-sha256', (_) => xContentSha256, ifAbsent: () => xContentSha256,)
-      ..update('content-type', (_) => 'application/json', ifAbsent: () => 'application/json',)
-      ..update('content-Length', (_) => contentLegth, ifAbsent: () => contentLegth,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        )
+        ..update(
+          'x-content-sha256',
+          (_) => xContentSha256,
+          ifAbsent: () => xContentSha256,
+        )
+        ..update(
+          'content-type',
+          (_) => 'application/json',
+          ifAbsent: () => 'application/json',
+        )
+        ..update(
+          'content-Length',
+          (_) => contentLegth,
+          ifAbsent: () => contentLegth,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -66,10 +87,10 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
       };
     }
   }
-  
+
   /// Construir dados de autorização para o serviço [CommitMultipartUpload]
   factory CommitMultipartUpload({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     required CommitMultipartUploadDetails details,
     required String uploadId,
     required String objectName,
@@ -78,9 +99,8 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
-    
+
     /*
       # Modelo para String de assinatura para o método [post]
 
@@ -103,20 +123,20 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
     namespaceName ??= storage.nameSpace;
     bucketName ??= storage.bucketName;
 
-    final String request = '/n/$namespaceName/b/$bucketName/u/$objectName?uploadId=$uploadId';
+    final String request =
+        '/n/$namespaceName/b/$bucketName/u/$objectName?uploadId=$uploadId';
 
-    final String signingString = 
-      '(request-target): post $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}\n'
-      'x-content-sha256: ${details.xContentSha256}\n'
-      'content-type: ${details.contentType}\n'
-      'content-length: ${details.bytesLength}';
-      
+    final String signingString = '(request-target): post $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}\n'
+        'x-content-sha256: ${details.xContentSha256}\n'
+        'content-type: ${details.contentType}\n'
+        'content-length: ${details.bytesLength}';
+
     return CommitMultipartUpload._(
       publicUrlFile: storage.getPublicUrlFile('/$objectName'),
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       xContentSha256: details.xContentSha256,
@@ -124,28 +144,26 @@ final class CommitMultipartUpload implements OracleRequestAttributes {
       contentLegth: '${details.bytesLength}',
       jsonBytes: details.bytes,
       jsonData: details.json,
-      authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+      authorization:
+          'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [CommitMultipartUpload]
 extension CommitMultipartUploadMethod on MultipartUpload {
-  
   /// Construir dados de autorização para o serviço [CommitMultipartUpload]
-  /// 
-  /// [objectName] diretório + nome do arquivo 
-  /// 
+  ///
+  /// [objectName] diretório + nome do arquivo
+  ///
   /// Ex: users/profilePicture/userId.jpg
-  /// 
+  ///
   /// ou
-  /// 
+  ///
   /// Ex: userId.jpg
   CommitMultipartUpload commitMultipartUpload({
     required CommitMultipartUploadDetails details,
@@ -156,9 +174,8 @@ extension CommitMultipartUploadMethod on MultipartUpload {
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-  
     return CommitMultipartUpload(
-      storage: storage, 
+      storage: storage,
       objectName: objectName,
       uploadId: uploadId,
       details: details,
@@ -167,22 +184,19 @@ extension CommitMultipartUploadMethod on MultipartUpload {
       date: date,
       addHeaders: addHeaders,
     );
-  
   }
-
 }
 
 /// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/datatypes/CommitMultipartUploadDetails
-final class CommitMultipartUploadDetails implements Details<Map<String, dynamic>> {
-  
+final class CommitMultipartUploadDetails
+    implements Details<Map<String, dynamic>> {
   const CommitMultipartUploadDetails._({
     required this.details,
     required this.json,
     required this.bytes,
     required this.xContentSha256,
-  }) : 
-    contentType = 'application/json', 
-    bytesLength = bytes.length;
+  })  : contentType = 'application/json',
+        bytesLength = bytes.length;
 
   @override
   final Map<String, dynamic> details;
@@ -192,18 +206,19 @@ final class CommitMultipartUploadDetails implements Details<Map<String, dynamic>
 
   @override
   final int bytesLength;
-  
+
   @override
   final String contentType, json, xContentSha256;
 
   /// Construir o objeto [CommitMultipartUploadDetails]
   factory CommitMultipartUploadDetails({
-    required List<PartsToCommit> parts, 
-    List<int>? partsToExclude, 
+    required List<PartsToCommit> parts,
+    List<int>? partsToExclude,
   }) {
-
     if (parts.isEmpty) {
-      throw const OracleObjectStorageExeception('O parâmetro [parts] é obrigatório');
+      throw const OracleObjectStorageExeception(
+        'O parâmetro [parts] é obrigatório',
+      );
     }
 
     final Map<String, dynamic> source = {};
@@ -220,17 +235,15 @@ final class CommitMultipartUploadDetails implements Details<Map<String, dynamic>
     final Uint8List bytes = json.utf8ToBytes;
 
     return CommitMultipartUploadDetails._(
-      details: source, 
-      json: json, 
+      details: source,
+      json: json,
       bytes: bytes,
       xContentSha256: bytes.toSha256Base64,
     );
-
   }
-  
+
   @override
   String toString() => '$runtimeType($details)'.replaceAll(RegExp('{|}'), '');
-
 }
 
 /// Parâmentros para o objeto [CommitMultipartUploadDetails]
@@ -239,8 +252,8 @@ final class PartsToCommit {
   final int partNum;
   final String etag;
   Map<String, dynamic> get toMap => {
-    'partNum': partNum,
-    'etag': etag,
-  };
+        'partNum': partNum,
+        'etag': etag,
+      };
   String get toJson => toMap.toJson;
 }

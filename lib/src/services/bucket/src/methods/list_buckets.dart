@@ -4,35 +4,45 @@ import '../../../../oci_request_helpers/query.dart';
 import '../bucket.dart';
 
 /// Construir dados de autorização para o serviço [ListBuckets]
-/// 
+///
 // https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/Bucket/ListBuckets
 final class ListBuckets implements OracleRequestAttributes {
-  
   const ListBuckets._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
-    this.addHeaders, 
+    this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -43,16 +53,15 @@ final class ListBuckets implements OracleRequestAttributes {
   }
 
   /// Construir dados de autorização para o serviço [ListBuckets]
-  /// 
+  ///
   /// A chave [compartmentId] dentro da query é == tenancy
   factory ListBuckets({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     Query? query,
     String? namespaceName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
@@ -86,32 +95,28 @@ final class ListBuckets implements OracleRequestAttributes {
 
     final String request = '/n/$namespaceName/b/${query.toURLParams}';
 
-    final String signingString = 
-      '(request-target): get $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): get $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return ListBuckets._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [ListBuckets]
 extension ListBucketsMethod on Bucket {
-  
   /// Construir dados de autorização para o serviço [ListBuckets]
-  /// 
+  ///
   /// A chave [compartmentId] dentro da query é == tenancy
   ListBuckets listBuckets({
     Query? query,
@@ -127,5 +132,4 @@ extension ListBucketsMethod on Bucket {
       addHeaders: addHeaders,
     );
   }
-
 }

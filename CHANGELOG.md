@@ -14,5 +14,5 @@ Serviços disponíveis para teste
 
 ## 0.0.3-dev.1
 
-- Comentários de [documentação](https://dart.dev/tools/linter-rules/public_member_api_docs) sobre o package nos objeto dart
+- Comentários de [documentação](https://dart.dev/tools/linter-rules/public_member_api_docs) sobre os objeto dart no package
 - Reestruração da arquitetura de pasta e objetos dart

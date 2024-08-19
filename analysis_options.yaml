@@ -65,6 +65,7 @@ linter:
     # inserir uma vígula em cada atributo dos objetos
     require_trailing_commas: true
 
+    # Mostrar onde deve inserir os comentários de documentação nos objeto dart
     # public_member_api_docs: true
     
     # preferir que use aspas simples nas strings

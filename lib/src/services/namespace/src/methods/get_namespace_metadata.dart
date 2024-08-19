@@ -4,32 +4,42 @@ import '../namespace.dart';
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/Namespace/GetNamespaceMetadata
 final class GetNamespaceMetadata implements OracleRequestAttributes {
-  
   const GetNamespaceMetadata._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -41,12 +51,11 @@ final class GetNamespaceMetadata implements OracleRequestAttributes {
 
   /// Construir dados de autorização para o serviço [GetNamespaceMetadata]
   factory GetNamespaceMetadata({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     String? namespaceName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
@@ -69,30 +78,26 @@ final class GetNamespaceMetadata implements OracleRequestAttributes {
 
     final String request = '/n/$namespaceName';
 
-    final String signingString = 
-      '(request-target): get $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): get $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return GetNamespaceMetadata._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [GetNamespaceMetadata]
 extension GetNamespaceMetadataMethod on Namespace {
-  
   /// Construir dados de autorização para o serviço [GetNamespaceMetadata]
   GetNamespaceMetadata getNamespaceMetadata({
     String? namespaceName,
@@ -106,5 +111,4 @@ extension GetNamespaceMetadataMethod on Namespace {
       addHeaders: addHeaders,
     );
   }
-
 }

@@ -6,32 +6,42 @@ import '../bucket.dart';
 ///
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/Bucket/DeleteBucket
 final class DeleteBucket implements OracleRequestAttributes {
-  
   const DeleteBucket._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
-    required this.host, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
+    required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -40,7 +50,7 @@ final class DeleteBucket implements OracleRequestAttributes {
       };
     }
   }
-  
+
   /// Construir dados de autorização para o serviço [DeleteBucket]
   factory DeleteBucket({
     required OracleObjectStorage storage,
@@ -49,10 +59,9 @@ final class DeleteBucket implements OracleRequestAttributes {
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-     /*
+    /*
       # Modelo para string de assinatura para o método [delete]
 
       (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/\n
@@ -73,30 +82,26 @@ final class DeleteBucket implements OracleRequestAttributes {
 
     final String request = '/n/$namespaceName/b/$bucketName/';
 
-    final String signingString = 
-      '(request-target): delete $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): delete $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return DeleteBucket._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [DeleteBucket]
 extension DeleteBucketMethod on Bucket {
-  
   /// Construir dados de autorização para o serviço [DeleteBucket]
   DeleteBucket deleteBucket({
     String? namespaceName,
@@ -112,5 +117,4 @@ extension DeleteBucketMethod on Bucket {
       addHeaders: addHeaders,
     );
   }
-
 }

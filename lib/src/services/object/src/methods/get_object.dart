@@ -6,32 +6,42 @@ import '../object.dart';
 
 /// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/GetObject
 final class GetObject implements OracleRequestAttributes {
-
   const GetObject._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -42,20 +52,21 @@ final class GetObject implements OracleRequestAttributes {
   }
 
   /// Construir dados de autorização para o serviço [GetObject]
-  /// 
+  ///
   /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
   factory GetObject({
-    required OracleObjectStorage storage, 
-    required String pathAndFileName, 
+    required OracleObjectStorage storage,
+    required String pathAndFileName,
     String? namespaceName,
     String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     if (pathAndFileName.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o caminho completo do arquivo');
+      return throw const OracleObjectStorageExeception(
+        'Defina o caminho completo do arquivo',
+      );
     }
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
@@ -80,35 +91,31 @@ final class GetObject implements OracleRequestAttributes {
     bucketName ??= storage.bucketName;
 
     final String request = query is Query
-      ? '/n/$namespaceName/b/$bucketName/o$pathAndFileName${query.toURLParams}'
-      : '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
+        ? '/n/$namespaceName/b/$bucketName/o$pathAndFileName${query.toURLParams}'
+        : '/n/$namespaceName/b/$bucketName/o$pathAndFileName';
 
-    final String signingString = 
-      '(request-target): get $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): get $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return GetObject._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [GetObject]
 extension GetObjectMethod on ObjectStorage {
-  
   /// Construir dados de autorização para o serviço [GetObject]
-  /// 
+  ///
   /// [pathAndFileName] diretório + nome do arquivo Ex: /users/profilePicture/userId.jpg
   GetObject getObject({
     required String pathAndFileName,
@@ -128,5 +135,4 @@ extension GetObjectMethod on ObjectStorage {
       addHeaders: addHeaders,
     );
   }
-
 }

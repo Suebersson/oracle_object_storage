@@ -15,9 +15,9 @@ import './services/namespace/src/namespace.dart';
 import './services/object/src/object.dart';
 import './services/preauthenticated_request/src/preauthenticated_request.dart';
 
-/// Criar instância para requisições Oracle Objet Storage 
-final class OracleObjectStorage implements OCIConfig, OCIAPIService, OCIBucket, OCIServices {
-
+/// Criar instância para requisições Oracle Objet Storage
+final class OracleObjectStorage
+    implements OCIConfig, OCIAPIService, OCIBucket, OCIServices {
   // Referências:
   // https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingobjects.htm
   // https://docs.oracle.com/pt-br/iaas/Content/Object/Concepts/objectstorageoverview.htm
@@ -40,62 +40,79 @@ final class OracleObjectStorage implements OCIConfig, OCIAPIService, OCIBucket, 
     required this.tenancy,
     required this.user,
     required this.apiPrivateKey,
-  }): 
-    host = 'objectstorage.$region.oraclecloud.com',
-    bucketPath = '/n/$nameSpace/b/$bucketName',
-    apiUrlOrigin = 'https://objectstorage.$region.oraclecloud.com',
-    bucketPublicURL = 'https://$nameSpace.objectstorage.$region.oci.customer-oci.com/n/$nameSpace/b/$bucketName/o';
+  })  : host = 'objectstorage.$region.oraclecloud.com',
+        bucketPath = '/n/$nameSpace/b/$bucketName',
+        apiUrlOrigin = 'https://objectstorage.$region.oraclecloud.com',
+        bucketPublicURL =
+            'https://$nameSpace.objectstorage.$region.oci.customer-oci.com/n/$nameSpace/b/$bucketName/o';
 
   /// Criar instância para requisições Oracle Objet Storage
   factory OracleObjectStorage.fromConfig({
-    required String configFullPath, required String  privateKeyFullPath,}) {
-
+    required String configFullPath,
+    required String privateKeyFullPath,
+  }) {
     try {
-
       if (configFullPath.isEmpty) {
-        return throw const OracleObjectStorageExeception('O endereço do arquivo .json no dispositivo '
-          'não pode ser vazio [configFullPath]');      
-      } else if(!configFullPath.endsWith('.json')) {
-        return throw const OracleObjectStorageExeception('informe o endereço do arquivo de '
-          'configuração do tipo .json [configFullPath]');      
+        return throw const OracleObjectStorageExeception(
+            'O endereço do arquivo .json no dispositivo '
+            'não pode ser vazio [configFullPath]');
+      } else if (!configFullPath.endsWith('.json')) {
+        return throw const OracleObjectStorageExeception(
+            'informe o endereço do arquivo de '
+            'configuração do tipo .json [configFullPath]');
       }
-      
+
       final File file = File(configFullPath);
 
       if (file.existsSync()) {
-
         final String fileBody = file.readAsStringSync();
 
-        final Map<String, dynamic> config = fileBody.replaceAll('\n', '').decodeJson;
+        final Map<String, dynamic> config =
+            fileBody.replaceAll('\n', '').decodeJson;
 
         return OracleObjectStorage(
-          nameSpace: config['nameSpace'] ?? config['bucketNameSpace'] ?? config['namespace'] 
-            ?? _generateExeception<String>('O nomeSpace do bucket não foi definido, '
-                'insira a chave e valor no arquivo json [bucketNameSpace]'), 
-          bucketName: config['bucketName'] ?? config['buckername'] ?? config['name'] 
-            ?? _generateExeception<String>('O nome do bucket não foi definido, '
-                'insira a chave e valor no arquivo json [bucketName]'), 
-          region: config['region'] ?? config['bucketRegion'] ?? config['buckerregion'] 
-            ?? _generateExeception<String>('A região do bucket não foi definida, '
-                'insira a chave e valor no arquivo json [bucketRegion]'), 
-          tenancy: config['tenancy'] ?? config['tenancyOcid'] ?? config['tenancyOCID'] 
-            ?? _generateExeception<String>('A tenancy não foi definida, '
-                'insira a chave e valor no arquivo json [tenancyOcid]'),
-          user: config['user'] ?? config['userOcid'] ?? config['userOCID'] 
-            ?? _generateExeception<String>('O ID de usuário não foi definido, '
-                'insira a chave e valor no arquivo json [userOcid]'),
+          nameSpace: config['nameSpace'] ??
+              config['bucketNameSpace'] ??
+              config['namespace'] ??
+              _generateExeception<String>(
+                  'O nomeSpace do bucket não foi definido, '
+                  'insira a chave e valor no arquivo json [bucketNameSpace]'),
+          bucketName: config['bucketName'] ??
+              config['buckername'] ??
+              config['name'] ??
+              _generateExeception<String>('O nome do bucket não foi definido, '
+                  'insira a chave e valor no arquivo json [bucketName]'),
+          region: config['region'] ??
+              config['bucketRegion'] ??
+              config['buckerregion'] ??
+              _generateExeception<String>(
+                  'A região do bucket não foi definida, '
+                  'insira a chave e valor no arquivo json [bucketRegion]'),
+          tenancy: config['tenancy'] ??
+              config['tenancyOcid'] ??
+              config['tenancyOCID'] ??
+              _generateExeception<String>('A tenancy não foi definida, '
+                  'insira a chave e valor no arquivo json [tenancyOcid]'),
+          user: config['user'] ??
+              config['userOcid'] ??
+              config['userOCID'] ??
+              _generateExeception<String>('O ID de usuário não foi definido, '
+                  'insira a chave e valor no arquivo json [userOcid]'),
           apiPrivateKey: ApiPrivateKey.fromFile(
-            fullPath: privateKeyFullPath, 
-            fingerprint: config['fingerprint'] ?? config['Fingerprint'] ?? config['fingerPrint'] 
-              ?? _generateExeception<String>('A assinatura digital da chave de API não foi definida, '
-                'insira a chave e valor no arquivo json [fingerprint]'),
+            fullPath: privateKeyFullPath,
+            fingerprint: config['fingerprint'] ??
+                config['Fingerprint'] ??
+                config['fingerPrint'] ??
+                _generateExeception<String>(
+                    'A assinatura digital da chave de API não foi definida, '
+                    'insira a chave e valor no arquivo json [fingerprint]'),
           ),
         );
-
       } else {
-        return throw OracleObjectStorageExeception('Arquivo de configurações não localizado: $configFullPath');      
+        return throw OracleObjectStorageExeception(
+          'Arquivo de configurações não localizado: $configFullPath',
+        );
       }
-      
     } on TypeError catch (error, stackTrace) {
       log(
         'Erro ao tentar definir alguma variável com tipos diferentes',
@@ -103,7 +120,9 @@ final class OracleObjectStorage implements OCIConfig, OCIAPIService, OCIBucket, 
         stackTrace: stackTrace,
         error: error,
       );
-      return throw const OracleObjectStorageExeception('Erro ao tentar definir alguma variável com tipos diferentes');
+      return throw const OracleObjectStorageExeception(
+        'Erro ao tentar definir alguma variável com tipos diferentes',
+      );
     } on OracleObjectStorageExeception catch (error, stackTrace) {
       log(
         error.message,
@@ -119,32 +138,33 @@ final class OracleObjectStorage implements OCIConfig, OCIAPIService, OCIBucket, 
         stackTrace: stackTrace,
         error: error,
       );
-      return throw const OracleObjectStorageExeception('Erro não tratado ao tentar ler o '
-        'corpo dos parâmetros de configurações no arquivo .json');      
+      return throw const OracleObjectStorageExeception(
+          'Erro não tratado ao tentar ler o '
+          'corpo dos parâmetros de configurações no arquivo .json');
     }
-
   }
 
-  static T _generateExeception<T>(String message) => throw OracleObjectStorageExeception(message);
+  static T _generateExeception<T>(String message) =>
+      throw OracleObjectStorageExeception(message);
 
   @override
-  final String 
-    region,
-    tenancy,
-    user,
-    nameSpace,
-    apiUrlOrigin,
-    host,
-    bucketName,
-    bucketPublicURL,
-    bucketPath;
-  
+  final String region,
+      tenancy,
+      user,
+      nameSpace,
+      apiUrlOrigin,
+      host,
+      bucketName,
+      bucketPublicURL,
+      bucketPath;
+
   @override
   final ApiPrivateKey apiPrivateKey;
 
   // https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#RFC_1123_DATE_TIME
   /// Formato de data RCF 1123 ==> 'Tue, 3 Jun 2008 11:05:30 GMT'
-  static final DateFormat dateFormatRCF1123 = DateFormat('E, d MMM y H:m:s', 'en_US');
+  static final DateFormat dateFormatRCF1123 =
+      DateFormat('E, d MMM y H:m:s', 'en_US');
 
   /// Data na zona UTC
   static String getDateRCF1123(DateTime? date) {
@@ -153,14 +173,14 @@ final class OracleObjectStorage implements OCIConfig, OCIAPIService, OCIBucket, 
   }
 
   // https://docs.oracle.com/pt-br/iaas/Content/Object/Concepts/dedicatedendpoints.htm#dedicated-endpoints__OCIObjectStoragededicatedendpoints-NewURLs
-  // https://<NAME_SPACE>.objectstorage.<REGION>.oci.customer-oci.com/n/<NAME_SPACE>/b/<BUCKER_NAME>/o<FULLPATH_FILE_NAME>'; 
+  // https://<NAME_SPACE>.objectstorage.<REGION>.oci.customer-oci.com/n/<NAME_SPACE>/b/<BUCKER_NAME>/o<FULLPATH_FILE_NAME>';
   /// URL publica para acesso de arquivo no bucket
-  /// 
+  ///
   /// [pathAndFileName] Ex: /users/profilePicture/userId.jpg
   String getPublicUrlFile(String pathAndFileName) {
     return '$bucketPublicURL$pathAndFileName';
   }
-  
+
   @override
   late final ObjectStorage object = ObjectStorage(this);
 
@@ -174,6 +194,6 @@ final class OracleObjectStorage implements OCIConfig, OCIAPIService, OCIBucket, 
   late final MultipartUpload multipartUpload = MultipartUpload(this);
 
   @override
-  late final PreauthenticatedRequest preauthenticatedRequest = PreauthenticatedRequest(this);
-
+  late final PreauthenticatedRequest preauthenticatedRequest =
+      PreauthenticatedRequest(this);
 }

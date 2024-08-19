@@ -13,11 +13,10 @@ import '../bucket.dart';
 ///
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/Bucket/CreateBucket
 final class CreateBucket implements OracleRequestAttributes {
-  
   const CreateBucket._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
     required this.jsonBytes,
     required this.xContentSha256,
@@ -38,18 +37,41 @@ final class CreateBucket implements OracleRequestAttributes {
 
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,)
-      ..update('x-content-sha256', (_) => xContentSha256, ifAbsent: () => xContentSha256,)
-      ..update('content-type', (_) => contentType, ifAbsent: () => contentType,)
-      ..update('content-Length', (_) => contentLegth, ifAbsent: () => contentLegth,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        )
+        ..update(
+          'x-content-sha256',
+          (_) => xContentSha256,
+          ifAbsent: () => xContentSha256,
+        )
+        ..update(
+          'content-type',
+          (_) => contentType,
+          ifAbsent: () => contentType,
+        )
+        ..update(
+          'content-Length',
+          (_) => contentLegth,
+          ifAbsent: () => contentLegth,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -63,16 +85,15 @@ final class CreateBucket implements OracleRequestAttributes {
   }
 
   /// Construir dados de autorização para o serviço [CreateBucket]
-  /// 
+  ///
   /// [date] na zona UTC
   factory CreateBucket({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     required CreateBucketDetails details,
     String? namespaceName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
@@ -95,40 +116,37 @@ final class CreateBucket implements OracleRequestAttributes {
     */
 
     namespaceName ??= storage.nameSpace;
-    
+
     final String request = '/n/$namespaceName/b/';
 
-    final String signingString = 
-      '(request-target): post $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}\n'
-      'x-content-sha256: ${details.xContentSha256}\n'
-      'content-type: ${details.contentType}\n'
-      'content-length: ${details.bytesLength}';
+    final String signingString = '(request-target): post $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}\n'
+        'x-content-sha256: ${details.xContentSha256}\n'
+        'content-type: ${details.contentType}\n'
+        'content-length: ${details.bytesLength}';
 
     return CreateBucket._(
       uri: '${storage.apiUrlOrigin}$request',
-      date: dateString, 
+      date: dateString,
       host: storage.host,
       jsonBytes: details.bytes,
       xContentSha256: details.xContentSha256,
       contentType: details.contentType,
       contentLegth: '${details.bytesLength}',
       addHeaders: addHeaders,
-      authorization: 'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+      authorization:
+          'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [CreateBucket]
 extension CreateBucketMethod on Bucket {
-  
   /// Construir dados de autorização para o serviço [CreateBucket]
   CreateBucket createBucket({
     required CreateBucketDetails details,
@@ -139,27 +157,23 @@ extension CreateBucketMethod on Bucket {
     return CreateBucket(
       storage: storage,
       details: details,
-      namespaceName: namespaceName, 
+      namespaceName: namespaceName,
       date: date,
       addHeaders: addHeaders,
     );
-    
   }
-
 }
 
-/// Parâmetros para bucket a ser criado 
+/// Parâmetros para bucket a ser criado
 final class CreateBucketDetails implements Details<Map<String, dynamic>> {
-
   // https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/CreateBucketDetails
   const CreateBucketDetails._({
     required this.details,
     required this.json,
     required this.bytes,
     required this.xContentSha256,
-  }) : 
-    contentType = 'application/json', 
-    bytesLength = bytes.length;
+  })  : contentType = 'application/json',
+        bytesLength = bytes.length;
 
   @override
   final Map<String, dynamic> details;
@@ -169,7 +183,7 @@ final class CreateBucketDetails implements Details<Map<String, dynamic>> {
 
   @override
   final int bytesLength;
-  
+
   @override
   final String contentType, json, xContentSha256;
 
@@ -187,10 +201,11 @@ final class CreateBucketDetails implements Details<Map<String, dynamic>> {
     Map<String, String>? freeformTags,
     Map<String, String>? metadata,
   }) {
-
     final int nameLength = name.length;
     if (nameLength < 1 || nameLength > 256) {
-      return throw const OracleObjectStorageExeception('O nome do bucket deve ter entre 1 e 256 caracteres');
+      return throw const OracleObjectStorageExeception(
+        'O nome do bucket deve ter entre 1 e 256 caracteres',
+      );
     }
 
     final Map<String, dynamic> source = {
@@ -231,17 +246,15 @@ final class CreateBucketDetails implements Details<Map<String, dynamic>> {
     final Uint8List bytes = json.utf8ToBytes;
 
     return CreateBucketDetails._(
-      details: source, 
-      json: json, 
-      bytes: bytes, 
+      details: source,
+      json: json,
+      bytes: bytes,
       xContentSha256: bytes.toSha256Base64,
     );
-
   }
 
   @override
   String toString() => '$runtimeType($details)'.replaceAll(RegExp('{|}'), '');
-
 }
 
 /// Parâmetro para criar um bucket
@@ -268,5 +281,5 @@ enum Versioning {
 enum AutoTiering {
   Standard,
   Archive,
-  InfrequentAccess; 
+  InfrequentAccess;
 }

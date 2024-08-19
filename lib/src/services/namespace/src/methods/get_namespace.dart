@@ -5,32 +5,42 @@ import '../namespace.dart';
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/Namespace/GetNamespace
 final class GetNamespace implements OracleRequestAttributes {
-  
   const GetNamespace._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -42,12 +52,11 @@ final class GetNamespace implements OracleRequestAttributes {
 
   /// Construir dados de autorização para o serviço [GetNamespace]
   factory GetNamespace({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
@@ -66,34 +75,28 @@ final class GetNamespace implements OracleRequestAttributes {
       version="1"
     */
 
-    final String request = query is Query
-      ? '/n/${query.toURLParams}'
-      : '/n/';
+    final String request = query is Query ? '/n/${query.toURLParams}' : '/n/';
 
-    final String signingString = 
-      '(request-target): get $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): get $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return GetNamespace._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-  
 }
 
 /// Construir dados de autorização para o serviço [GetNamespace]
 extension GetNamespaceMethod on Namespace {
-  
   /// Construir dados de autorização para o serviço [GetNamespace]
   GetNamespace getNamespace({
     Query? query,
@@ -107,5 +110,4 @@ extension GetNamespaceMethod on Namespace {
       addHeaders: addHeaders,
     );
   }
-
 }

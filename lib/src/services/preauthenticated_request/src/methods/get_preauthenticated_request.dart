@@ -4,32 +4,42 @@ import '../preauthenticated_request.dart';
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/PreauthenticatedRequest/GetPreauthenticatedRequest
 final class GetPreauthenticatedRequest implements OracleRequestAttributes {
-  
   const GetPreauthenticatedRequest._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -41,14 +51,13 @@ final class GetPreauthenticatedRequest implements OracleRequestAttributes {
 
   /// Construir dados de autorização para o serviço [GetPreauthenticatedRequest]
   factory GetPreauthenticatedRequest({
-    required OracleObjectStorage storage, 
-    required String parId, 
+    required OracleObjectStorage storage,
+    required String parId,
     String? namespaceName,
     String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
@@ -72,30 +81,26 @@ final class GetPreauthenticatedRequest implements OracleRequestAttributes {
 
     final String request = '/n/$namespaceName/b/$bucketName/p/$parId';
 
-    final String signingString = 
-      '(request-target): get $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): get $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return GetPreauthenticatedRequest._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [GetPreauthenticatedRequest]
 extension GetPreauthenticatedRequestMethod on PreauthenticatedRequest {
-  
   /// Construir dados de autorização para o serviço [GetPreauthenticatedRequest]
   GetPreauthenticatedRequest getPreauthenticatedRequest({
     required String parId,
@@ -105,7 +110,7 @@ extension GetPreauthenticatedRequestMethod on PreauthenticatedRequest {
     Map<String, String>? addHeaders,
   }) {
     return GetPreauthenticatedRequest(
-      storage: storage, 
+      storage: storage,
       parId: parId,
       namespaceName: namespaceName,
       bucketName: bucketName,
@@ -113,5 +118,4 @@ extension GetPreauthenticatedRequestMethod on PreauthenticatedRequest {
       addHeaders: addHeaders,
     );
   }
-
 }

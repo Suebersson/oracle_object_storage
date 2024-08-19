@@ -7,32 +7,42 @@ import '../bucket.dart';
 ///
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/Bucket/GetBucket
 final class GetBucket implements OracleRequestAttributes {
-  
   const GetBucket._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
     required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -44,14 +54,13 @@ final class GetBucket implements OracleRequestAttributes {
 
   /// Construir dados de autorização para o serviço [GetBucket]
   factory GetBucket({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     String? namespaceName,
     String? bucketName,
     Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
@@ -70,38 +79,33 @@ final class GetBucket implements OracleRequestAttributes {
       version="1"
     */
 
-
     namespaceName ??= storage.nameSpace;
     bucketName ??= storage.bucketName;
 
     final String request = query is Query
-      ? '/n/$namespaceName/b/$bucketName/${query.toURLParams}'
-      : '/n/$namespaceName/b/$bucketName/';
+        ? '/n/$namespaceName/b/$bucketName/${query.toURLParams}'
+        : '/n/$namespaceName/b/$bucketName/';
 
-    final String signingString = 
-      '(request-target): get $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): get $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return GetBucket._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [GetBucket]
 extension GetBucketMethod on Bucket {
-  
   /// Construir dados de autorização para o serviço [GetBucket]
   GetBucket getBucket({
     String? namespaceName,
@@ -119,5 +123,4 @@ extension GetBucketMethod on Bucket {
       addHeaders: addHeaders,
     );
   }
-
 }

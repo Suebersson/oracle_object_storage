@@ -7,12 +7,11 @@ import '../multipart_upload.dart';
 ///
 /// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/MultipartUpload/AbortMultipartUpload
 final class AbortMultipartUpload implements OracleRequestAttributes {
-  
   const AbortMultipartUpload._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
-    required this.host, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
+    required this.host,
     this.addHeaders,
   });
 
@@ -21,18 +20,29 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
 
   @override
   final Map<String, String>? addHeaders;
-  
+
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -43,10 +53,10 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
   }
 
   /// Construir dados de autorização para o serviço [AbortMultipartUpload]
-  /// 
+  ///
   /// [objectName] Ex: users/profilePicture/userId.jpg
   factory AbortMultipartUpload({
-    required OracleObjectStorage storage, 
+    required OracleObjectStorage storage,
     required String objectName,
     required String uploadId,
     String? namespaceName,
@@ -54,14 +64,15 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     if (objectName.isEmpty) {
-      return throw const OracleObjectStorageExeception('Defina o caminho completo do arquivo');
+      return throw const OracleObjectStorageExeception(
+        'Defina o caminho completo do arquivo',
+      );
     }
 
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-     /*
+    /*
       # Modelo para string de assinatura para o método [delete]
 
       (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/u/{objectName}\n
@@ -80,40 +91,37 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
     namespaceName ??= storage.nameSpace;
     bucketName ??= storage.bucketName;
 
-    final String request = '/n/$namespaceName/b/$bucketName/u/$objectName?uploadId=$uploadId';
+    final String request =
+        '/n/$namespaceName/b/$bucketName/u/$objectName?uploadId=$uploadId';
 
-    final String signingString = 
-      '(request-target): delete $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): delete $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return AbortMultipartUpload._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [AbortMultipartUpload]
 extension AbortMultipartUploadMethod on MultipartUpload {
-  
   /// Construir dados de autorização para o serviço [AbortMultipartUpload]
-  /// 
-  /// [objectName] diretório + nome do arquivo 
-  /// 
+  ///
+  /// [objectName] diretório + nome do arquivo
+  ///
   /// Ex: users/profilePicture/userId.jpg
-  /// 
+  ///
   /// ou
-  /// 
+  ///
   /// Ex: userId.jpg
   AbortMultipartUpload abortMultipartUpload({
     required String objectName,
@@ -124,7 +132,7 @@ extension AbortMultipartUploadMethod on MultipartUpload {
     Map<String, String>? addHeaders,
   }) {
     return AbortMultipartUpload(
-      storage: storage, 
+      storage: storage,
       objectName: objectName,
       uploadId: uploadId,
       namespaceName: namespaceName,
@@ -133,5 +141,4 @@ extension AbortMultipartUploadMethod on MultipartUpload {
       addHeaders: addHeaders,
     );
   }
-
 }

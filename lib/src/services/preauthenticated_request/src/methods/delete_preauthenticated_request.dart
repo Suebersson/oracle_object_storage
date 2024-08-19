@@ -4,15 +4,14 @@ import '../preauthenticated_request.dart';
 
 /// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/PreauthenticatedRequest/DeletePreauthenticatedRequest
 final class DeletePreauthenticatedRequest implements OracleRequestAttributes {
-  
   const DeletePreauthenticatedRequest._({
-    required this.uri, 
-    required this.date, 
-    required this.authorization, 
-    required this.host, 
+    required this.uri,
+    required this.date,
+    required this.authorization,
+    required this.host,
     this.addHeaders,
   });
-  
+
   @override
   final String uri, date, authorization, host;
 
@@ -21,15 +20,26 @@ final class DeletePreauthenticatedRequest implements OracleRequestAttributes {
 
   @override
   Map<String, String> get headers {
-    if (addHeaders is Map<String, String> && (addHeaders?.isNotEmpty ?? false)) {
-
+    if (addHeaders is Map<String, String> &&
+        (addHeaders?.isNotEmpty ?? false)) {
       addHeaders!
-      ..update('authorization', (_) => authorization, ifAbsent: () => authorization,)
-      ..update('date', (_) => date, ifAbsent: () => date,)
-      ..update('host', (_) => host, ifAbsent: () => host,);
+        ..update(
+          'authorization',
+          (_) => authorization,
+          ifAbsent: () => authorization,
+        )
+        ..update(
+          'date',
+          (_) => date,
+          ifAbsent: () => date,
+        )
+        ..update(
+          'host',
+          (_) => host,
+          ifAbsent: () => host,
+        );
 
-      return addHeaders!;    
-
+      return addHeaders!;
     } else {
       return {
         'authorization': authorization,
@@ -41,17 +51,16 @@ final class DeletePreauthenticatedRequest implements OracleRequestAttributes {
 
   /// Construir dados de autorização para o serviço [DeletePreauthenticatedRequest]
   factory DeletePreauthenticatedRequest({
-    required OracleObjectStorage storage, 
-    required String parId, 
+    required OracleObjectStorage storage,
+    required String parId,
     String? namespaceName,
     String? bucketName,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
-     /*
+    /*
       # Modelo para string de assinatura para o método [delete]
 
       (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/p/{parId}\n
@@ -72,30 +81,26 @@ final class DeletePreauthenticatedRequest implements OracleRequestAttributes {
 
     final String request = '/n/$namespaceName/b/$bucketName/p/$parId';
 
-    final String signingString = 
-      '(request-target): delete $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}';
+    final String signingString = '(request-target): delete $request\n'
+        'date: $dateString\n'
+        'host: ${storage.host}';
 
     return DeletePreauthenticatedRequest._(
-      uri: '${storage.apiUrlOrigin}$request', 
-      date: dateString, 
+      uri: '${storage.apiUrlOrigin}$request',
+      date: dateString,
       host: storage.host,
       addHeaders: addHeaders,
       authorization: 'Signature headers="(request-target) date host",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
-
   }
-
 }
 
 /// Construir dados de autorização para o serviço [DeletePreauthenticatedRequest]
 extension DeletePreauthenticatedRequestMethod on PreauthenticatedRequest {
-  
   /// Construir dados de autorização para o serviço [DeletePreauthenticatedRequest]
   DeletePreauthenticatedRequest deletePreauthenticatedRequest({
     required String parId,
@@ -105,7 +110,7 @@ extension DeletePreauthenticatedRequestMethod on PreauthenticatedRequest {
     Map<String, String>? addHeaders,
   }) {
     return DeletePreauthenticatedRequest(
-      storage: storage, 
+      storage: storage,
       parId: parId,
       namespaceName: namespaceName,
       bucketName: bucketName,
@@ -113,5 +118,4 @@ extension DeletePreauthenticatedRequestMethod on PreauthenticatedRequest {
       addHeaders: addHeaders,
     );
   }
-
 }

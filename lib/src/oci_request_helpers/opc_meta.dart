@@ -1,12 +1,11 @@
 import '../converters.dart';
 
 /// Criar metadados no formato OCI
-/// 
+///
 /// https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingobjects.htm#HeadersAndMetadata
 ///
 /// https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/usingpreauthenticatedrequests_topic-Working_with_PreAuthenticated_Requests.htm#To_put_an_object_with_metadata
 final class OpcMeta {
-
   /// Criar metadados no formato OCI
   const OpcMeta(this.metadata);
 
@@ -23,5 +22,4 @@ final class OpcMeta {
       }
     });
   }
-
 }
