@@ -61,7 +61,7 @@ Pontos a serem considerados:
 	- se atende ao critério de pelo menos 20% de comentários no códigos fonte
 
 
-## [Contribuintes](https://github.com/Suebersson/oracle_object_storage/graphs/contributors)
+## [Contribuidores](https://github.com/Suebersson/oracle_object_storage/graphs/contributors)
 
 <a href="https://github.com/Suebersson/oracle_object_storage/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Suebersson/oracle_object_storage" />
