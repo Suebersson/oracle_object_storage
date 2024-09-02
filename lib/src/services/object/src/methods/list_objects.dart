@@ -3,7 +3,7 @@ import '../../../../oracle_object_storage.dart';
 import '../../../../oci_request_helpers/query.dart';
 import '../object.dart';
 
-/// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/ListObject
+/// https://docs.oracle.com/en-us/iaas/api/#/pt/objectstorage/20160918/Object/ListObjects
 final class ListObjects implements OracleRequestAttributes {
   const ListObjects._({
     required this.uri,
