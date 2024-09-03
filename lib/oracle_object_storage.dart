@@ -12,3 +12,4 @@ export './src/services/preauthenticated_request/preauthenticated_request_lib.dar
 export './src/services/object/object_lib.dart';
 export './src/services/bucket/bucket_lib.dart';
 export './src/services/namespace/namespace_lib.dart';
+export './src/services/object_lifecycle_policy/object_lifecycle_policy_lib.dart';

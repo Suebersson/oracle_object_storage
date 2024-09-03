@@ -14,6 +14,7 @@ import './services/multipart_upload/src/multipart_upload.dart';
 import './services/namespace/src/namespace.dart';
 import './services/object/src/object.dart';
 import './services/preauthenticated_request/src/preauthenticated_request.dart';
+import './services/object_lifecycle_policy/src/object_lifecycle_policy.dart';
 
 /// Criar instância para requisições Oracle Objet Storage
 final class OracleObjectStorage
@@ -194,6 +195,9 @@ final class OracleObjectStorage
   late final MultipartUpload multipartUpload = MultipartUpload(this);
 
   @override
-  late final PreauthenticatedRequest preauthenticatedRequest =
-      PreauthenticatedRequest(this);
+  late final PreauthenticatedRequest preauthenticatedRequest = PreauthenticatedRequest(this);
+
+  @override
+  late final ObjectLifecyclePolicy objectLifecyclePolicy = ObjectLifecyclePolicy(this);
+
 }

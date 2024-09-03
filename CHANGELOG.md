@@ -26,3 +26,4 @@ Serviços disponíveis
 - [PreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#preauthenticatedrequest)
 - [Bucket](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#bucket)
 - [Namespace](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#namespace)
+- [ObjectLifecyclePolicy](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#objectlifecyclepolicy)

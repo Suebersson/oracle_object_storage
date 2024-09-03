@@ -2,7 +2,7 @@ import 'dart:convert' as convert;
 import 'dart:typed_data' show Uint8List;
 import 'package:pointycastle/digests/sha256.dart' show SHA256Digest;
 
-import './oracle_object_storage.dart';
+import '../oracle_object_storage.dart';
 
 /// Auxiliar para converter objetos [Uint8List]
 extension ConverterForBytes on Uint8List {
@@ -63,6 +63,10 @@ extension ConverterForMap on Map<String, dynamic> {
         toEncodable: (dynamic object) {
           if (object is DateTime || object is Enum) {
             return object.toString();
+          } else if(object is ObjectLifecycleRule) {
+            return object.encodeableToJson;
+          } else if(object is ObjectNameFilter) {
+            return object.encodeableToJson;
           } else {
             // Exeception que será emitida se o objeto for icompatível para o formato
             // JSON [JsonUnsupportedObjectError] caso essa função seja defina

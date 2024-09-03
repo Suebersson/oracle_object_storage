@@ -22,4 +22,15 @@ final class OpcMeta {
       }
     });
   }
+
+  String get join {
+    return metadata.entries.fold('', (previousValue, entry) {
+      if (previousValue.isNotEmpty) {
+        return '$previousValue, ${entry.key}:${entry.value}';
+      } else {
+        return '${entry.key}:${entry.value}';
+      }
+    });
+  }
+  
 }

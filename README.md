@@ -89,28 +89,34 @@ final OracleObjectStorage storage = OracleObjectStorage.fromConfig(
 methods/
 Ordem de como criar um arquivo em múltiplas partes/uploads:
 
-  1. [CreateMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/create_multipart_upload.md)
-  2. [UploadPart](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/upload_part.md) {enviar o corpo/conteúdo/bytes do arquivo}
-  3. [CommitMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/commit_multipart_upload.md) {finalizar/montar as partes enviadas para criar um único arquivo}
+1. [CreateMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/create_multipart_upload.md)
+2. [UploadPart](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/upload_part.md) {enviar o corpo/conteúdo/bytes do arquivo}
+3. [CommitMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/commit_multipart_upload.md) {finalizar/montar as partes enviadas para criar um único arquivo}
 
 
 ## PreauthenticatedRequest
-  - [CreatePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/create_preauthenticated_request.md)
-  - [DeletePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/delete_preauthenticated_request.md)
-  - [GetPreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/get_preauthenticated_request.md)
-  - [ListPreauthenticatedRequests](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/list_preauthenticated_requests.md)
+- [CreatePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/create_preauthenticated_request.md)
+- [DeletePreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/delete_preauthenticated_request.md)
+- [GetPreauthenticatedRequest](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/get_preauthenticated_request.md)
+- [ListPreauthenticatedRequests](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/preauthenticated_request/src/methods/list_preauthenticated_requests.md)
 
 
 ## Bucket
-  - [CreateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/create_bucket.md)
-  - [DeleteBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/delete_bucket.md)
-  - [GetBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/get_bucket.md)
-  - [HeadBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/head_bucket.md)
-  - [ListBuckets](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/list_buckets.md)
-  - [UpdateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/update_bucket.md)
+- [CreateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/create_bucket.md)
+- [DeleteBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/delete_bucket.md)
+- [GetBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/get_bucket.md)
+- [HeadBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/head_bucket.md)
+- [ListBuckets](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/list_buckets.md)
+- [UpdateBucket](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/bucket/src/methods/update_bucket.md)
 
 
 ## Namespace
-  - [GetNamespace](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/namespace/src/methods/get_namespace.md)
-  - [GetNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/namespace/src/methods/get_namespace_metadata.md)
-  - [UpdateNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/namespace/src/methods/update_namespace_metadata.md)
+- [GetNamespace](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/namespace/src/methods/get_namespace.md)
+- [GetNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/namespace/src/methods/get_namespace_metadata.md)
+- [UpdateNamespaceMetadata](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/namespace/src/methods/update_namespace_metadata.md)
+
+
+## ObjectLifecyclePolicy
+- [DeleteObjectLifecyclePolicy](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object_lifecycle_policy/src/methods/delete_object_lifecycle_policy.md)
+- [GetObjectLifecyclePolicy](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object_lifecycle_policy/src/methods/get_object_lifecycle_policy.md)
+- [PutObjectLifecyclePolicy](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/object_lifecycle_policy/src/methods/put_object_lifecycle_policy.md)

@@ -263,4 +263,8 @@ enum MultiPartStorageTier {
   Standard,
   Archive,
   InfrequentAccess;
+
+  @override
+  String toString() => name;
+
 }

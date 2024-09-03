@@ -1,13 +1,11 @@
 import '../../../../interfaces/oracle_request_attributes.dart';
 import '../../../../oracle_object_storage.dart';
-import '../../../../oci_request_helpers/query.dart';
-import '../bucket.dart';
+import '../object_lifecycle_policy.dart';
 
-/// Construir dados de autorização para o serviço [GetBucket]
-///
-/// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/Bucket/GetBucket
-final class GetBucket implements OracleRequestAttributes {
-  const GetBucket._({
+/// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/ObjectLifecyclePolicy/GetObjectLifecyclePolicy
+final class GetObjectLifecyclePolicy implements OracleRequestAttributes {
+  
+  const GetObjectLifecyclePolicy._({
     required this.uri,
     required this.date,
     required this.authorization,
@@ -52,12 +50,11 @@ final class GetBucket implements OracleRequestAttributes {
     }
   }
 
-  /// Construir dados de autorização para o serviço [GetBucket]
-  factory GetBucket({
+  /// Construir dados de autorização para o serviço [GetObjectLifecyclePolicy]
+  factory GetObjectLifecyclePolicy({
     required OracleObjectStorage storage,
     String? namespaceName,
     String? bucketName,
-    Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
@@ -66,7 +63,7 @@ final class GetBucket implements OracleRequestAttributes {
     /*
       # Modelo para String de assinatura para o método [get]
 
-      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/\n
+      (request-target): <METHOD> /n/{namespaceName}/b/{bucketName}/l\n
       date: <DATE_UTC_FORMAT_RCF1123>\n
       host: <HOST>
 
@@ -82,15 +79,13 @@ final class GetBucket implements OracleRequestAttributes {
     namespaceName ??= storage.nameSpace;
     bucketName ??= storage.bucketName;
 
-    final String request = query is Query
-        ? '/n/$namespaceName/b/$bucketName/${query.toURLParams}'
-        : '/n/$namespaceName/b/$bucketName/';
+    final String request = '/n/$namespaceName/b/$bucketName/l';
 
     final String signingString = '(request-target): get $request\n'
         'date: $dateString\n'
         'host: ${storage.host}';
 
-    return GetBucket._(
+    return GetObjectLifecyclePolicy._(
       uri: '${storage.apiUrlOrigin}$request',
       date: dateString,
       host: storage.host,
@@ -102,23 +97,22 @@ final class GetBucket implements OracleRequestAttributes {
           'version="1"',
     );
   }
+
 }
 
-/// Construir dados de autorização para o serviço [GetBucket]
-extension GetBucketMethod on Bucket {
-  /// Construir dados de autorização para o serviço [GetBucket]
-  GetBucket getBucket({
+/// Construir dados de autorização para o serviço [GetObjectLifecyclePolicy]
+extension GetObjectLifecyclePolicyMethod on ObjectLifecyclePolicy {
+  /// Construir dados de autorização para o serviço [GetObjectLifecyclePolicy]
+  GetObjectLifecyclePolicy getObjectLifecyclePolicy({
     String? namespaceName,
     String? bucketName,
-    Query? query,
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-    return GetBucket(
+    return GetObjectLifecyclePolicy(
       storage: storage,
       namespaceName: namespaceName,
       bucketName: bucketName,
-      query: query,
       date: date,
       addHeaders: addHeaders,
     );
