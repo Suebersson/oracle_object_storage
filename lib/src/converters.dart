@@ -3,6 +3,7 @@ import 'dart:typed_data' show Uint8List;
 import 'package:pointycastle/digests/sha256.dart' show SHA256Digest;
 
 import '../oracle_object_storage.dart';
+import './interfaces/encodeable_to_json.dart';
 
 /// Auxiliar para converter objetos [Uint8List]
 extension ConverterForBytes on Uint8List {
@@ -18,6 +19,23 @@ extension ConverterForDate on DateTime {
       '${OracleObjectStorage.dateFormatRCF1123.format(this)} GMT';
 
   String get toFormatRCF3339 => toIso8601String();
+
+  DateTime get toUtcKeepingTime {
+    if (!isUtc) {
+      return toUtc().copyWith(
+        year: year,
+        month: month,
+        day: day,
+        hour: hour,
+        minute: minute,
+        second: second,
+        millisecond: millisecond,
+        microsecond: microsecond,
+      );
+    } else {
+      return this;
+    }
+  }
 }
 
 /// Auxiliar para converter objetos [String]
@@ -63,9 +81,7 @@ extension ConverterForMap on Map<String, dynamic> {
         toEncodable: (dynamic object) {
           if (object is DateTime || object is Enum) {
             return object.toString();
-          } else if(object is ObjectLifecycleRule) {
-            return object.encodeableToJson;
-          } else if(object is ObjectNameFilter) {
+          } else if (object is EncodeableToJson) {
             return object.encodeableToJson;
           } else {
             // Exeception que será emitida se o objeto for icompatível para o formato

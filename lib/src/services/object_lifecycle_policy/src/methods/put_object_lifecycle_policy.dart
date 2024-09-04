@@ -3,6 +3,7 @@ import 'dart:typed_data' show Uint8List;
 
 import '../../../../converters.dart';
 import '../../../../interfaces/details.dart';
+import '../../../../interfaces/encodeable_to_json.dart';
 import '../../../../interfaces/oracle_request_attributes.dart';
 import '../../../../oracle_object_storage.dart';
 import '../../../../oracle_object_storage_exeception.dart';
@@ -11,10 +12,9 @@ import '../object_lifecycle_policy.dart';
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/ObjectLifecyclePolicy/PutObjectLifecyclePolicy
 ///
 /// Este método irá adicionar as novas políticas senão existir nenhuma
-/// 
-/// Caso exista alguma política, irá reescrever/substituir pelas novas políticas enviadas 
+///
+/// Caso exista alguma política, irá reescrever/substituir pelas novas políticas enviadas
 final class PutObjectLifecyclePolicy implements OracleRequestAttributes {
-  
   const PutObjectLifecyclePolicy._({
     required this.uri,
     required this.date,
@@ -90,7 +90,7 @@ final class PutObjectLifecyclePolicy implements OracleRequestAttributes {
   /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/ObjectLifecyclePolicy/PutObjectLifecyclePolicy
   ///
   /// Este método irá adicionar as novas políticas senão existir nenhuma
-  /// 
+  ///
   /// Caso exista alguma política, irá reescrever/substituir pelas novas políticas enviadas
   factory PutObjectLifecyclePolicy({
     required OracleObjectStorage storage,
@@ -100,7 +100,6 @@ final class PutObjectLifecyclePolicy implements OracleRequestAttributes {
     DateTime? date,
     Map<String, String>? addHeaders,
   }) {
-
     final String dateString = OracleObjectStorage.getDateRCF1123(date);
 
     /*
@@ -128,11 +127,11 @@ final class PutObjectLifecyclePolicy implements OracleRequestAttributes {
     final String request = '/n/$namespaceName/b/$bucketName/l';
 
     final String signingString = '(request-target): put $request\n'
-      'date: $dateString\n'
-      'host: ${storage.host}\n'
-      'x-content-sha256: ${details.xContentSha256}\n'
-      'content-type: ${details.contentType}\n'
-      'content-length: ${details.bytesLength}';
+        'date: $dateString\n'
+        'host: ${storage.host}\n'
+        'x-content-sha256: ${details.xContentSha256}\n'
+        'content-type: ${details.contentType}\n'
+        'content-length: ${details.bytesLength}';
 
     return PutObjectLifecyclePolicy._(
       uri: '${storage.apiUrlOrigin}$request',
@@ -145,26 +144,25 @@ final class PutObjectLifecyclePolicy implements OracleRequestAttributes {
       jsonBytes: details.bytes,
       jsonData: details.json,
       authorization:
-        'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
-        'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
-        'algorithm="rsa-sha256",'
-        'signature="${storage.apiPrivateKey.sing(signingString)}",'
-        'version="1"',
+          'Signature headers="(request-target) date host x-content-sha256 content-type content-length",'
+          'keyId="${storage.tenancy}/${storage.user}/${storage.apiPrivateKey.fingerprint}",'
+          'algorithm="rsa-sha256",'
+          'signature="${storage.apiPrivateKey.sing(signingString)}",'
+          'version="1"',
     );
   }
-
 }
 
 /// Construir dados de autorização para o serviço [PutObjectLifecyclePolicy]
 ///
 /// Este método irá adicionar as novas políticas senão existir nenhuma
-/// 
-/// Caso exista alguma política, irá reescrever/substituir pelas novas políticas enviadas  
+///
+/// Caso exista alguma política, irá reescrever/substituir pelas novas políticas enviadas
 extension PutObjectLifecyclePolicyMethod on ObjectLifecyclePolicy {
   /// Construir dados de autorização para o serviço [PutObjectLifecyclePolicy]
   /// Este método irá adicionar as novas políticas senão existir nenhuma
-  /// 
-  /// Caso exista alguma política, irá reescrever/substituir pelas novas políticas enviadas 
+  ///
+  /// Caso exista alguma política, irá reescrever/substituir pelas novas políticas enviadas
   PutObjectLifecyclePolicy putObjectLifecyclePolicy({
     required PutObjectLifecyclePolicyDetails details,
     String? namespaceName,
@@ -184,14 +182,15 @@ extension PutObjectLifecyclePolicyMethod on ObjectLifecyclePolicy {
 }
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/PutObjectLifecyclePolicyDetails
-final class PutObjectLifecyclePolicyDetails implements Details<Map<String, dynamic>> {
-
+final class PutObjectLifecyclePolicyDetails
+    implements Details<Map<String, dynamic>> {
   const PutObjectLifecyclePolicyDetails._({
     required this.details,
     required this.json,
     required this.bytes,
     required this.xContentSha256,
-  }) : contentType = 'application/json', bytesLength = bytes.length;
+  })  : contentType = 'application/json',
+        bytesLength = bytes.length;
 
   @override
   final Map<String, dynamic> details;
@@ -206,7 +205,6 @@ final class PutObjectLifecyclePolicyDetails implements Details<Map<String, dynam
   final String contentType, json, xContentSha256;
 
   factory PutObjectLifecyclePolicyDetails(List<ObjectLifecycleRule> rules) {
-
     final Map<String, dynamic> source = {'items': rules};
 
     final String json = source.toJson;
@@ -219,17 +217,15 @@ final class PutObjectLifecyclePolicyDetails implements Details<Map<String, dynam
       bytes: bytes,
       xContentSha256: bytes.toSha256Base64,
     );
-
   }
 
   @override
   String toString() => '$runtimeType($details)'.replaceAll(RegExp('{|}'), '');
-
 }
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/ObjectLifecycleRule
-final class ObjectLifecycleRule {
-
+final class ObjectLifecycleRule
+    implements EncodeableToJson<Map<String, dynamic>> {
   final ObjectLifecycleRuleAction action;
   final bool isEnabled;
   final String name;
@@ -239,38 +235,38 @@ final class ObjectLifecycleRule {
   final ObjectLifecycleRuleTarget? target;
 
   const ObjectLifecycleRule({
-    required this.action, 
-    required this.isEnabled, 
-    required this.name, 
-    required this.timeUnit, 
-    required this.timeAmount, 
-    this.filter, 
+    required this.action,
+    required this.isEnabled,
+    required this.name,
+    required this.timeUnit,
+    required this.timeAmount,
+    this.filter,
     this.target,
   });
 
   factory ObjectLifecycleRule.deleteMultipartUploadsWithoutCommit({
-    bool isEnabled = true, 
-    required String name, 
-    required int days, 
+    bool isEnabled = true,
+    required String name,
+    required int days,
   }) {
     return ObjectLifecycleRule(
-      action: ObjectLifecycleRuleAction.ABORT, 
-      timeUnit: ObjectLifecycleRuleTimeUnit.DAYS, 
+      action: ObjectLifecycleRuleAction.ABORT,
+      timeUnit: ObjectLifecycleRuleTimeUnit.DAYS,
       target: ObjectLifecycleRuleTarget.multipartUploads,
-      isEnabled: isEnabled, 
-      name: name, 
+      isEnabled: isEnabled,
+      name: name,
       timeAmount: days,
     );
   }
 
+  @override
   Map<String, dynamic> get encodeableToJson {
-
     final Map<String, dynamic> rule = {
       'action': action.toString(),
       'isEnabled': isEnabled,
       'name': name,
       'timeAmount': timeAmount,
-      'timeUnit': timeUnit.toString(), 
+      'timeUnit': timeUnit.toString(),
     };
 
     if (filter is ObjectNameFilter) {
@@ -278,40 +274,38 @@ final class ObjectLifecycleRule {
     }
 
     if (target is ObjectLifecycleRuleTarget) {
-      rule.addAll({'target': target?.target ?? ObjectLifecycleRuleTarget.objects.target});
+      rule.addAll({
+        'target': target?.target ?? ObjectLifecycleRuleTarget.objects.target,
+      });
     }
 
     return rule;
-
   }
 
+  @override
   String get toJson => encodeableToJson.toJson;
 
   @override
-  String toString() => '$runtimeType($encodeableToJson)'.replaceAll(RegExp('{|}'), '');
-
+  String toString() =>
+      '$runtimeType($encodeableToJson)'.replaceAll(RegExp('{|}'), '');
 }
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/ObjectNameFilter
-final class ObjectNameFilter {
-
+final class ObjectNameFilter
+    implements EncodeableToJson<Map<String, List<String>>> {
   const ObjectNameFilter._({
-    this.exclusionPatterns, 
-    this.inclusionPatterns, 
+    this.exclusionPatterns,
+    this.inclusionPatterns,
     this.inclusionPrefixes,
   });
-  
-  final List<String>? 
-    exclusionPatterns,
-    inclusionPatterns,
-    inclusionPrefixes;
+
+  final List<String>? exclusionPatterns, inclusionPatterns, inclusionPrefixes;
 
   factory ObjectNameFilter({
-    List<String>? exclusionPatterns, 
-    List<String>? inclusionPatterns, 
+    List<String>? exclusionPatterns,
+    List<String>? inclusionPatterns,
     List<String>? inclusionPrefixes,
   }) {
-
     if (exclusionPatterns is List<String> && exclusionPatterns.length > 1000) {
       throw const OracleObjectStorageExeception(
         'Limite máximo para o padrão de filtro[exclusionPatterns]: 1000',
@@ -325,15 +319,14 @@ final class ObjectNameFilter {
     }
 
     return ObjectNameFilter._(
-      exclusionPatterns: exclusionPatterns, 
-      inclusionPatterns: inclusionPatterns, 
+      exclusionPatterns: exclusionPatterns,
+      inclusionPatterns: inclusionPatterns,
       inclusionPrefixes: inclusionPrefixes,
     );
-
   }
 
+  @override
   Map<String, List<String>> get encodeableToJson {
-
     final Map<String, List<String>> filters = {};
 
     if (exclusionPatterns is List<String>) {
@@ -347,14 +340,14 @@ final class ObjectNameFilter {
     }
 
     return filters;
-
   }
 
+  @override
   String get toJson => encodeableToJson.toJson;
 
   @override
-  String toString() => '$runtimeType($encodeableToJson})'.replaceAll(RegExp('{|}'), '');
-
+  String toString() =>
+      '$runtimeType($encodeableToJson})'.replaceAll(RegExp('{|}'), '');
 }
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/ObjectLifecycleRule
@@ -366,7 +359,6 @@ enum ObjectLifecycleRuleAction {
 
   @override
   String toString() => name;
-
 }
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/ObjectLifecycleRule
@@ -376,7 +368,6 @@ enum ObjectLifecycleRuleTimeUnit {
 
   @override
   String toString() => name;
-
 }
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/datatypes/ObjectLifecycleRule
@@ -390,5 +381,4 @@ enum ObjectLifecycleRuleTarget {
 
   @override
   String toString() => target;
-
 }

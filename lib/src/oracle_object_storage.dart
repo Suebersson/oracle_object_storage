@@ -195,9 +195,10 @@ final class OracleObjectStorage
   late final MultipartUpload multipartUpload = MultipartUpload(this);
 
   @override
-  late final PreauthenticatedRequest preauthenticatedRequest = PreauthenticatedRequest(this);
+  late final PreauthenticatedRequest preauthenticatedRequest =
+      PreauthenticatedRequest(this);
 
   @override
-  late final ObjectLifecyclePolicy objectLifecyclePolicy = ObjectLifecyclePolicy(this);
-
+  late final ObjectLifecyclePolicy objectLifecyclePolicy =
+      ObjectLifecyclePolicy(this);
 }

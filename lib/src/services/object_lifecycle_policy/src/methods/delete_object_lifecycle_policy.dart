@@ -5,10 +5,9 @@ import '../object_lifecycle_policy.dart';
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/ObjectLifecyclePolicy/DeleteObjectLifecyclePolicy
 ///
 /// Construir dados de autorização para o serviço [DeleteObjectLifecyclePolicy]
-/// 
-/// Excluir todas as regras de política de ciclo de vida de objeto no bucket
+///
+/// Excluir todas as políticas de ciclo de vida de objeto no bucket
 final class DeleteObjectLifecyclePolicy implements OracleRequestAttributes {
-  
   const DeleteObjectLifecyclePolicy._({
     required this.uri,
     required this.date,
@@ -55,8 +54,8 @@ final class DeleteObjectLifecyclePolicy implements OracleRequestAttributes {
   }
 
   /// Construir dados de autorização para o serviço [DeleteObjectLifecyclePolicy]
-  /// 
-  /// Excluir todas as regras de política de ciclo de vida de objeto no bucket
+  ///
+  /// Excluir todas as políticas de ciclo de vida de objeto no bucket
   factory DeleteObjectLifecyclePolicy({
     required OracleObjectStorage storage,
     String? namespaceName,
@@ -103,14 +102,15 @@ final class DeleteObjectLifecyclePolicy implements OracleRequestAttributes {
           'version="1"',
     );
   }
-
 }
 
 /// Construir dados de autorização para o serviço [DeleteObjectLifecyclePolicy]
+///
+/// Excluir todas as políticas de ciclo de vida de objeto no bucket
 extension DeleteObjectLifecyclePolicyMethod on ObjectLifecyclePolicy {
   /// Construir dados de autorização para o serviço [DeleteObjectLifecyclePolicy]
-  /// 
-  /// Excluir todas as regras de política de ciclo de vida de objeto no bucket
+  ///
+  /// Excluir todas as políticas de ciclo de vida de objeto no bucket
   DeleteObjectLifecyclePolicy deleteObjectLifecyclePolicy({
     String? namespaceName,
     String? bucketName,

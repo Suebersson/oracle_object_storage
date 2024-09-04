@@ -30,8 +30,6 @@ git push -u $branch main
 
 
 
-
-
 # ------------------ Outros comandos -------------------
 
 # Imprimir URLs com os métodos origin: git remote -v

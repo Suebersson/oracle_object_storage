@@ -4,7 +4,6 @@ import '../object_lifecycle_policy.dart';
 
 /// https://docs.oracle.com/en-us/iaas/api/#/en/objectstorage/20160918/ObjectLifecyclePolicy/GetObjectLifecyclePolicy
 final class GetObjectLifecyclePolicy implements OracleRequestAttributes {
-  
   const GetObjectLifecyclePolicy._({
     required this.uri,
     required this.date,
@@ -51,6 +50,8 @@ final class GetObjectLifecyclePolicy implements OracleRequestAttributes {
   }
 
   /// Construir dados de autorização para o serviço [GetObjectLifecyclePolicy]
+  ///
+  /// Obter a lista das políticas de ciclo de vida em json
   factory GetObjectLifecyclePolicy({
     required OracleObjectStorage storage,
     String? namespaceName,
@@ -97,12 +98,15 @@ final class GetObjectLifecyclePolicy implements OracleRequestAttributes {
           'version="1"',
     );
   }
-
 }
 
 /// Construir dados de autorização para o serviço [GetObjectLifecyclePolicy]
+///
+/// Obter a lista das políticas de ciclo de vida em json
 extension GetObjectLifecyclePolicyMethod on ObjectLifecyclePolicy {
   /// Construir dados de autorização para o serviço [GetObjectLifecyclePolicy]
+  ///
+  /// Obter a lista das políticas de ciclo de vida em json
   GetObjectLifecyclePolicy getObjectLifecyclePolicy({
     String? namespaceName,
     String? bucketName,

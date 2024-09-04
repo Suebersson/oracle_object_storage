@@ -86,7 +86,7 @@ final OracleObjectStorage storage = OracleObjectStorage.fromConfig(
 - [ListMultipartUploadParts](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/list_multipart_upload_parts.md)
 - [ListMultipartUploads](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/list_multipart_uploads.md)
 - [UploadPart](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/upload_part.md)
-methods/
+
 Ordem de como criar um arquivo em múltiplas partes/uploads:
 
 1. [CreateMultipartUpload](https://github.com/Suebersson/oracle_object_storage/blob/main/lib/src/services/multipart_upload/src/methods/create_multipart_upload.md)

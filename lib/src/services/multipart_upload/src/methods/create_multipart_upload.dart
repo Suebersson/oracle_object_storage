@@ -266,5 +266,4 @@ enum MultiPartStorageTier {
 
   @override
   String toString() => name;
-
 }
