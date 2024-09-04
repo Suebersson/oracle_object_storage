@@ -61,8 +61,8 @@ final OracleObjectStorage storage = OracleObjectStorage(
 }
 
 final OracleObjectStorage storage = OracleObjectStorage.fromConfig(
-    configFullPath: '.../.oci/config.json',
-    privateKeyFullPath: '.../.oci/private_key.pem'
+  configFullPath: '.../.oci/config.json',
+  privateKeyFullPath: '.../.oci/private_key.pem'
 );
 ```
 
