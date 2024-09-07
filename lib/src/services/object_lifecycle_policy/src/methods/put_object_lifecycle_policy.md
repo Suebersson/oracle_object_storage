@@ -12,7 +12,7 @@ final PutObjectLifecyclePolicy put = storage.objectLifecyclePolicy.putObjectLife
         timeAmount: 25,
         target: ObjectLifecycleRuleTarget.objects,
         filter: ObjectNameFilter(
-          exclusionPatterns: [
+          inclusionPatterns: [
             'events/banners/*.png',
             'events/banners/*.jpeg',
             'events/banners/*.jpg',
