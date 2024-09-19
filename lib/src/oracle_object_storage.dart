@@ -54,11 +54,11 @@ final class OracleObjectStorage
   }) {
     try {
       if (configFullPath.isEmpty) {
-        return throw const OracleObjectStorageExeception(
+        throw const OracleObjectStorageExeception(
             'O endereço do arquivo .json no dispositivo '
             'não pode ser vazio [configFullPath]');
       } else if (!configFullPath.endsWith('.json')) {
-        return throw const OracleObjectStorageExeception(
+        throw const OracleObjectStorageExeception(
             'informe o endereço do arquivo de '
             'configuração do tipo .json [configFullPath]');
       }
@@ -110,7 +110,7 @@ final class OracleObjectStorage
           ),
         );
       } else {
-        return throw OracleObjectStorageExeception(
+        throw OracleObjectStorageExeception(
           'Arquivo de configurações não localizado: $configFullPath',
         );
       }
@@ -121,7 +121,7 @@ final class OracleObjectStorage
         stackTrace: stackTrace,
         error: error,
       );
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
         'Erro ao tentar definir alguma variável com tipos diferentes',
       );
     } on OracleObjectStorageExeception catch (error, stackTrace) {
@@ -131,7 +131,7 @@ final class OracleObjectStorage
         stackTrace: stackTrace,
         error: error,
       );
-      return throw OracleObjectStorageExeception(error.message);
+      throw OracleObjectStorageExeception(error.message);
     } catch (error, stackTrace) {
       log(
         'Erro não tratado ao tentar ler o corpo dos parâmetros de configurações no arquivo .json',
@@ -139,7 +139,7 @@ final class OracleObjectStorage
         stackTrace: stackTrace,
         error: error,
       );
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
           'Erro não tratado ao tentar ler o '
           'corpo dos parâmetros de configurações no arquivo .json');
     }

@@ -64,7 +64,7 @@ final class HeadObject implements OracleRequestAttributes {
     Map<String, String>? addHeaders,
   }) {
     if (pathAndFileName.isEmpty) {
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
         'Defina o caminho completo do arquivo',
       );
     }

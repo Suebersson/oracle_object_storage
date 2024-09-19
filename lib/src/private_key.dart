@@ -67,7 +67,7 @@ final class ApiPrivateKey {
   }) {
     try {
       if (fullPath.isEmpty) {
-        return throw const OracleObjectStorageExeception(
+        throw const OracleObjectStorageExeception(
             'O endereço do arquivo no dispositivo '
             'não pode ser vazio');
       }
@@ -85,7 +85,7 @@ final class ApiPrivateKey {
           fingerprint: fingerprint,
         );
       } else {
-        return throw OracleObjectStorageExeception(
+        throw OracleObjectStorageExeception(
           'Arquivo de chave privada não localizado: $fullPath',
         );
       }
@@ -96,7 +96,7 @@ final class ApiPrivateKey {
         stackTrace: stackTrace,
         error: error,
       );
-      return throw OracleObjectStorageExeception(error.message);
+      throw OracleObjectStorageExeception(error.message);
     } catch (error, stackTrace) {
       log(
         'Erro não tratado ao tentar ler o corpo da chave de API',
@@ -104,7 +104,7 @@ final class ApiPrivateKey {
         stackTrace: stackTrace,
         error: error,
       );
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
         'Erro não tratado ao tentar ler o corpo da chave de API através do arquivo',
       );
     }

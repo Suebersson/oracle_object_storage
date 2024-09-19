@@ -65,7 +65,7 @@ final class AbortMultipartUpload implements OracleRequestAttributes {
     Map<String, String>? addHeaders,
   }) {
     if (objectName.isEmpty) {
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
         'Defina o caminho completo do arquivo',
       );
     }

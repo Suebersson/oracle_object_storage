@@ -209,7 +209,7 @@ final class CreateMultipartUploadDetails
     MultiPartStorageTier? storageTier,
   }) {
     if (objectName.isEmpty) {
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
         'Defina o nome do [object]',
       );
     }

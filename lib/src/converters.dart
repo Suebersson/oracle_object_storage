@@ -86,7 +86,7 @@ extension ConverterForMap on Map<String, dynamic> {
           } else {
             // Exeception que será emitida se o objeto for icompatível para o formato
             // JSON [JsonUnsupportedObjectError] caso essa função seja defina
-            return throw UnsupportedError(
+            throw UnsupportedError(
                 'Tipos objetos compatíveis para o formato json Key:[String], Key:[int], Key:[double], Key:[bool], '
                 'Key:[Null], Key:[List], Key:[Map]\n\n'
                 'Tipo de objeto não tratado para converter para o formato '

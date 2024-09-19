@@ -105,7 +105,7 @@ final class PutObject implements OracleRequestAttributes {
     Map<String, String>? addHeaders,
   }) {
     if (pathAndFileName.isEmpty) {
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
         'Defina o caminho completo para criar o arquivo',
       );
     }

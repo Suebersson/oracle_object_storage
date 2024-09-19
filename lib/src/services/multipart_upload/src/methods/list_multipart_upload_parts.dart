@@ -64,12 +64,12 @@ final class ListMultipartUploadParts implements OracleRequestAttributes {
     Map<String, String>? addHeaders,
   }) {
     if (objectName.isEmpty) {
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
         'Defina o nome do arquivo',
       );
     }
     if (!query.querys.containsKey('uploadId')) {
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
         'O parâmetros [uploadId] é obrigatório dentro da query',
       );
     }

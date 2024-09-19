@@ -202,7 +202,7 @@ final class CreatePreauthenticatedRequestDetails
     String? objectName,
   }) {
     if (name.isEmpty) {
-      return throw const OracleObjectStorageExeception(
+      throw const OracleObjectStorageExeception(
         'Defina o nome do acesso pré-autenticado',
       );
     }

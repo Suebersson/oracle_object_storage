@@ -206,7 +206,7 @@ final class UpdateBucketDetails implements Details<Map<String, dynamic>> {
     if (name is String) {
       final int nameLength = name.length;
       if (nameLength < 1 || nameLength > 256) {
-        return throw const OracleObjectStorageExeception(
+        throw const OracleObjectStorageExeception(
           'O nome do bucket deve ter entre 1 e 256 caracteres',
         );
       } else {
