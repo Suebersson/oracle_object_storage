@@ -79,8 +79,10 @@ extension ConverterForMap on Map<String, dynamic> {
   String get toJson => convert.json.encode(
         this,
         toEncodable: (dynamic object) {
-          if (object is DateTime || object is Enum) {
+          if (object is Enum) {
             return object.toString();
+          } else if (object is DateTime) {
+            return object.toIso8601String();
           } else if (object is EncodeableToJson) {
             return object.encodeableToJson;
           } else {

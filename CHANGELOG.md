@@ -27,3 +27,7 @@ Serviços disponíveis
 - [Bucket](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#bucket)
 - [Namespace](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#namespace)
 - [ObjectLifecyclePolicy](https://github.com/Suebersson/oracle_object_storage/blob/main/README.md#objectlifecyclepolicy)
+
+## 1.0.1
+
+Atualização do dart e dependências de packages
