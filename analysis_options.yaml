@@ -43,6 +43,8 @@ linter:
     prefer_relative_imports: true 
 
     prefer_const_constructors: true
+    # prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
     
     camel_case_types: true
     
@@ -64,6 +66,9 @@ linter:
 
     # inserir uma vígula em cada atributo dos objetos
     require_trailing_commas: true
+
+    # não simplificar as variáveis nomeadas
+    simplify_variable_pattern: false
 
     # Mostrar onde deve inserir os comentários de documentação nos objeto dart
     # public_member_api_docs: true
